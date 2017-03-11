@@ -241,7 +241,7 @@ namespace MarvelEditTool
                 textBox1.Text = tablefile.table[animBox.SelectedIndex].name;
                 textBox1.Enabled = true;
                 exportButton.Enabled = true;
-                SetTextConcurrent(BitConverter.ToString(tablefile.table[animBox.SelectedIndex].data).Replace("-", ""));
+                SetTextConcurrent(tablefile.table[animBox.SelectedIndex].data);
                 //dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].data).Replace("-","");
                 sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
             }
@@ -321,14 +321,16 @@ namespace MarvelEditTool
             }
         }
 
+
+        // YES I KNOW THIS IS EXCESSIVE BUT LOOK I WANTED TO DO IT OKAY
         public Task TextTask;
-        public string newText;
+        public byte[] newText;
         public bool bTextNeedsToBeDone;
         public bool bTextTaskGoing;
-        public void SetTextConcurrent(string text)
+        public void SetTextConcurrent(byte[] text)
         {
-            newText = text;
             bTextNeedsToBeDone = true;
+            newText = text;
             if (TextTask == null)
             {
                 TextTask = new Task(SetText);
@@ -344,14 +346,51 @@ namespace MarvelEditTool
 
         public void SetText()
         {
-            while(bTextNeedsToBeDone)
+            int textSize = 8;
+            
+            if (dataTextBox.Width > 1140)
+            {
+                textSize = 64;
+            }
+            else if (dataTextBox.Width > 570)
+            {
+                textSize = 32;
+            }
+            else if (dataTextBox.Width > 285)
+            {
+                textSize = 16;
+            }
+            while (bTextNeedsToBeDone)
             {
                 bTextNeedsToBeDone = false;
                 dataTextBox.Clear();
-                dataTextBox.AppendText(newText);
-                dataTextBox.SelectionLength = 0;
-                dataTextBox.SelectionStart = 0;
+
+                int newTextLength;
+                string[] newLines;
+                lock(newText)
+                {
+                    newTextLength = newText.Length;
+                    newLines = new string[newTextLength / textSize];
+                }
+                for (int i = 0; i < newTextLength/textSize; i++)
+                {
+                    lock(newText)
+                    {
+                        if (bTextNeedsToBeDone)
+                        {
+                            break;
+                        }
+                        newLines[i] = BitConverter.ToString(newText, i * textSize, textSize).Replace("-", "");
+                    }
+                }
+
+                if (!bTextNeedsToBeDone)
+                {
+                    dataTextBox.Lines = newLines;
+                }
             }
+            dataTextBox.Select(0, 0);
+            dataTextBox.ScrollToCaret();
         }
     }
 }
