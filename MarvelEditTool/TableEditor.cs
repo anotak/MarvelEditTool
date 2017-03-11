@@ -153,7 +153,8 @@ namespace MarvelEditTool
                     return;
                 }
                 tablefile = newTable;
-                
+
+                SuspendLayout();
                 saveButton.Enabled = true;
                 importButton.Enabled = false;
                 exportButton.Enabled = false;
@@ -162,6 +163,7 @@ namespace MarvelEditTool
                 extendButton.Enabled = true;
                 sizeLabel.Text = count + " entries loaded";
                 RefreshData();
+                ResumeLayout();
             }
             else
             {
@@ -223,7 +225,8 @@ namespace MarvelEditTool
             {
                 return;
             }
-
+            SuspendLayout();
+            animBox.BeginUpdate();
             bDisableUpdate = true;
             importButton.Enabled = true;
 
@@ -238,7 +241,8 @@ namespace MarvelEditTool
                 textBox1.Text = tablefile.table[animBox.SelectedIndex].name;
                 textBox1.Enabled = true;
                 exportButton.Enabled = true;
-                dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].data).Replace("-","");
+                SetTextConcurrent(BitConverter.ToString(tablefile.table[animBox.SelectedIndex].data).Replace("-", ""));
+                //dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].data).Replace("-","");
                 sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
             }
             else
@@ -252,6 +256,8 @@ namespace MarvelEditTool
             
 
             bDisableUpdate = false;
+            animBox.EndUpdate();
+            ResumeLayout();
         }
 
         private void importButton_Click(object sender, EventArgs e)
@@ -309,6 +315,43 @@ namespace MarvelEditTool
         {
             tablefile.Extend();
             RefreshData();
+            if(animBox.TopIndex < animBox.Items.Count - 2)
+            {
+                animBox.TopIndex++;
+            }
+        }
+
+        public Task TextTask;
+        public string newText;
+        public bool bTextNeedsToBeDone;
+        public bool bTextTaskGoing;
+        public void SetTextConcurrent(string text)
+        {
+            newText = text;
+            bTextNeedsToBeDone = true;
+            if (TextTask == null)
+            {
+                TextTask = new Task(SetText);
+                TextTask.Start();
+            }
+            else if (TextTask.IsCompleted)
+            {
+                TextTask.Dispose();
+                TextTask = new Task(SetText);
+                TextTask.Start();
+            }
+        }
+
+        public void SetText()
+        {
+            while(bTextNeedsToBeDone)
+            {
+                bTextNeedsToBeDone = false;
+                dataTextBox.Clear();
+                dataTextBox.AppendText(newText);
+                dataTextBox.SelectionLength = 0;
+                dataTextBox.SelectionStart = 0;
+            }
         }
     }
 }
