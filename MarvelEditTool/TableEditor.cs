@@ -15,6 +15,7 @@ namespace MarvelEditTool
     {
         public TableFile tablefile;
         public List<string> tableNames;
+        public bool bDisableUpdate;
 
         public static bool bError;
 
@@ -23,6 +24,7 @@ namespace MarvelEditTool
             InitializeComponent();
             Text += ", build " + SSFIVAEDataTools.GetCompileDate();
             AELogger.Log(Text);
+            bDisableUpdate = true;
         }
 
         public void SaferExit()
@@ -78,8 +80,8 @@ namespace MarvelEditTool
                 exportButton.Enabled = true;
                 openButton.Enabled = false;
                 animBox.Enabled = true;
-                animBox.DataSource = tablefile.GetNames();
-                animBox.SelectedIndex = 0;
+                extendButton.Enabled = true;
+                RefreshData();
             }
             else
             {
@@ -137,19 +139,34 @@ namespace MarvelEditTool
 
         private void animBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (animBox.SelectedIndex >= 0
+            if(bDisableUpdate)
+            {
+                return;
+            }
+
+            bDisableUpdate = true;
+
+            if (
+                animBox.SelectedIndex >= 0
                 &&
                 animBox.SelectedIndex < tablefile.table.Count
                 &&
                 tablefile.table[animBox.SelectedIndex].bHasData
                 )
             {
+                textBox1.Text = tablefile.table[animBox.SelectedIndex].name;
+                textBox1.Enabled = true;
                 exportButton.Enabled = true;
             }
             else
             {
+                textBox1.Text = "";
+                textBox1.Enabled = false;
                 exportButton.Enabled = false;
             }
+            
+
+            bDisableUpdate = false;
         }
 
         private void importButton_Click(object sender, EventArgs e)
@@ -169,11 +186,41 @@ namespace MarvelEditTool
             if (openFile.FileNames.Length > 0)
             {
                 tablefile.table[animBox.SelectedIndex].Import(openFile.FileNames[0]);
+                RefreshData();
             }
             else
             {
                 AELogger.Log("nothing selected!");
             }
+        }
+
+        private void RefreshData()
+        {
+            bDisableUpdate = true;
+            int s = animBox.SelectedIndex;
+            int top = animBox.TopIndex;
+            tableNames = tablefile.GetNames();
+            animBox.DataSource = tableNames;
+            animBox.SelectedIndex = s;
+            animBox.TopIndex = top + 1;
+            bDisableUpdate = false;
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            if(bDisableUpdate)
+            {
+                return;
+            }
+
+            tablefile.table[animBox.SelectedIndex].name = textBox1.Text;
+            RefreshData();
+        }
+
+        private void extendButton_Click(object sender, EventArgs e)
+        {
+            tablefile.Extend();
+            RefreshData();
         }
     }
 }

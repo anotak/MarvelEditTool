@@ -33,9 +33,11 @@
             this.openButton = new System.Windows.Forms.Button();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.animBox = new System.Windows.Forms.ListBox();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.importButton = new System.Windows.Forms.Button();
+            this.extendButton = new System.Windows.Forms.Button();
             this.exportButton = new System.Windows.Forms.Button();
+            this.importButton = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -44,7 +46,7 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -62,8 +64,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(681, 529);
-            this.splitContainer1.SplitterDistance = 36;
+            this.splitContainer1.Size = new System.Drawing.Size(843, 568);
+            this.splitContainer1.SplitterDistance = 38;
             this.splitContainer1.TabIndex = 0;
             // 
             // saveButton
@@ -73,7 +75,7 @@
             this.saveButton.Enabled = false;
             this.saveButton.Location = new System.Drawing.Point(140, 4);
             this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(155, 29);
+            this.saveButton.Size = new System.Drawing.Size(155, 31);
             this.saveButton.TabIndex = 1;
             this.saveButton.Text = "Save";
             this.saveButton.UseVisualStyleBackColor = true;
@@ -85,7 +87,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.openButton.Location = new System.Drawing.Point(4, 4);
             this.openButton.Name = "openButton";
-            this.openButton.Size = new System.Drawing.Size(129, 29);
+            this.openButton.Size = new System.Drawing.Size(129, 31);
             this.openButton.TabIndex = 0;
             this.openButton.Text = "Open";
             this.openButton.UseVisualStyleBackColor = true;
@@ -103,9 +105,9 @@
             // 
             // splitContainer2.Panel2
             // 
-            this.splitContainer2.Panel2.Controls.Add(this.flowLayoutPanel1);
-            this.splitContainer2.Size = new System.Drawing.Size(681, 489);
-            this.splitContainer2.SplitterDistance = 395;
+            this.splitContainer2.Panel2.Controls.Add(this.tableLayoutPanel1);
+            this.splitContainer2.Size = new System.Drawing.Size(843, 526);
+            this.splitContainer2.SplitterDistance = 488;
             this.splitContainer2.TabIndex = 0;
             // 
             // animBox
@@ -118,38 +120,25 @@
             this.animBox.Location = new System.Drawing.Point(0, 0);
             this.animBox.Name = "animBox";
             this.animBox.ScrollAlwaysVisible = true;
-            this.animBox.Size = new System.Drawing.Size(395, 489);
+            this.animBox.Size = new System.Drawing.Size(488, 526);
             this.animBox.TabIndex = 0;
             this.animBox.SelectedIndexChanged += new System.EventHandler(this.animBox_SelectedIndexChanged);
             // 
-            // flowLayoutPanel1
+            // extendButton
             // 
-            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.extendButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.Controls.Add(this.importButton);
-            this.flowLayoutPanel1.Controls.Add(this.exportButton);
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(267, 474);
-            this.flowLayoutPanel1.TabIndex = 0;
-            // 
-            // importButton
-            // 
-            this.importButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.importButton.AutoSize = true;
-            this.importButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.importButton.Enabled = false;
-            this.importButton.Location = new System.Drawing.Point(3, 3);
-            this.importButton.Name = "importButton";
-            this.importButton.Size = new System.Drawing.Size(58, 27);
-            this.importButton.TabIndex = 0;
-            this.importButton.Text = "Import";
-            this.importButton.UseVisualStyleBackColor = true;
-            this.importButton.Click += new System.EventHandler(this.importButton_Click);
+            this.extendButton.AutoSize = true;
+            this.extendButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.extendButton.Enabled = false;
+            this.extendButton.Location = new System.Drawing.Point(3, 97);
+            this.extendButton.Name = "extendButton";
+            this.extendButton.Size = new System.Drawing.Size(345, 27);
+            this.extendButton.TabIndex = 3;
+            this.extendButton.Text = "+ Extend List";
+            this.extendButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.extendButton.UseVisualStyleBackColor = true;
+            this.extendButton.Click += new System.EventHandler(this.extendButton_Click);
             // 
             // exportButton
             // 
@@ -158,19 +147,66 @@
             this.exportButton.AutoSize = true;
             this.exportButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.exportButton.Enabled = false;
-            this.exportButton.Location = new System.Drawing.Point(3, 36);
+            this.exportButton.Location = new System.Drawing.Point(3, 64);
             this.exportButton.Name = "exportButton";
-            this.exportButton.Size = new System.Drawing.Size(58, 27);
+            this.exportButton.Size = new System.Drawing.Size(345, 27);
             this.exportButton.TabIndex = 1;
             this.exportButton.Text = "Export";
+            this.exportButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.exportButton.UseVisualStyleBackColor = true;
             this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
+            // 
+            // importButton
+            // 
+            this.importButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.importButton.AutoSize = true;
+            this.importButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.importButton.Enabled = false;
+            this.importButton.Location = new System.Drawing.Point(3, 31);
+            this.importButton.Name = "importButton";
+            this.importButton.Size = new System.Drawing.Size(345, 27);
+            this.importButton.TabIndex = 0;
+            this.importButton.Text = "Import";
+            this.importButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.importButton.UseVisualStyleBackColor = true;
+            this.importButton.Click += new System.EventHandler(this.importButton_Click);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox1.Location = new System.Drawing.Point(3, 3);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(345, 22);
+            this.textBox1.TabIndex = 2;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.textBox1, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.extendButton, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.importButton, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.exportButton, 0, 2);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 5;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(351, 526);
+            this.tableLayoutPanel1.TabIndex = 4;
             // 
             // TableEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(681, 529);
+            this.ClientSize = new System.Drawing.Size(843, 568);
             this.Controls.Add(this.splitContainer1);
             this.Name = "TableEditor";
             this.Text = "TableEditor";
@@ -180,11 +216,10 @@
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
-            this.splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -194,11 +229,13 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.ListBox animBox;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.Button importButton;
-        private System.Windows.Forms.Button exportButton;
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.Button openButton;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button extendButton;
+        private System.Windows.Forms.Button importButton;
+        private System.Windows.Forms.Button exportButton;
     }
 }
 

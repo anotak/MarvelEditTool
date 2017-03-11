@@ -97,9 +97,18 @@ namespace MarvelData
                     }
                     else
                     {
-                        bHasData = true;
+                        if(!bHasData)
+                        {
+                            bHasData = true;
+                            try { 
+                                name = Path.GetFileNameWithoutExtension(filename);
+                            }
+                            catch
+                            {
+                                name = GuessAnmChrName(index);
+                            }
+                        }
                         data = reader.ReadBytes((int)reader.BaseStream.Length);
-                        name = GuessAnmChrName(index);
                     }
                 }
             }

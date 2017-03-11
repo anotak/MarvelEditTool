@@ -154,6 +154,16 @@ namespace MarvelData
             return tableNames;
         }
 
+        public void Extend()
+        {
+            TableEntry entry = new TableEntry();
+            entry.bHasData = false;
+            entry.index = (uint)table.Count;
+            entry.originalPointer = 0;
+            entry.name = "***EMPTY DATA***";
+            table.Add(entry);
+        }
+
         public void WriteFile(string filename)
         {
             if (File.Exists(filename))
