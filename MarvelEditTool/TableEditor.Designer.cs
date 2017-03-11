@@ -84,7 +84,7 @@
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(155, 31);
             this.saveButton.TabIndex = 1;
-            this.saveButton.Text = "&Save";
+            this.saveButton.Text = "&Save (Ctrl+S)";
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
@@ -96,7 +96,7 @@
             this.openButton.Name = "openButton";
             this.openButton.Size = new System.Drawing.Size(129, 31);
             this.openButton.TabIndex = 0;
-            this.openButton.Text = "&Open";
+            this.openButton.Text = "&Open (Ctrl+O)";
             this.openButton.UseVisualStyleBackColor = true;
             this.openButton.Click += new System.EventHandler(this.openButton_Click);
             // 
@@ -176,7 +176,7 @@
             this.importButton.Name = "importButton";
             this.importButton.Size = new System.Drawing.Size(409, 27);
             this.importButton.TabIndex = 0;
-            this.importButton.Text = "&Import";
+            this.importButton.Text = "&Import (Ctrl+R)";
             this.importButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.importButton.UseVisualStyleBackColor = true;
             this.importButton.Click += new System.EventHandler(this.importButton_Click);
@@ -192,7 +192,7 @@
             this.exportButton.Name = "exportButton";
             this.exportButton.Size = new System.Drawing.Size(409, 27);
             this.exportButton.TabIndex = 1;
-            this.exportButton.Text = "&Export";
+            this.exportButton.Text = "&Export (Ctrl+E)";
             this.exportButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.exportButton.UseVisualStyleBackColor = true;
             this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
@@ -208,7 +208,7 @@
             this.extendButton.Name = "extendButton";
             this.extendButton.Size = new System.Drawing.Size(409, 27);
             this.extendButton.TabIndex = 3;
-            this.extendButton.Text = "+ Ex&tend List";
+            this.extendButton.Text = "+ Ex&tend List  (Ctrl+T)";
             this.extendButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.extendButton.UseVisualStyleBackColor = true;
             this.extendButton.Click += new System.EventHandler(this.extendButton_Click);

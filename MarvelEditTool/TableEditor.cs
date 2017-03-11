@@ -70,6 +70,30 @@ namespace MarvelEditTool
                 }
                 return true;
             }
+            else if (keyData == (Keys.Control | Keys.T))
+            {
+                if (extendButton.Enabled)
+                {
+                    extendButton_Click(null, null);
+                }
+                return true;
+            }
+            else if (keyData == (Keys.Control | Keys.E))
+            {
+                if (exportButton.Enabled)
+                {
+                    exportButton_Click(null, null);
+                }
+                return true;
+            }
+            else if (keyData == (Keys.Control | Keys.R))
+            {
+                if (importButton.Enabled)
+                {
+                    importButton_Click(null, null);
+                }
+                return true;
+            }
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
@@ -143,7 +167,7 @@ namespace MarvelEditTool
             }
 
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-
+            saveFileDialog1.Title = "Export";
             saveFileDialog1.Filter = "mvc3 table data files (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
             saveFileDialog1.FilterIndex = 2;
             saveFileDialog1.RestoreDirectory = true;
@@ -207,6 +231,7 @@ namespace MarvelEditTool
 
             OpenFileDialog openFile = new OpenFileDialog();
             openFile.DefaultExt = "mvc3data";
+            openFile.Title = "Import";
             // The Filter property requires a search string after the pipe ( | )
             openFile.Filter = "mvc3 table data files (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
             openFile.ShowDialog();
