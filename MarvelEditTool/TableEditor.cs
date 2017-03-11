@@ -100,7 +100,35 @@ namespace MarvelEditTool
                 }
                 return true;
             }
+            else if (keyData == Keys.Up || keyData == Keys.Down)
+            {
+                RedirectToAnimBox("{" + keyData.ToString() + "}");
+            }
+            else if (keyData == Keys.PageDown)
+            {
+                RedirectToAnimBox("{pgdn}");
+            }
+            else if (keyData == Keys.PageUp)
+            {
+                RedirectToAnimBox("{pgdn}");
+            }
+            else if(keyData == Keys.Home || keyData == Keys.End)
+            {
+                if(!textBox1.Focused)
+                {
+                    RedirectToAnimBox("{" + keyData.ToString() + "}");
+                }
+            }
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void RedirectToAnimBox(string key)
+        {
+            if (!animBox.Focused)
+            {
+                animBox.Focus();
+                SendKeys.Send(key);
+            }
         }
 
         private void openButton_Click(object sender, EventArgs e)
@@ -262,7 +290,7 @@ namespace MarvelEditTool
             tableNames = tablefile.GetNames();
             animBox.DataSource = tableNames;
             animBox.SelectedIndex = s;
-            animBox.TopIndex = top + 1;
+            animBox.TopIndex = top;
             bDisableUpdate = false;
         }
 
