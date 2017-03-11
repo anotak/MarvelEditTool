@@ -306,7 +306,7 @@ namespace MarvelEditTool
             {
                 return;
             }
-
+            
             tablefile.table[animBox.SelectedIndex].name = textBox1.Text;
             RefreshData();
         }

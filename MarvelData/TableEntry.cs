@@ -16,6 +16,8 @@ namespace MarvelData
         public byte[] data;
         public int size;
 
+        public static StringBuilder FancyNameStringBuilder;
+
         public static string GuessAnmChrName(uint index)
         {
             string output;
@@ -43,7 +45,18 @@ namespace MarvelData
 
         public string GetFancyName()
         {
-            return index.ToString("X3") + "h: " + name;
+            if(FancyNameStringBuilder == null)
+            {
+                FancyNameStringBuilder = new StringBuilder();
+            }
+            else
+            {
+                FancyNameStringBuilder.Clear();
+            }
+            FancyNameStringBuilder.Append(index.ToString("X3"));
+            FancyNameStringBuilder.Append("h: ");
+            FancyNameStringBuilder.Append(name);
+            return  FancyNameStringBuilder.ToString();
         }
 
         public string GetFilename()
