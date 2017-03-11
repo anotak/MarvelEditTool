@@ -22,9 +22,15 @@ namespace MarvelEditTool
         public TableEditor()
         {
             InitializeComponent();
-            Text += ", build " + SSFIVAEDataTools.GetCompileDate();
+            Text += ", build " + GetCompileDate();
             AELogger.Log(Text);
             bDisableUpdate = true;
+        }
+
+        public static string GetCompileDate()
+        {
+            System.Version MyVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            return new DateTime(2000, 1, 1).AddDays(MyVersion.Build).AddSeconds(MyVersion.Revision * 2).ToString();
         }
 
         public void SaferExit()
