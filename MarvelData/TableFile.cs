@@ -10,7 +10,6 @@ namespace MarvelData
     public class TableFile
     {
         public List<TableEntry> table;
-        public uint realCount;
         public byte[] header;
         public byte[] headerB;
         
@@ -44,7 +43,7 @@ namespace MarvelData
                     AELogger.Log("TOO SHORT FILE tABble " + (16 + (entries * 8)));
                     throw new Exception();
                 }
-                tablefile.realCount = 0;
+                uint realCount = 0;
                 uint lastindex = 0;
                 for (int i = 0; i < entries; i++)
                 {
@@ -78,11 +77,25 @@ namespace MarvelData
                     AELogger.Log("add current: " +
                         current.index.ToString("X")
                         + "h at " + current.originalPointer.ToString("X") + "h with name " + current.name);
-                    tablefile.realCount++;
+                    realCount++;
                     tablefile.table.Add(current);
                 }
 
                 uint position = (uint)reader.BaseStream.Position;
+                if(position < tablefile.table[0].originalPointer - 8)
+                {
+                    if(reader.ReadUInt32() == 0x0043564D) // "MVC\x00"
+                    {
+                        for(int i = 0; i < tablefile.table.Count; i++)
+                        {
+                            if (tablefile.table[i].bHasData)
+                            {
+                                tablefile.table[i].name = SSFIVAEDataTools.SlurpString(reader);
+                            }
+                        }
+                    }
+                }
+
                 for(int i = 0; i < tablefile.table.Count; i++)
                 {
                     if(tablefile.table[i].bHasData)
@@ -157,11 +170,22 @@ namespace MarvelData
             Stream t = new FileStream(filename + ".temp", FileMode.Create);
             BinaryWriter b = new BinaryWriter(t);
 
+            uint realCount = 0;
+            uint pointer = 16 + 4; // header + "MVC\x00"
+            for (int i = 0; i < table.Count; i++)
+            {
+                if (table[i].bHasData)
+                {
+                    realCount++;
+                    pointer += (uint)table[i].name.Length + 1;
+                }
+            }
+            pointer += 8 * realCount;
+
             b.Write(header);
             b.Write((uint)realCount);
             b.Write(headerB);
 
-            uint pointer = 16 + 8 * realCount;
             for (int i = 0; i < table.Count; i++)
             {
                 if (table[i].bHasData)
@@ -175,6 +199,18 @@ namespace MarvelData
                 }
             }
 
+            b.Write((UInt32)0x0043564D); // metadata for reading it specific to this tool
+            // names
+            for (int i = 0; i < table.Count; i++)
+            {
+                if(table[i].bHasData)
+                {
+                    b.Write(table[i].name.ToCharArray());
+                    b.Write((byte)0x00);// null terminator
+                }
+            }
+
+            // write data
             for (int i = 0; i < table.Count; i++)
             {
                 if (table[i].bHasData)
