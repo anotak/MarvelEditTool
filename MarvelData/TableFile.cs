@@ -135,6 +135,7 @@ namespace MarvelData
                         }
                         AELogger.Log("entrysize is " + entrysize);
                         tablefile.table[i].data = reader.ReadBytes((int)entrysize);
+                        tablefile.table[i].size = tablefile.table[i].data.Length;
                         position += entrysize;
                     }
                 }

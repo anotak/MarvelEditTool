@@ -52,6 +52,27 @@ namespace MarvelEditTool
             }
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == (Keys.Control | Keys.S))
+            {
+                if (saveButton.Enabled)
+                {
+                    saveButton_Click(null, null);
+                }
+                return true;
+            }
+            else if (keyData == (Keys.Control | Keys.O))
+            {
+                if (openButton.Enabled)
+                {
+                    openButton_Click(null, null);
+                }
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         private void openButton_Click(object sender, EventArgs e)
         {
             if (bError)
@@ -76,11 +97,12 @@ namespace MarvelEditTool
                 tablefile = newTable;
                 
                 saveButton.Enabled = true;
-                importButton.Enabled = true;
-                exportButton.Enabled = true;
+                importButton.Enabled = false;
+                exportButton.Enabled = false;
                 openButton.Enabled = false;
                 animBox.Enabled = true;
                 extendButton.Enabled = true;
+                sizeLabel.Text = count + " entries loaded";
                 RefreshData();
             }
             else
@@ -145,6 +167,7 @@ namespace MarvelEditTool
             }
 
             bDisableUpdate = true;
+            importButton.Enabled = true;
 
             if (
                 animBox.SelectedIndex >= 0
@@ -157,12 +180,16 @@ namespace MarvelEditTool
                 textBox1.Text = tablefile.table[animBox.SelectedIndex].name;
                 textBox1.Enabled = true;
                 exportButton.Enabled = true;
+                dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].data).Replace("-","");
+                sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
             }
             else
             {
                 textBox1.Text = "";
                 textBox1.Enabled = false;
                 exportButton.Enabled = false;
+                dataTextBox.Text = "";
+                sizeLabel.Text = "size: N/A";
             }
             
 
@@ -187,6 +214,8 @@ namespace MarvelEditTool
             {
                 tablefile.table[animBox.SelectedIndex].Import(openFile.FileNames[0]);
                 RefreshData();
+                dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].data).Replace("-", "");
+                sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
             }
             else
             {

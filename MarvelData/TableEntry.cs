@@ -14,6 +14,7 @@ namespace MarvelData
         public bool bHasData;  // DONT SAVE THIS
         public string name; // DONT SAVE THIS
         public byte[] data;
+        public int size;
 
         public static string GuessAnmChrName(uint index)
         {
@@ -109,6 +110,7 @@ namespace MarvelData
                             }
                         }
                         data = reader.ReadBytes((int)reader.BaseStream.Length);
+                        size = data.Length;
                     }
                 }
             }
