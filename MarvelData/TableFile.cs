@@ -140,7 +140,7 @@ namespace MarvelData
                     }
                 }
             }
-
+            tablefile.Analyze();
             return tablefile;
         }
 
@@ -226,7 +226,8 @@ namespace MarvelData
             {
                 if (table[i].bHasData)
                 {
-                    AELogger.Log("writing actualy data of " + table[i].name +
+                    pointer = (uint)b.BaseStream.Position;
+                    AELogger.Log("writing actual data of " + table[i].GetFancyName() +
                         " with pointer " + pointer.ToString("X") + "h ");
                     b.Write(table[i].data);
                 }
@@ -236,6 +237,153 @@ namespace MarvelData
             t.Close();
             File.Copy(filename + ".temp", filename, true);
             File.Delete(filename + ".temp");
+        }
+
+        public void Analyze()
+        {
+            SortedDictionary<int, List<TableEntry>> sizes = new SortedDictionary<int, List<TableEntry>>();
+            List<SortedDictionary<int, int>> byteCounts = new List<SortedDictionary<int, int>>(10000);
+            List<SortedDictionary<int, int>> byteBySize = new List<SortedDictionary<int, int>>(10000);
+
+            for (int i = 0; i < table.Count; i++)
+            {
+                if (table[i].bHasData)
+                {
+                    if (!sizes.ContainsKey(table[i].size))
+                    {
+                        sizes.Add(table[i].size, new List<TableEntry>());
+                    }
+                    sizes[table[i].size].Add(table[i]);
+
+                    for(int j = 0; j < table[i].data.Length; j++)
+                    {
+                        while(j >= byteCounts.Count)
+                        {
+                            byteCounts.Add(new SortedDictionary<int, int>());
+                            byteBySize.Add(new SortedDictionary<int, int>());
+                        }
+
+                        if(byteCounts[j].ContainsKey(table[i].data[j]))
+                        {
+                            byteCounts[j][table[i].data[j]]++;
+                            if(byteBySize[j][table[i].data[j]] < table[i].size)
+                            {
+                                byteBySize[j][table[i].data[j]] = table[i].size;
+                            }
+                        }
+                        else
+                        {
+                            byteCounts[j].Add(table[i].data[j], 1);
+                            byteBySize[j].Add(table[i].data[j], table[i].size);
+                        }
+                    }
+                }
+            }
+
+            foreach (KeyValuePair<int, List<TableEntry>> pair in sizes)
+            {
+                AELogger.Log(pair.Key + " size has " + pair.Value.Count + " instances");
+                
+                if(pair.Value.Count > 1)
+                {
+                    byte[] previous = pair.Value[0].data;
+
+                    for(int i = 1; i < pair.Value.Count; i++)
+                    {
+                        AELogger.Log("comparing " + pair.Value[i - 1].GetFancyName() + "@" + pair.Value[i-1].originalPointer +
+                            " and " + pair.Value[i].GetFancyName() + "@" + pair.Value[i].originalPointer);
+                        byte[] current = pair.Value[i].data;
+                        CompareData(previous, current);
+                        previous = pair.Value[i].data;
+                    }
+                }
+            }
+
+            AELogger.Log("-------------------");
+            AELogger.Log("VALUES AT EACH BYTE:");
+            StringBuilder builder = new StringBuilder();
+            for(int i = 0; i < byteCounts.Count; i++)
+            {
+                builder.Clear();
+                builder.Append("INDEX: ");
+                builder.Append(i);
+                builder.Append("=");
+                builder.Append(i.ToString("X"));
+                builder.Append("h\n\t");
+                foreach (KeyValuePair<int, int> pair in byteCounts[i])
+                {
+                    builder.Append(pair.Key.ToString("X2"));
+                    builder.Append("h:");
+                    builder.Append(pair.Value.ToString("D4"));
+                    builder.Append(" ");
+                }
+                AELogger.Log(builder,false);
+
+
+                if (byteBySize[i].Count > 1)
+                {
+                    int previousKey = -1;
+                    int previousValue = 0;
+                    bool bFound = true;
+                    // key is the byte at the location, value is max size
+                    foreach (KeyValuePair<int, int> current in byteBySize[i])
+                    {
+                        if (previousKey >= 0)
+                        {
+                            if (previousValue > current.Value)
+                            {
+                                bFound = false;
+                                break;
+                            }
+                        }
+
+                        previousValue = current.Value;
+                        previousKey = current.Key;
+                    }
+
+                    if (bFound)
+                    {
+                        builder.Clear();
+                        builder.Append("!! BYTE ");
+                        builder.Append(i);
+                        builder.Append(" has positive size correlation: ");
+
+                        foreach (KeyValuePair<int, int> pair in byteBySize[i])
+                        {
+                            builder.Append(pair.Key.ToString("X2"));
+                            builder.Append("h:");
+                            builder.Append(pair.Value.ToString("D2"));
+                            builder.Append(" ");
+                        }
+                        AELogger.Log(builder, false);
+                    }
+                }
+            }
+
+
+        } // analyze
+
+        public void CompareData(byte[] a, byte[] b)
+        {
+            int streakStart = 0;
+            int length = a.Length;
+            bool bStreak = a[0] == b[0];
+            bool bCurrent;
+            for(int i = 1; i < length; i++)
+            {
+                bCurrent = a[i] == b[i];
+                if(bCurrent && a[i] != 0)
+                {
+                    AELogger.Log("same value of " + a[i] + " @" +i);
+                }
+                if(bStreak != bCurrent)
+                {
+                    string same = bStreak ? "same" : "diff";
+                    AELogger.Log(same + " - byte " + streakStart + " - " + (i - 1) + "\t\t\tlength " + (i - streakStart) + "\t\t value: " + a[streakStart] + " " + b[streakStart]);
+                    bStreak = bCurrent;
+                    streakStart = i;
+                }
+            }
         }
     }
 }

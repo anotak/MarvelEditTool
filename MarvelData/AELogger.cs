@@ -68,6 +68,45 @@ namespace MarvelData
             }
         }
 
+        // STRINGBUILDER VERSION
+        public static void Log(StringBuilder inbuilder, Boolean time = true, Boolean print = false)
+        {
+#if DEBUG
+            if (!bPrepared)
+            {
+                throw new Exception("AELogger.Prepare() not called yet!!!!!");
+            }
+#endif
+            if (bLogging)
+            {
+                if (time)
+                {
+                    sbuilder.Clear();
+                    sbuilder.Append(stopwatch.Elapsed.ToString(@"hh\:mm\:ss\.fff", culture));
+                    sbuilder.Append(": ");
+                    sbuilder.Append(inbuilder);
+
+                    string message = sbuilder.ToString();
+                    Logfile.Add(message);
+
+                    if (print || bPrintAll)
+                    {
+                        Console.WriteLine(message);
+                    }
+                }
+                else
+                {
+                    string message = inbuilder.ToString();
+                    Logfile.Add(message);
+                    if (print || bPrintAll)
+                    {
+                        Console.WriteLine(message);
+                    }
+                }
+
+            }
+        }
+
         public static void WriteLog(string filename = "Logfile.txt")
         {
             if (bLogging)
