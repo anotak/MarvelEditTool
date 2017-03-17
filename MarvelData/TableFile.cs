@@ -244,9 +244,12 @@ namespace MarvelData
             SortedDictionary<int, List<TableEntry>> sizes = new SortedDictionary<int, List<TableEntry>>();
             List<SortedDictionary<int, int>> byteCounts = new List<SortedDictionary<int, int>>(10000);
             List<SortedDictionary<int, int>> byteBySize = new List<SortedDictionary<int, int>>(10000);
+            List<SortedDictionary<int, int>> valuesPerBlob = new List<SortedDictionary<int, int>>(255);
 
+            StringBuilder builder = new StringBuilder();
             for (int i = 0; i < table.Count; i++)
             {
+                valuesPerBlob.Add(new SortedDictionary<int, int>());
                 if (table[i].bHasData)
                 {
                     if (!sizes.ContainsKey(table[i].size))
@@ -276,7 +279,31 @@ namespace MarvelData
                             byteCounts[j].Add(table[i].data[j], 1);
                             byteBySize[j].Add(table[i].data[j], table[i].size);
                         }
+
+                        if (!valuesPerBlob[i].ContainsKey(table[i].data[j]))
+                        {
+                            valuesPerBlob[i].Add(table[i].data[j], 1);
+                        }
+                        else
+                        {
+                            valuesPerBlob[i][table[i].data[j]]++;
+                        }
                     }
+
+                    builder.Clear();
+                    builder.Append("count of values in blob ");
+                    builder.Append(table[i].GetFancyName());
+                    builder.Append(" with size ");
+                    builder.Append(table[i].size);
+                    builder.Append(": ");
+                    foreach(KeyValuePair<int,int> pair in valuesPerBlob[i])
+                    {
+                        builder.Append(pair.Key.ToString("X2"));
+                        builder.Append("h: ");
+                        builder.Append(pair.Value.ToString("D3"));
+                        builder.Append(", ");
+                    }
+                    AELogger.Log(builder, false);
                 }
             }
 
@@ -301,7 +328,7 @@ namespace MarvelData
 
             AELogger.Log("-------------------");
             AELogger.Log("VALUES AT EACH BYTE:");
-            StringBuilder builder = new StringBuilder();
+            //StringBuilder builder = new StringBuilder();
             for(int i = 0; i < byteCounts.Count; i++)
             {
                 builder.Clear();
