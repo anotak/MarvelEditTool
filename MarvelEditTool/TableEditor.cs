@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 using MarvelData;
 
 namespace MarvelEditTool
@@ -18,6 +19,8 @@ namespace MarvelEditTool
         public bool bDisableUpdate;
 
         public static bool bError;
+        public string ImportPath;
+        public string FilePath;
 
         public TableEditor()
         {
@@ -25,6 +28,8 @@ namespace MarvelEditTool
             Text += ", build " + GetCompileDate();
             AELogger.Log(Text);
             bDisableUpdate = true;
+            FilePath = String.Empty;
+            ImportPath = String.Empty;
         }
 
         public static string GetCompileDate()
@@ -138,36 +143,41 @@ namespace MarvelEditTool
                 return;
             }
 
-            OpenFileDialog openFile = new OpenFileDialog();
-            //openFile.DefaultExt = "bcm";
-            // The Filter property requires a search string after the pipe ( | )
-            //openFile.Filter = "BCM Files (*.bcm)|*.bcm|All files (*.*)|*.*";
-            openFile.ShowDialog();
-            if (openFile.FileNames.Length > 0)
+            using (OpenFileDialog openFile = new OpenFileDialog())
             {
-                TableFile newTable = TableFile.LoadFile(openFile.FileNames[0]);
-                int count = newTable.table.Count;
-                if (newTable == null && count != 0)
+                //openFile.DefaultExt = "bcm";
+                // The Filter property requires a search string after the pipe ( | )
+                //openFile.Filter = "BCM Files (*.bcm)|*.bcm|All files (*.*)|*.*";
+                openFile.ShowDialog();
+                if (openFile.FileNames.Length > 0)
                 {
-                    AELogger.Log("load failed for some reason?");
-                    return;
-                }
-                tablefile = newTable;
+                    TableFile newTable = TableFile.LoadFile(openFile.FileNames[0]);
+                    int count = newTable.table.Count;
+                    if (newTable == null && count != 0)
+                    {
+                        AELogger.Log("load failed for some reason?");
+                        return;
+                    }
+                    tablefile = newTable;
 
-                SuspendLayout();
-                saveButton.Enabled = true;
-                importButton.Enabled = false;
-                exportButton.Enabled = false;
-                openButton.Enabled = false;
-                animBox.Enabled = true;
-                extendButton.Enabled = true;
-                sizeLabel.Text = count + " entries loaded";
-                RefreshData();
-                ResumeLayout();
-            }
-            else
-            {
-                AELogger.Log("nothing selected!");
+                    SuspendLayout();
+                    saveButton.Enabled = true;
+                    importButton.Enabled = false;
+                    exportButton.Enabled = false;
+                    openButton.Enabled = false;
+                    animBox.Enabled = true;
+                    extendButton.Enabled = true;
+                    sizeLabel.Text = count + " entries loaded";
+                    FilePath = openFile.FileNames[0];
+                    RefreshData();
+                    Text += " :: " + openFile.FileNames[0];
+                    filenameLabel.Text = openFile.FileNames[0];
+                    ResumeLayout();
+                }
+                else
+                {
+                    AELogger.Log("nothing selected!");
+                }
             }
         }
 
@@ -178,17 +188,24 @@ namespace MarvelEditTool
                 return;
             }
 
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-
-            //saveFileDialog1.Filter = "BCM files (*.bcm)|*.bcm|All files (*.*)|*.*";
-            //saveFileDialog1.FilterIndex = 2;
-            saveFileDialog1.RestoreDirectory = true;
-
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            using (SaveFileDialog saveFileDialog1 = new SaveFileDialog())
             {
-                if (saveFileDialog1.FileNames.Length > 0)
+                //saveFileDialog1.Filter = "BCM files (*.bcm)|*.bcm|All files (*.*)|*.*";
+                //saveFileDialog1.FilterIndex = 2;
+                if (FilePath != String.Empty)
                 {
-                    tablefile.WriteFile(saveFileDialog1.FileNames[0]);
+                    saveFileDialog1.InitialDirectory = Path.GetDirectoryName(FilePath);
+                    saveFileDialog1.FileName = Path.GetFileName(FilePath);
+                }
+                saveFileDialog1.RestoreDirectory = true;
+
+                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    if (saveFileDialog1.FileNames.Length > 0)
+                    {
+                        FilePath = saveFileDialog1.FileNames[0];
+                        tablefile.WriteFile(saveFileDialog1.FileNames[0]);
+                    }
                 }
             }
         }
@@ -202,19 +219,26 @@ namespace MarvelEditTool
                 return;
             }
 
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Title = "Export";
-            saveFileDialog1.Filter = "mvc3 table data files (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
-            saveFileDialog1.FilterIndex = 2;
-            saveFileDialog1.RestoreDirectory = true;
-            
-            saveFileDialog1.FileName = tablefile.table[animBox.SelectedIndex].GetFilename() + ".mvc3data";
-
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            using (SaveFileDialog saveFileDialog1 = new SaveFileDialog())
             {
-                if (saveFileDialog1.FileNames.Length > 0)
+                saveFileDialog1.Title = "Export " + tablefile.table[animBox.SelectedIndex].GetFancyName();
+                saveFileDialog1.Filter = "mvc3 table data files (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
+                if (FilePath != String.Empty)
                 {
-                    tablefile.table[animBox.SelectedIndex].Export(saveFileDialog1.FileNames[0]);
+                    saveFileDialog1.InitialDirectory = Path.GetDirectoryName(ImportPath);
+                }
+                saveFileDialog1.FilterIndex = 2;
+                saveFileDialog1.RestoreDirectory = true;
+
+                saveFileDialog1.FileName = tablefile.table[animBox.SelectedIndex].GetFilename() + ".mvc3data";
+
+                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    if (saveFileDialog1.FileNames.Length > 0)
+                    {
+                        ImportPath = saveFileDialog1.FileNames[0];
+                        tablefile.table[animBox.SelectedIndex].Export(saveFileDialog1.FileNames[0]);
+                    }
                 }
             }
         }
@@ -269,22 +293,31 @@ namespace MarvelEditTool
                 return;
             }
 
-            OpenFileDialog openFile = new OpenFileDialog();
-            openFile.DefaultExt = "mvc3data";
-            openFile.Title = "Import";
-            // The Filter property requires a search string after the pipe ( | )
-            openFile.Filter = "mvc3 table data files (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
-            openFile.ShowDialog();
-            if (openFile.FileNames.Length > 0)
+            using (OpenFileDialog openFile = new OpenFileDialog())
             {
-                tablefile.table[animBox.SelectedIndex].Import(openFile.FileNames[0]);
-                RefreshData();
-                dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].data).Replace("-", "");
-                sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
-            }
-            else
-            {
-                AELogger.Log("nothing selected!");
+                openFile.DefaultExt = "mvc3data";
+                if (ImportPath != String.Empty)
+                {
+                    openFile.InitialDirectory = Path.GetDirectoryName(FilePath);
+                    openFile.FileName = Path.GetFileName(FilePath);
+                }
+                openFile.Title = "Import" + tablefile.table[animBox.SelectedIndex].GetFancyName();
+                // The Filter property requires a search string after the pipe ( | )
+                openFile.Filter = "mvc3 table data files (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
+
+                openFile.ShowDialog();
+                if (openFile.FileNames.Length > 0)
+                {
+                    tablefile.table[animBox.SelectedIndex].Import(openFile.FileNames[0]);
+                    RefreshData();
+                    dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].data).Replace("-", "");
+                    sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
+                    ImportPath = openFile.FileNames[0];
+                }
+                else
+                {
+                    AELogger.Log("nothing selected!");
+                }
             }
         }
 

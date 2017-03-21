@@ -41,6 +41,7 @@
             this.extendButton = new System.Windows.Forms.Button();
             this.sizeLabel = new System.Windows.Forms.Label();
             this.dataTextBox = new System.Windows.Forms.TextBox();
+            this.filenameLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -65,6 +66,7 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.filenameLabel);
             this.splitContainer1.Panel1.Controls.Add(this.saveButton);
             this.splitContainer1.Panel1.Controls.Add(this.openButton);
             // 
@@ -253,6 +255,15 @@
             this.dataTextBox.TabIndex = 0;
             this.dataTextBox.WordWrap = false;
             // 
+            // filenameLabel
+            // 
+            this.filenameLabel.AutoSize = true;
+            this.filenameLabel.Location = new System.Drawing.Point(301, 4);
+            this.filenameLabel.Name = "filenameLabel";
+            this.filenameLabel.Size = new System.Drawing.Size(93, 17);
+            this.filenameLabel.TabIndex = 2;
+            this.filenameLabel.Text = "no file loaded";
+            // 
             // TableEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -262,6 +273,7 @@
             this.Name = "TableEditor";
             this.Text = "TableEditor";
             this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
@@ -295,6 +307,7 @@
         private System.Windows.Forms.Label sizeLabel;
         private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.TextBox dataTextBox;
+        private System.Windows.Forms.Label filenameLabel;
     }
 }
 
