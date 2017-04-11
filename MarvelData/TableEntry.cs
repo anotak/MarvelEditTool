@@ -13,7 +13,6 @@ namespace MarvelData
         public uint originalPointer; // DONT SAVE THIS
         public bool bHasData;  // DONT SAVE THIS
         public string name; // DONT SAVE THIS
-        public byte[] data;
         public int size;
 
         public static StringBuilder FancyNameStringBuilder;
@@ -71,6 +70,17 @@ namespace MarvelData
             }
         }
 
+        public virtual byte[] GetData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void SetData(byte[] newdata)
+        {
+            // need to set size here too
+            throw new NotImplementedException();
+        }
+
         public void Export(string filename)
         {
             AELogger.Log("exporting " + GetFancyName() + " to " + filename);
@@ -89,7 +99,7 @@ namespace MarvelData
             Stream t = new FileStream(filename + ".temp", FileMode.Create);
             BinaryWriter b = new BinaryWriter(t);
 
-            b.Write(data);
+            b.Write(GetData());
 
             b.Close();
             t.Close();
@@ -122,8 +132,7 @@ namespace MarvelData
                                 name = GuessAnmChrName(index);
                             }
                         }
-                        data = reader.ReadBytes((int)reader.BaseStream.Length);
-                        size = data.Length;
+                        SetData(reader.ReadBytes((int)reader.BaseStream.Length));
                     }
                 }
             }
@@ -131,7 +140,6 @@ namespace MarvelData
             {
                 AELogger.Log("attempted import of nonexistent file " + filename + " to " + GetFancyName());
             }
-
         }
     }
 }

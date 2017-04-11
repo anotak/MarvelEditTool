@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarvelEditTool", "MarvelEdi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarvelData", "MarvelData\MarvelData.csproj", "{836AAC23-5EEE-440D-A559-7AA9A2CA1744}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatusEditor", "StatusEditor\StatusEditor.csproj", "{A950CD4D-7113-4A16-A9AA-6A43F86C3C17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{836AAC23-5EEE-440D-A559-7AA9A2CA1744}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{836AAC23-5EEE-440D-A559-7AA9A2CA1744}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{836AAC23-5EEE-440D-A559-7AA9A2CA1744}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A950CD4D-7113-4A16-A9AA-6A43F86C3C17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A950CD4D-7113-4A16-A9AA-6A43F86C3C17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A950CD4D-7113-4A16-A9AA-6A43F86C3C17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A950CD4D-7113-4A16-A9AA-6A43F86C3C17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Threading;
+using System.Windows.Forms;
 using MarvelData;
 
-namespace MarvelEditTool
+namespace StatusEditor
 {
     static class Program
     {
@@ -17,16 +14,17 @@ namespace MarvelEditTool
         static void Main()
         {
             AELogger.Prepare();
+
             try
             {
                 Application.ThreadException += new ThreadExceptionEventHandler(new ThreadExceptionHandler().ApplicationThreadException);
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new TableEditor());
+                Application.Run(new StatusEditorForm());
             }
             catch (Exception e)
             {
-                TableEditor.bError = true;
+                StatusEditorForm.bError = true;
 
                 AELogger.Log("Exception: " + e.Message);
 
@@ -56,7 +54,7 @@ namespace MarvelEditTool
             public void ApplicationThreadException(object sender, ThreadExceptionEventArgs e)
             {
 
-                TableEditor.bError = true;
+                StatusEditorForm.bError = true;
                 AELogger.Log("Exception: " + e.Exception.Message);
 
                 AELogger.Log("Exception: " + e.Exception.StackTrace);

@@ -14,12 +14,17 @@ namespace MarvelData
         public byte[] headerB;
         public byte[] footer;
         
-        public static TableFile LoadFile(string filename)
+        public static TableFile LoadFile(string filename, Type entryType = null)
         {
+            if (entryType == null)
+            {
+                entryType = typeof(RawEntry);
+            }
             TableFile tablefile = new TableFile();
 
             if (!File.Exists(filename))
             {
+                AELogger.Log("FILE " + filename + " NOT FOUND!!!");
                 return null;
             }
 
@@ -68,7 +73,7 @@ namespace MarvelData
                     AELogger.Log(fillercount.ToString("X") + "h fillers added, last at " + lastindex.ToString("X") + "h");
 
                     lastindex = newindex;
-                    TableEntry current = new TableEntry();
+                    TableEntry current = (TableEntry)Activator.CreateInstance(entryType);
                     current.bHasData = true;
                     current.index = newindex;
                     current.name = TableEntry.GuessAnmChrName(current.index);
@@ -135,8 +140,7 @@ namespace MarvelData
                             entrysize = (uint)reader.BaseStream.Length - position - 16;
                         }
                         AELogger.Log("entrysize is " + entrysize);
-                        tablefile.table[i].data = reader.ReadBytes((int)entrysize);
-                        tablefile.table[i].size = tablefile.table[i].data.Length;
+                        tablefile.table[i].SetData(reader.ReadBytes((int)entrysize));
                         position += entrysize;
                     } // if bhasdata
                 } // for i -> count
@@ -166,7 +170,7 @@ namespace MarvelData
             table.Add(entry);
         }
 
-        public void WriteFile(string filename)
+        public void WriteFile(string filename, bool bDoNames = false)
         {
             if (File.Exists(filename))
             {
@@ -183,13 +187,22 @@ namespace MarvelData
             BinaryWriter b = new BinaryWriter(t);
 
             uint realCount = 0;
-            uint pointer = 16 + 4; // header + "MVC\x00"
+            uint pointer = 16;
+            if (bDoNames)
+            {
+                pointer += 4; // header + "MVC\x00"
+            }
+
             for (int i = 0; i < table.Count; i++)
             {
                 if (table[i].bHasData)
                 {
                     realCount++;
-                    pointer += (uint)table[i].name.Length + 1;
+
+                    if (bDoNames)
+                    {
+                        pointer += (uint)table[i].name.Length + 1;
+                    }
                 }
             }
             pointer += 8 * realCount;
@@ -207,10 +220,10 @@ namespace MarvelData
 
                     b.Write(table[i].index);
                     b.Write(pointer);
-                    pointer += (uint)table[i].data.Length;
+                    pointer += (uint)table[i].size;
                 }
             }
-
+#if DONAMES
             b.Write((UInt32)0x0043564D); // metadata for reading it specific to this tool
             // names
             for (int i = 0; i < table.Count; i++)
@@ -221,7 +234,7 @@ namespace MarvelData
                     b.Write((byte)0x00);// null terminator
                 }
             }
-
+#endif
             // write data
             for (int i = 0; i < table.Count; i++)
             {
@@ -230,7 +243,7 @@ namespace MarvelData
                     pointer = (uint)b.BaseStream.Position;
                     AELogger.Log("writing actual data of " + table[i].GetFancyName() +
                         " with pointer " + pointer.ToString("X") + "h ");
-                    b.Write(table[i].data);
+                    b.Write(table[i].GetData());
                 }
             }
 
@@ -244,7 +257,7 @@ namespace MarvelData
 
         public void Analyze()
         {
-            SortedDictionary<int, List<TableEntry>> sizes = new SortedDictionary<int, List<TableEntry>>();
+            SortedDictionary<int, List<RawEntry>> sizes = new SortedDictionary<int, List<RawEntry>>();
             List<SortedDictionary<int, int>> byteCounts = new List<SortedDictionary<int, int>>(10000);
             List<SortedDictionary<int, int>> byteBySize = new List<SortedDictionary<int, int>>(10000);
             List<SortedDictionary<int, int>> valuesPerBlob = new List<SortedDictionary<int, int>>(255);
@@ -253,15 +266,16 @@ namespace MarvelData
             for (int i = 0; i < table.Count; i++)
             {
                 valuesPerBlob.Add(new SortedDictionary<int, int>());
-                if (table[i].bHasData)
+                if (table[i].bHasData && table[i] is RawEntry)
                 {
+                    RawEntry r = (RawEntry)table[i];
                     if (!sizes.ContainsKey(table[i].size))
                     {
-                        sizes.Add(table[i].size, new List<TableEntry>());
+                        sizes.Add(table[i].size, new List<RawEntry>());
                     }
-                    sizes[table[i].size].Add(table[i]);
+                    sizes[table[i].size].Add(r);
 
-                    for(int j = 0; j < table[i].data.Length; j++)
+                    for(int j = 0; j < r.data.Length; j++)
                     {
                         while(j >= byteCounts.Count)
                         {
@@ -269,27 +283,27 @@ namespace MarvelData
                             byteBySize.Add(new SortedDictionary<int, int>());
                         }
 
-                        if(byteCounts[j].ContainsKey(table[i].data[j]))
+                        if(byteCounts[j].ContainsKey(r.data[j]))
                         {
-                            byteCounts[j][table[i].data[j]]++;
-                            if(byteBySize[j][table[i].data[j]] < table[i].size)
+                            byteCounts[j][r.data[j]]++;
+                            if(byteBySize[j][r.data[j]] < table[i].size)
                             {
-                                byteBySize[j][table[i].data[j]] = table[i].size;
+                                byteBySize[j][r.data[j]] = table[i].size;
                             }
                         }
                         else
                         {
-                            byteCounts[j].Add(table[i].data[j], 1);
-                            byteBySize[j].Add(table[i].data[j], table[i].size);
+                            byteCounts[j].Add(r.data[j], 1);
+                            byteBySize[j].Add(r.data[j], table[i].size);
                         }
 
-                        if (!valuesPerBlob[i].ContainsKey(table[i].data[j]))
+                        if (!valuesPerBlob[i].ContainsKey(r.data[j]))
                         {
-                            valuesPerBlob[i].Add(table[i].data[j], 1);
+                            valuesPerBlob[i].Add(r.data[j], 1);
                         }
                         else
                         {
-                            valuesPerBlob[i][table[i].data[j]]++;
+                            valuesPerBlob[i][r.data[j]]++;
                         }
                     }
 
@@ -310,7 +324,7 @@ namespace MarvelData
                 }
             }
 
-            foreach (KeyValuePair<int, List<TableEntry>> pair in sizes)
+            foreach (KeyValuePair<int, List<RawEntry>> pair in sizes)
             {
                 AELogger.Log(pair.Key + " size has " + pair.Value.Count + " instances");
                 

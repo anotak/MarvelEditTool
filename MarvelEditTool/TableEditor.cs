@@ -266,7 +266,7 @@ namespace MarvelEditTool
                 textBox1.Text = tablefile.table[animBox.SelectedIndex].name;
                 textBox1.Enabled = true;
                 exportButton.Enabled = true;
-                SetTextConcurrent(tablefile.table[animBox.SelectedIndex].data);
+                SetTextConcurrent(tablefile.table[animBox.SelectedIndex].GetData());
                 //dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].data).Replace("-","");
                 sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
             }
@@ -311,7 +311,7 @@ namespace MarvelEditTool
                 {
                     tablefile.table[animBox.SelectedIndex].Import(openFile.FileNames[0]);
                     RefreshData();
-                    dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].data).Replace("-", "");
+                    dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].GetData()).Replace("-", "");
                     sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
                     ImportPath = openFile.FileNames[0];
                 }
