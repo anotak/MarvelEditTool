@@ -12,6 +12,7 @@ namespace MarvelData
         public List<TableEntry> table;
         public byte[] header;
         public byte[] headerB;
+        public byte[] footer;
         
         public static TableFile LoadFile(string filename)
         {
@@ -131,16 +132,16 @@ namespace MarvelData
                         if (entrysize == 0)
                         {
                             AELogger.Log("last one");
-                            entrysize = (uint)reader.BaseStream.Length - position;
+                            entrysize = (uint)reader.BaseStream.Length - position - 16;
                         }
                         AELogger.Log("entrysize is " + entrysize);
                         tablefile.table[i].data = reader.ReadBytes((int)entrysize);
                         tablefile.table[i].size = tablefile.table[i].data.Length;
                         position += entrysize;
-                    }
-                }
-            }
-            tablefile.Analyze();
+                    } // if bhasdata
+                } // for i -> count
+                tablefile.footer = reader.ReadBytes(16);
+            } // using(reader)
             return tablefile;
         }
 
@@ -232,6 +233,8 @@ namespace MarvelData
                     b.Write(table[i].data);
                 }
             }
+
+            b.Write(footer);
 
             b.Close();
             t.Close();

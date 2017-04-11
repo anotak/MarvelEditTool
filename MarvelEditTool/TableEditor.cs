@@ -162,6 +162,7 @@ namespace MarvelEditTool
 
                     SuspendLayout();
                     saveButton.Enabled = true;
+                    analyzeButton.Enabled = true;
                     importButton.Enabled = false;
                     exportButton.Enabled = false;
                     openButton.Enabled = false;
@@ -424,6 +425,12 @@ namespace MarvelEditTool
             }
             dataTextBox.Select(0, 0);
             dataTextBox.ScrollToCaret();
+        }
+
+        private void analyzeButton_Click(object sender, EventArgs e)
+        {
+            tablefile.Analyze();
+            analyzeButton.Enabled = false;
         }
     }
 }

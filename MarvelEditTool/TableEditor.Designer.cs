@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.filenameLabel = new System.Windows.Forms.Label();
             this.saveButton = new System.Windows.Forms.Button();
             this.openButton = new System.Windows.Forms.Button();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -41,7 +42,7 @@
             this.extendButton = new System.Windows.Forms.Button();
             this.sizeLabel = new System.Windows.Forms.Label();
             this.dataTextBox = new System.Windows.Forms.TextBox();
-            this.filenameLabel = new System.Windows.Forms.Label();
+            this.analyzeButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -66,6 +67,7 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.analyzeButton);
             this.splitContainer1.Panel1.Controls.Add(this.filenameLabel);
             this.splitContainer1.Panel1.Controls.Add(this.saveButton);
             this.splitContainer1.Panel1.Controls.Add(this.openButton);
@@ -76,6 +78,15 @@
             this.splitContainer1.Size = new System.Drawing.Size(843, 568);
             this.splitContainer1.SplitterDistance = 38;
             this.splitContainer1.TabIndex = 0;
+            // 
+            // filenameLabel
+            // 
+            this.filenameLabel.AutoSize = true;
+            this.filenameLabel.Location = new System.Drawing.Point(462, 4);
+            this.filenameLabel.Name = "filenameLabel";
+            this.filenameLabel.Size = new System.Drawing.Size(93, 17);
+            this.filenameLabel.TabIndex = 2;
+            this.filenameLabel.Text = "no file loaded";
             // 
             // saveButton
             // 
@@ -255,14 +266,18 @@
             this.dataTextBox.TabIndex = 0;
             this.dataTextBox.WordWrap = false;
             // 
-            // filenameLabel
+            // analyzeButton
             // 
-            this.filenameLabel.AutoSize = true;
-            this.filenameLabel.Location = new System.Drawing.Point(301, 4);
-            this.filenameLabel.Name = "filenameLabel";
-            this.filenameLabel.Size = new System.Drawing.Size(93, 17);
-            this.filenameLabel.TabIndex = 2;
-            this.filenameLabel.Text = "no file loaded";
+            this.analyzeButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.analyzeButton.Enabled = false;
+            this.analyzeButton.Location = new System.Drawing.Point(301, 3);
+            this.analyzeButton.Name = "analyzeButton";
+            this.analyzeButton.Size = new System.Drawing.Size(155, 31);
+            this.analyzeButton.TabIndex = 3;
+            this.analyzeButton.Text = "&Analyze (check logs)";
+            this.analyzeButton.UseVisualStyleBackColor = true;
+            this.analyzeButton.Click += new System.EventHandler(this.analyzeButton_Click);
             // 
             // TableEditor
             // 
@@ -308,6 +323,7 @@
         private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.TextBox dataTextBox;
         private System.Windows.Forms.Label filenameLabel;
+        private System.Windows.Forms.Button analyzeButton;
     }
 }
 
