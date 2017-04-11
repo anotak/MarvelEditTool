@@ -227,7 +227,28 @@ namespace StatusEditor
             {
 
                 //structView.Rows[i].Cells[1].Value = structFieldInfo[i].GetValue(entry.data).ToString();
-                structFieldInfo[i].SetValue(entry.data, structView.Rows[i].Cells[1].Value);
+                if (structFieldInfo[i].FieldType.IsEnum)
+                {// check if enum
+                    structFieldInfo[i].SetValue(entry.data, Enum.Parse(structFieldInfo[i].FieldType, (string)structView.Rows[i].Cells[1].Value));
+                }
+                else
+                {
+                    try
+                    {
+                        Convert.ChangeType(structView.Rows[i].Cells[1].Value, structFieldInfo[i].FieldType);
+
+                        structFieldInfo[i].SetValue(entry.data, Convert.ChangeType(structView.Rows[i].Cells[1].Value, structFieldInfo[i].FieldType));
+                    }
+                    catch (Exception e)
+                    {
+                        AELogger.Log("failed type: val " +  structFieldInfo[i].ToString() + " - value " + structView.Rows[i].Cells[1].Value);
+                        
+
+                        AELogger.Log("Exception: " + e.Message);
+
+                        AELogger.Log("Exception: " + e.StackTrace);
+                    }
+                }
             }
         }
 
