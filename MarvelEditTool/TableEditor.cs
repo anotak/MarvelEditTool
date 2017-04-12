@@ -360,7 +360,6 @@ namespace MarvelEditTool
         public Task TextTask;
         public byte[] newText;
         public bool bTextNeedsToBeDone;
-        public bool bTextTaskGoing;
         public void SetTextConcurrent(byte[] text)
         {
             bTextNeedsToBeDone = true;
@@ -380,51 +379,86 @@ namespace MarvelEditTool
 
         public void SetText()
         {
-            int textSize = 8;
-            
-            if (dataTextBox.Width > 1140)
+            try
             {
-                textSize = 64;
-            }
-            else if (dataTextBox.Width > 570)
-            {
-                textSize = 32;
-            }
-            else if (dataTextBox.Width > 285)
-            {
-                textSize = 16;
-            }
-            while (bTextNeedsToBeDone)
-            {
-                bTextNeedsToBeDone = false;
-                dataTextBox.Clear();
+                int textSize = 8;
 
-                int newTextLength;
-                string[] newLines;
-                lock(newText)
+                if (dataTextBox.Width > 1140)
                 {
-                    newTextLength = newText.Length;
-                    newLines = new string[newTextLength / textSize];
+                    textSize = 64;
                 }
-                for (int i = 0; i < newTextLength/textSize; i++)
+                else if (dataTextBox.Width > 570)
                 {
-                    lock(newText)
+                    textSize = 32;
+                }
+                else if (dataTextBox.Width > 285)
+                {
+                    textSize = 16;
+                }
+                while (bTextNeedsToBeDone)
+                {
+                    bTextNeedsToBeDone = false;
+                    dataTextBox.Clear();
+
+                    int newTextLength;
+                    string[] newLines;
+                    lock (newText)
                     {
-                        if (bTextNeedsToBeDone)
+                        newTextLength = newText.Length;
+                        int lineCount = newTextLength / textSize;
+                        if (newTextLength % textSize > 0)
                         {
-                            break;
+                            lineCount++;
                         }
-                        newLines[i] = BitConverter.ToString(newText, i * textSize, textSize).Replace("-", "");
+                        newLines = new string[lineCount];
+                    }
+                    for (int i = 0; i <= newTextLength / textSize; i++)
+                    {
+                        lock (newText)
+                        {
+                            if (bTextNeedsToBeDone)
+                            {
+                                break;
+                            }
+                            if (i == newTextLength / textSize)
+                            {
+                                if (newTextLength % textSize > 0)
+                                {
+                                    newLines[i] = BitConverter.ToString(newText, i * textSize, newTextLength % textSize).Replace("-", "");
+                                }
+                            }
+                            else
+                            {
+                                newLines[i] = BitConverter.ToString(newText, i * textSize, textSize).Replace("-", "");
+                            }
+                        }
+                    }
+
+                    if (!bTextNeedsToBeDone)
+                    {
+                        dataTextBox.Lines = newLines;
                     }
                 }
+                dataTextBox.Select(0, 0);
+                dataTextBox.ScrollToCaret();
+            }
+            catch(Exception e)
+            {
+                bTextNeedsToBeDone = false;
+                AELogger.Log("Exception: " + e.Message);
 
-                if (!bTextNeedsToBeDone)
+                AELogger.Log("Exception: " + e.StackTrace);
+
+                int i = 1;
+                while (e.InnerException != null)
                 {
-                    dataTextBox.Lines = newLines;
+                    e = e.InnerException;
+                    AELogger.Log("InnerException " + i + ": " + e.Message);
+
+                    AELogger.Log("InnerException " + i + ": " + e.StackTrace);
+                    i++;
                 }
             }
-            dataTextBox.Select(0, 0);
-            dataTextBox.ScrollToCaret();
         }
 
         private void analyzeButton_Click(object sender, EventArgs e)

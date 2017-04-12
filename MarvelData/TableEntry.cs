@@ -58,7 +58,7 @@ namespace MarvelData
             return  FancyNameStringBuilder.ToString();
         }
 
-        public string GetFilename()
+        public virtual string GetFilename()
         {
             if(name == "unknown")
             {

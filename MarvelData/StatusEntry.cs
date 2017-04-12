@@ -31,7 +31,7 @@ namespace MarvelData
             public int unk40;
             public int airActions;
             public float unk48;
-            public float dashSpeed;
+            public float dashAccelAfter;
             public float unk50;
             public float dashTraction;
             public int unk58;
@@ -42,6 +42,7 @@ namespace MarvelData
             public int unk6C; // 0x6c
             public int unk70;
             public int unk74;
+            public int unk78;
             public int unk7C;
             public int unk80;
             public int unk84;
@@ -223,14 +224,29 @@ namespace MarvelData
             public int unk348;
             public int unk34C;
             public int unk350;
-            public int unk354;
         }
 
         [Flags]
         public enum StatusFlags : int
         {
-            Male =      0x00000000000000000000000000000001,
-            Female =    0x00000000000000000000000000000010
+            Male                = 0x00000001,
+            Female              = 0x00000002,
+            AmmyUnk             = 0x00000004,
+            MagStormModokUnk    = 0x00000008,
+            NoHurtbox           = 0x00000010,
+            AirBlockBounce      = 0x00000020,
+            NoHyperDrain        = 0x00000040,
+            NoHitstop           = 0x00000080,
+            IMSentShumaUnk      = 0x00000100,
+            LockCharacter       = 0x00000200,
+            NoTeamActions       = 0x00000400,
+            FriendlyFire        = 0x00000800,
+            NoJump              = 0x00001000,
+            Unk0x2000           = 0x00002000,
+            Unk0x4000           = 0x00004000,
+            NoTagIn             = 0x00008000,
+            FrankUnk            = 0x00010000,
+            VergilUnk           = 0x00040000
         }
 
         public StatusChunk data;
@@ -266,6 +282,18 @@ namespace MarvelData
                     *ptr = newdata[i];
                     ptr++;
                 }
+            }
+        }
+
+        public override string GetFilename()
+        {
+            if (name == "unknown")
+            {
+                return index.ToString("X3") + "status";
+            }
+            else
+            {
+                return base.GetFilename();
             }
         }
     }
