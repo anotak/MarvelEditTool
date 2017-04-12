@@ -20,8 +20,10 @@ namespace StatusEditor
         public TableFile tablefile;
         public List<string> tableNames;
         public bool bDisableUpdate;
+        public string ImportPath;
         public FieldInfo[] structFieldInfo;
         public List<List<string>> structValues;
+        public int previousSelectedIndex;
 
         public StatusEditorForm()
         {
@@ -30,6 +32,7 @@ namespace StatusEditor
             AELogger.Log(Text);
             FilePath = String.Empty;
             bDisableUpdate = true;
+            previousSelectedIndex = 0;
 
             AddItems();
         }
@@ -38,6 +41,25 @@ namespace StatusEditor
         {
             System.Version MyVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             return new DateTime(2000, 1, 1).AddDays(MyVersion.Build).AddSeconds(MyVersion.Revision * 2).ToString();
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+
+            if (e.CloseReason == CloseReason.WindowsShutDown) return;
+            if (bError) return;
+
+            // Confirm user wants to close
+            switch (MessageBox.Show(this, "Are you sure you want to close?", "Closing", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.No:
+                    e.Cancel = true;
+                    break;
+                default:
+                    AELogger.WriteLog();
+                    break;
+            }
         }
 
         public void AddItems()
@@ -177,7 +199,7 @@ namespace StatusEditor
                     {
                         if (structView.Enabled)
                         {
-                            SaveOldData();
+                            SaveOldData(animBox.SelectedIndex);
                         }
 
                         FilePath = saveFileDialog1.FileNames[0];
@@ -190,17 +212,85 @@ namespace StatusEditor
 
         private void importButton_Click(object sender, EventArgs e)
         {
+            if (animBox.SelectedIndex < 0
+                ||
+                animBox.SelectedIndex >= tablefile.table.Count)
+            {
+                return;
+            }
 
+            using (OpenFileDialog openFile = new OpenFileDialog())
+            {
+                openFile.DefaultExt = "mvc3data";
+                if (ImportPath != String.Empty)
+                {
+                    openFile.InitialDirectory = Path.GetDirectoryName(FilePath);
+                    openFile.FileName = Path.GetFileName(FilePath);
+                }
+                openFile.Title = "Import" + tablefile.table[animBox.SelectedIndex].GetFancyName();
+                // The Filter property requires a search string after the pipe ( | )
+                openFile.Filter = "mvc3 table data files (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
+
+                openFile.ShowDialog();
+                if (openFile.FileNames.Length > 0)
+                {
+                    tablefile.table[animBox.SelectedIndex].Import(openFile.FileNames[0]);
+                    RefreshData();
+                    sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
+                    ImportPath = openFile.FileNames[0];
+                }
+                else
+                {
+                    AELogger.Log("nothing selected!");
+                }
+            }
         }
 
         private void exportButton_Click(object sender, EventArgs e)
         {
+            if (animBox.SelectedIndex < 0
+                ||
+                animBox.SelectedIndex >= tablefile.table.Count)
+            {
+                return;
+            }
 
+            using (SaveFileDialog saveFileDialog1 = new SaveFileDialog())
+            {
+                saveFileDialog1.Title = "Export " + tablefile.table[animBox.SelectedIndex].GetFancyName();
+                saveFileDialog1.Filter = "mvc3 table data files (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
+                if (FilePath != String.Empty)
+                {
+                    saveFileDialog1.InitialDirectory = Path.GetDirectoryName(ImportPath);
+                }
+                saveFileDialog1.FilterIndex = 2;
+                saveFileDialog1.RestoreDirectory = true;
+
+                saveFileDialog1.FileName = tablefile.table[animBox.SelectedIndex].GetFilename() + ".mvc3data";
+
+                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    if (saveFileDialog1.FileNames.Length > 0)
+                    {
+                        if (structView.Enabled)
+                        {
+                            SaveOldData(animBox.SelectedIndex);
+                        }
+                        ImportPath = saveFileDialog1.FileNames[0];
+                        tablefile.table[animBox.SelectedIndex].Export(saveFileDialog1.FileNames[0]);
+                    }
+                }
+            }
         }
 
         private void extendButton_Click(object sender, EventArgs e)
         {
-
+            tablefile.Extend();
+            RefreshData();
+            if (animBox.TopIndex < animBox.Items.Count - 2)
+            {
+                animBox.TopIndex++;
+            }
         }
 
         private void RefreshData()
@@ -215,29 +305,32 @@ namespace StatusEditor
             bDisableUpdate = false;
         }
 
-        private void SaveOldData()
+        private void SaveOldData(int index)
         {
-            if (!(tablefile.table[animBox.SelectedIndex] is StatusEntry))
+            if (!(tablefile.table[index] is StatusEntry))
             {
                 AELogger.Log("warning saving attempted of non correct data");
                 return;
             }
-            StatusEntry entry = (StatusEntry)tablefile.table[animBox.SelectedIndex];
+            //StatusEntry entry = (StatusEntry)tablefile.table[animBox.SelectedIndex];
+            Object entrydata = ((StatusEntry)tablefile.table[index]).data; // turn it into a reference so SetValue works
             for (int i = 0; i < structFieldInfo.Length; i++)
             {
 
                 //structView.Rows[i].Cells[1].Value = structFieldInfo[i].GetValue(entry.data).ToString();
                 if (structFieldInfo[i].FieldType.IsEnum)
                 {// check if enum
-                    structFieldInfo[i].SetValue(entry.data, Enum.Parse(structFieldInfo[i].FieldType, (string)structView.Rows[i].Cells[1].Value));
+                    structFieldInfo[i].SetValue(entrydata, Enum.Parse(structFieldInfo[i].FieldType, (string)structView.Rows[i].Cells[1].Value));
                 }
                 else
                 {
                     try
                     {
                         Convert.ChangeType(structView.Rows[i].Cells[1].Value, structFieldInfo[i].FieldType);
-
-                        structFieldInfo[i].SetValue(entry.data, Convert.ChangeType(structView.Rows[i].Cells[1].Value, structFieldInfo[i].FieldType));
+                        AELogger.Log(structFieldInfo[i].ToString() + " IS " + structView.Rows[i].Cells[1].Value  + " VS " + Convert.ChangeType(structView.Rows[i].Cells[1].Value, structFieldInfo[i].FieldType));
+                        AELogger.Log(structFieldInfo[i].GetValue(entrydata).ToString());
+                        structFieldInfo[i].SetValue(entrydata, Convert.ChangeType(structView.Rows[i].Cells[1].Value, structFieldInfo[i].FieldType));
+                        AELogger.Log(structFieldInfo[i].GetValue(entrydata).ToString());
                     }
                     catch (Exception e)
                     {
@@ -250,6 +343,8 @@ namespace StatusEditor
                     }
                 }
             }
+
+            ((StatusEntry)tablefile.table[index]).data = (StatusEntry.StatusChunk)entrydata;
         }
 
         private void animBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -258,6 +353,11 @@ namespace StatusEditor
             {
                 return;
             }
+            if (structView.Enabled)
+            {
+                SaveOldData(previousSelectedIndex);
+            }
+            previousSelectedIndex = animBox.SelectedIndex;
             SuspendLayout();
             animBox.BeginUpdate();
             bDisableUpdate = true;

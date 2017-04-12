@@ -261,8 +261,8 @@ namespace MarvelData
                 byte* ptr = (byte*)start;
                 for (int i = 0; i < sizeof(StatusChunk); i++)
                 {
-                    AELogger.Log(i + " ASDF " + sizeof(StatusChunk));
-                    AELogger.Log(newdata[i] + " is data");
+                    //AELogger.Log(i + " ASDF " + sizeof(StatusChunk));
+                    //AELogger.Log(newdata[i] + " is data");
                     *ptr = newdata[i];
                     ptr++;
                 }
