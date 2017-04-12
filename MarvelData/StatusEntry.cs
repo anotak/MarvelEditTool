@@ -239,7 +239,7 @@ namespace MarvelData
             NoHitstop           = 0x00000080,
             IMSentShumaUnk      = 0x00000100,
             LockCharacter       = 0x00000200,
-            NoTeamActions       = 0x00000400,
+            NoSnapoutNoTAC      = 0x00000400,
             FriendlyFire        = 0x00000800,
             NoJump              = 0x00001000,
             Unk0x2000           = 0x00002000,
