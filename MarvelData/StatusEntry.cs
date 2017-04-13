@@ -238,15 +238,21 @@ namespace MarvelData
             NoHyperDrain        = 0x00000040,
             NoHitstop           = 0x00000080,
             IMSentShumaUnk      = 0x00000100,
-            LockCharacter       = 0x00000200,
-            NoSnapoutNoTAC      = 0x00000400,
-            FriendlyFire        = 0x00000800,
-            NoJump              = 0x00001000,
-            Unk0x2000           = 0x00002000,
+            AirUnk              = 0x00000200,
+            ShumaUnk            = 0x00000400,
+            AmmyShumaUnk        = 0x00000800,
+            LockCharacter       = 0x00001000,
+            NoSnapoutNoTAC      = 0x00002000,
             Unk0x4000           = 0x00004000,
-            NoTagIn             = 0x00008000,
-            FrankUnk            = 0x00010000,
-            VergilUnk           = 0x00040000
+            Unk0x8000           = 0x00008000,
+            FriendlyFire        = 0x00010000,
+            NoJump              = 0x00020000,
+            NoDoubleJump        = 0x00040000,
+            Unk0x80000          = 0x00080000,
+            Unk0x100000         = 0x00100000,
+            NoTagIn             = 0x00200000,
+            Unk0x400000         = 0x00400000,
+            FrankUnk            = 0x00800000
         }
 
         public StatusChunk data;
