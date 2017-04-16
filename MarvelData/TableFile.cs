@@ -14,7 +14,7 @@ namespace MarvelData
         public byte[] headerB;
         public byte[] footer;
         
-        public static TableFile LoadFile(string filename, Type entryType = null)
+        public static TableFile LoadFile(string filename, Type entryType = null, int structsize = -1)
         {
             if (entryType == null)
             {
@@ -140,6 +140,14 @@ namespace MarvelData
                             entrysize = (uint)reader.BaseStream.Length - position - 16;
                         }
                         AELogger.Log("entrysize is " + entrysize);
+                        if (structsize > 0)
+                        {
+                            if (structsize != entrysize)
+                            {
+                                throw new Exception("MALFORMED DATA STRUCTURE ERROR: WRONG SIZE " + entrysize + " EXPECTED " + structsize);
+                            }
+                            tablefile.table[i].size = structsize;
+                        }
                         tablefile.table[i].SetData(reader.ReadBytes((int)entrysize));
                         position += entrysize;
                     } // if bhasdata

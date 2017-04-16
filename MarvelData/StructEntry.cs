@@ -7,27 +7,29 @@ using System.Runtime.InteropServices;
 
 namespace MarvelData
 {
-    /*
     public unsafe class StructEntry<T> : TableEntry where T : struct
     {
         public T data;
+        public IntPtr dataPtr;
 
         public StructEntry() : base()
         {
-
+            
         }
 
         public override byte[] GetData()
         {
-            byte[] output = new byte[size];
-            fixed (T* start = &data)
+            if (size == 0)
             {
-                byte* ptr = (byte*)start;
-                for (int i = 0; i < size; i++)
-                {
-                    output[i] = *ptr;
-                    ptr++;
-                }
+                throw new Exception("SIZE IS 0");
+            }
+            byte[] output = new byte[size];
+
+            byte* ptr = (byte*)dataPtr;
+            for (int i = 0; i < size; i++)
+            {
+                output[i] = *ptr;
+                ptr++;
             }
 
             return output;
@@ -35,19 +37,24 @@ namespace MarvelData
 
         public override void SetData(byte[] newdata)
         {
-            size = sizeof(StatusChunk);
-            bHasData = true;
-
-            fixed (StatusChunk* start = &data)
+            if (size == 0)
             {
-                byte* ptr = (byte*)start;
-                for (int i = 0; i < sizeof(StatusChunk); i++)
-                {
-                    //AELogger.Log(i + " ASDF " + sizeof(StatusChunk));
-                    //AELogger.Log(newdata[i] + " is data");
-                    *ptr = newdata[i];
-                    ptr++;
-                }
+                throw new Exception("SIZE IS 0");
+            }
+            if (dataPtr == IntPtr.Zero)
+            {
+                dataPtr = Marshal.AllocHGlobal(size);
+                Marshal.StructureToPtr(data, dataPtr, true);
+            }
+            bHasData = true;
+            
+            byte* ptr = (byte*)dataPtr;
+            for (int i = 0; i < size; i++)
+            {
+                //AELogger.Log(i + " ASDF " + sizeof(StatusChunk));
+                //AELogger.Log(newdata[i] + " is data");
+                *ptr = newdata[i];
+                ptr++;
             }
         }
 
@@ -55,7 +62,7 @@ namespace MarvelData
         {
             if (name == "unknown")
             {
-                return index.ToString("X3") + "status";
+                return index.ToString("X3") + typeof(T).Name;
             }
             else
             {
@@ -63,5 +70,4 @@ namespace MarvelData
             }
         }
     }
-    */
 }
