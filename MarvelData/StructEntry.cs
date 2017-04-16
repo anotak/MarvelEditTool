@@ -7,17 +7,23 @@ using System.Runtime.InteropServices;
 
 namespace MarvelData
 {
-    public unsafe class StatusEntry : TableEntry
+    /*
+    public unsafe class StructEntry<T> : TableEntry where T : struct
     {
-        public StatusChunk data;
+        public T data;
+
+        public StructEntry() : base()
+        {
+
+        }
 
         public override byte[] GetData()
         {
-            byte[] output = new byte[sizeof(StatusChunk)];
-            fixed (StatusChunk* start = &data)
+            byte[] output = new byte[size];
+            fixed (T* start = &data)
             {
                 byte* ptr = (byte*)start;
-                for (int i = 0; i < sizeof(StatusChunk); i++)
+                for (int i = 0; i < size; i++)
                 {
                     output[i] = *ptr;
                     ptr++;
@@ -57,4 +63,5 @@ namespace MarvelData
             }
         }
     }
+    */
 }

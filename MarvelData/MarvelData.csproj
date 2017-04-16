@@ -44,9 +44,11 @@
   <ItemGroup>
     <Compile Include="AEDataTools.cs" />
     <Compile Include="AELogger.cs" />
+    <Compile Include="MVC3DataStructures.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RawEntry.cs" />
     <Compile Include="StatusEntry.cs" />
+    <Compile Include="StructEntry.cs" />
     <Compile Include="TableEntry.cs" />
     <Compile Include="TableFile.cs" />
   </ItemGroup>

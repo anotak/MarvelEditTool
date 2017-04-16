@@ -64,7 +64,7 @@ namespace StatusEditor
 
         public void AddItems()
         {
-            Type structtype = typeof(StatusEntry.StatusChunk);
+            Type structtype = typeof(StatusChunk);
 
             structFieldInfo = structtype.GetFields();
             structValues = new List<List<string>>();
@@ -175,7 +175,7 @@ namespace StatusEditor
             }
         }
 
-        private void saveButton_Click(object sender, EventArgs e)
+        private void saveButton_Click(object sender, EventArgs ev)
         {
             if (bError)
             {
@@ -188,8 +188,28 @@ namespace StatusEditor
                 //saveFileDialog1.FilterIndex = 2;
                 if (FilePath != String.Empty)
                 {
-                    saveFileDialog1.InitialDirectory = Path.GetDirectoryName(FilePath);
-                    saveFileDialog1.FileName = Path.GetFileName(FilePath);
+                    try
+                    {
+                        saveFileDialog1.InitialDirectory = Path.GetDirectoryName(FilePath);
+                        saveFileDialog1.FileName = Path.GetFileName(FilePath);
+                    }
+                    catch (Exception e)
+                    {
+                        AELogger.Log("some kind of exception setting save path from " + FilePath);
+                        AELogger.Log("Exception: " + e.Message);
+
+                        AELogger.Log("Exception: " + e.StackTrace);
+
+                        int i = 1;
+                        while (e.InnerException != null)
+                        {
+                            e = e.InnerException;
+                            AELogger.Log("InnerException " + i + ": " + e.Message);
+
+                            AELogger.Log("InnerException " + i + ": " + e.StackTrace);
+                            i++;
+                        }
+                    }
                 }
                 saveFileDialog1.RestoreDirectory = true;
 
@@ -210,7 +230,7 @@ namespace StatusEditor
         }
 
 
-        private void importButton_Click(object sender, EventArgs e)
+        private void importButton_Click(object sender, EventArgs ev)
         {
             if (animBox.SelectedIndex < 0
                 ||
@@ -224,8 +244,27 @@ namespace StatusEditor
                 openFile.DefaultExt = "mvc3data";
                 if (ImportPath != String.Empty)
                 {
-                    openFile.InitialDirectory = Path.GetDirectoryName(FilePath);
-                    openFile.FileName = Path.GetFileName(FilePath);
+                    try {
+                        openFile.InitialDirectory = Path.GetDirectoryName(FilePath);
+                        openFile.FileName = Path.GetFileName(FilePath);
+                    }
+                    catch (Exception e)
+                    {
+                        AELogger.Log("some kind of exception setting save path from " + FilePath);
+                        AELogger.Log("Exception: " + e.Message);
+
+                        AELogger.Log("Exception: " + e.StackTrace);
+
+                        int i = 1;
+                        while (e.InnerException != null)
+                        {
+                            e = e.InnerException;
+                            AELogger.Log("InnerException " + i + ": " + e.Message);
+
+                            AELogger.Log("InnerException " + i + ": " + e.StackTrace);
+                            i++;
+                        }
+                    }
                 }
                 openFile.Title = "Import" + tablefile.table[animBox.SelectedIndex].GetFancyName();
                 // The Filter property requires a search string after the pipe ( | )
@@ -246,7 +285,7 @@ namespace StatusEditor
             }
         }
 
-        private void exportButton_Click(object sender, EventArgs e)
+        private void exportButton_Click(object sender, EventArgs ev)
         {
             if (animBox.SelectedIndex < 0
                 ||
@@ -261,7 +300,26 @@ namespace StatusEditor
                 saveFileDialog1.Filter = "mvc3 table data files (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
                 if (FilePath != String.Empty)
                 {
-                    saveFileDialog1.InitialDirectory = Path.GetDirectoryName(ImportPath);
+                    try {
+                        saveFileDialog1.InitialDirectory = Path.GetDirectoryName(ImportPath);
+                    }
+                    catch (Exception e)
+                    {
+                        AELogger.Log("some kind of exception setting save path from " + ImportPath);
+                        AELogger.Log("Exception: " + e.Message);
+
+                        AELogger.Log("Exception: " + e.StackTrace);
+
+                        int i = 1;
+                        while (e.InnerException != null)
+                        {
+                            e = e.InnerException;
+                            AELogger.Log("InnerException " + i + ": " + e.Message);
+
+                            AELogger.Log("InnerException " + i + ": " + e.StackTrace);
+                            i++;
+                        }
+                    }
                 }
                 saveFileDialog1.FilterIndex = 2;
                 saveFileDialog1.RestoreDirectory = true;
@@ -344,7 +402,7 @@ namespace StatusEditor
                 }
             }
 
-            ((StatusEntry)tablefile.table[index]).data = (StatusEntry.StatusChunk)entrydata;
+            ((StatusEntry)tablefile.table[index]).data = (StatusChunk)entrydata;
         }
 
         private void animBox_SelectedIndexChanged(object sender, EventArgs e)
