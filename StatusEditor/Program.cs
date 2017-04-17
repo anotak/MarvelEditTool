@@ -17,6 +17,9 @@ namespace StatusEditor
 
             try
             {
+#if DEBUG
+                TableFile.DataTest();
+#endif
                 Application.ThreadException += new ThreadExceptionEventHandler(new ThreadExceptionHandler().ApplicationThreadException);
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);

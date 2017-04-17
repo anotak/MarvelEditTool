@@ -16,6 +16,7 @@ namespace StatusEditor
     public partial class StatusEditorForm : Form
     {
         public static bool bError;
+        public static bool bDataGridError;
         public string FilePath;
         public TableFile tablefile;
         public List<string> tableNames;
@@ -24,6 +25,8 @@ namespace StatusEditor
         public FieldInfo[] structFieldInfo;
         public List<List<string>> structValues;
         public int previousSelectedIndex;
+        public Type structViewType;
+        public Type structViewEntryType;
 
         public StatusEditorForm()
         {
@@ -33,8 +36,11 @@ namespace StatusEditor
             FilePath = String.Empty;
             bDisableUpdate = true;
             previousSelectedIndex = 0;
+            bDataGridError = false;
+            AddItems(typeof(StatusChunk));
 
-            AddItems();
+            structView.DataError += structView_DataError;
+            structView.CellEndEdit += structView_CellEndEdit;
         }
 
         public static string GetCompileDate()
@@ -62,9 +68,14 @@ namespace StatusEditor
             }
         }
 
-        public void AddItems()
+        public void AddItems(Type structtype)
         {
-            Type structtype = typeof(StatusChunk);
+            if (structViewType == structtype)
+            {
+                return;
+            }
+            //structView.Columns.Clear();
+            structView.Rows.Clear();
 
             structFieldInfo = structtype.GetFields();
             structValues = new List<List<string>>();
@@ -75,12 +86,17 @@ namespace StatusEditor
                 {
                     structView.Rows[i].DefaultCellStyle.BackColor = Color.LightYellow;
                 }
+                structView.Rows[i].Cells[1].ValueType = structFieldInfo[i].FieldType;
                 //structValues.Add(new List<string>(2));
                 //structValues[i].Add(structFieldInfo[i].Name);
                 //structValues[i].Add(string.Empty);
                 //AELogger.Log(structFieldInfo[i].Name.ToString());
             }
             //structView.DataSource = structValues;
+
+            structViewEntryType = typeof(StructEntry<>).MakeGenericType(structtype);
+
+            structViewType = structtype;
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -127,7 +143,7 @@ namespace StatusEditor
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
-        
+
         private void openButton_Click(object sender, EventArgs e)
         {
             if (bError)
@@ -139,11 +155,12 @@ namespace StatusEditor
             {
                 //openFile.DefaultExt = "bcm";
                 // The Filter property requires a search string after the pipe ( | )
-                openFile.Filter = "CHS Files (*.chs;*.3C41466B)|*.chs;*.3C41466B|All files (*.*)|*.*";
+                openFile.Filter = "Supported Data (*.ati;*.227A8048;*.chs;*.3C41466B)|*.ati;*.227A8048;*.chs;*.3C41466B| ATI Files (*.ati;*.227A8048)|*.ati;*.227A8048|CHS Files (*.chs;*.3C41466B)|*.chs;*.3C41466B|All files (*.*)|*.*";
                 openFile.ShowDialog();
                 if (openFile.FileNames.Length > 0)
                 {
-                    TableFile newTable = TableFile.LoadFile(openFile.FileNames[0],typeof(StatusEntry));
+                    //TableFile newTable = TableFile.LoadFile(openFile.FileNames[0], typeof(StatusEntry));
+                    TableFile newTable = TableFile.LoadFile(openFile.FileNames[0], true, typeof(StructEntry<StatusChunk>), 848);
                     int count = newTable.table.Count;
                     if (newTable == null && count != 0)
                     {
@@ -244,7 +261,8 @@ namespace StatusEditor
                 openFile.DefaultExt = "mvc3data";
                 if (ImportPath != String.Empty)
                 {
-                    try {
+                    try
+                    {
                         openFile.InitialDirectory = Path.GetDirectoryName(FilePath);
                         openFile.FileName = Path.GetFileName(FilePath);
                     }
@@ -300,7 +318,8 @@ namespace StatusEditor
                 saveFileDialog1.Filter = "mvc3 table data files (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
                 if (FilePath != String.Empty)
                 {
-                    try {
+                    try
+                    {
                         saveFileDialog1.InitialDirectory = Path.GetDirectoryName(ImportPath);
                     }
                     catch (Exception e)
@@ -365,35 +384,44 @@ namespace StatusEditor
 
         private void SaveOldData(int index)
         {
-            if (!(tablefile.table[index] is StatusEntry))
+            //if (!(tablefile.table[index] is StatusEntry))
+            Type entryType = tablefile.table[index].GetType();
+            AELogger.Log(entryType.GenericTypeArguments[0].ToString() + " is the saveolddata");
+            if (!(tablefile.table[index] is StructEntryBase) && entryType.GenericTypeArguments[0].Equals(structViewType))
             {
+                MessageBox.Show("warning: there might be some kind error, attempted write of incorrect data, you probably should make backups and save and report this bug with the logfile");
                 AELogger.Log("warning saving attempted of non correct data");
                 return;
             }
-            //StatusEntry entry = (StatusEntry)tablefile.table[animBox.SelectedIndex];
-            Object entrydata = ((StatusEntry)tablefile.table[index]).data; // turn it into a reference so SetValue works
+            //Object entrydata = ((StructEntry)tablefile.table[index]).data; // turn it into a reference so SetValue works
+
+            Object entrydata = ((StructEntryBase)tablefile.table[index]).GetDataObject(); // turn it into a reference so SetValue works
             for (int i = 0; i < structFieldInfo.Length; i++)
             {
 
                 //structView.Rows[i].Cells[1].Value = structFieldInfo[i].GetValue(entry.data).ToString();
+
+                // this part isnt needed anymore bc of magic with dataviewgrid
+                /*
                 if (structFieldInfo[i].FieldType.IsEnum)
                 {// check if enum
                     structFieldInfo[i].SetValue(entrydata, Enum.Parse(structFieldInfo[i].FieldType, (string)structView.Rows[i].Cells[1].Value));
                 }
                 else
+                */
                 {
                     try
                     {
                         Convert.ChangeType(structView.Rows[i].Cells[1].Value, structFieldInfo[i].FieldType);
-                        AELogger.Log(structFieldInfo[i].ToString() + " IS " + structView.Rows[i].Cells[1].Value  + " VS " + Convert.ChangeType(structView.Rows[i].Cells[1].Value, structFieldInfo[i].FieldType));
-                        AELogger.Log(structFieldInfo[i].GetValue(entrydata).ToString());
+                        //AELogger.Log(structFieldInfo[i].ToString() + " IS " + structView.Rows[i].Cells[1].Value + " VS " + Convert.ChangeType(structView.Rows[i].Cells[1].Value, structFieldInfo[i].FieldType));
+                        //AELogger.Log(structFieldInfo[i].GetValue(entrydata).ToString());
                         structFieldInfo[i].SetValue(entrydata, Convert.ChangeType(structView.Rows[i].Cells[1].Value, structFieldInfo[i].FieldType));
-                        AELogger.Log(structFieldInfo[i].GetValue(entrydata).ToString());
+                        //AELogger.Log(structFieldInfo[i].GetValue(entrydata).ToString());
                     }
                     catch (Exception e)
                     {
-                        AELogger.Log("failed type: val " +  structFieldInfo[i].ToString() + " - value " + structView.Rows[i].Cells[1].Value);
-                        
+                        AELogger.Log("failed type: val " + structFieldInfo[i].ToString() + " - value " + structView.Rows[i].Cells[1].Value);
+
 
                         AELogger.Log("Exception: " + e.Message);
 
@@ -402,7 +430,7 @@ namespace StatusEditor
                 }
             }
 
-            ((StatusEntry)tablefile.table[index]).data = (StatusChunk)entrydata;
+            ((StructEntryBase)tablefile.table[index]).SetDataObject(entrydata);
         }
 
         private void animBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -428,17 +456,25 @@ namespace StatusEditor
                 &&
                 tablefile.table[animBox.SelectedIndex].bHasData
                 &&
-                tablefile.table[animBox.SelectedIndex] is StatusEntry
+                tablefile.table[animBox.SelectedIndex] is StructEntryBase
                 )
             {
-                StatusEntry entry = (StatusEntry)tablefile.table[animBox.SelectedIndex];
+                Type entryType = tablefile.table[animBox.SelectedIndex].GetType();
+                AELogger.Log(entryType.GenericTypeArguments[0].ToString() + " is the newly selected index");
+                if (!entryType.GenericTypeArguments[0].Equals(structViewType))
+                {
+                    AddItems(entryType.GenericTypeArguments[0]);
+                }
+
+                //StructEntry<StatusChunk> entry = (StructEntry<StatusChunk>)tablefile.table[animBox.SelectedIndex];
+                StructEntryBase entry = (StructEntryBase)tablefile.table[animBox.SelectedIndex];
                 exportButton.Enabled = true;
                 //dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].data).Replace("-","");
                 sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
 
                 for (int i = 0; i < structFieldInfo.Length; i++)
                 {
-                    structView.Rows[i].Cells[1].Value = structFieldInfo[i].GetValue(entry.data).ToString();
+                    structView.Rows[i].Cells[1].Value = structFieldInfo[i].GetValue(entry.GetDataObject()).ToString();
                     //structValues[i] = structFieldInfo[i].GetValue(entry.data).ToString();
                 }
                 structView.Enabled = true;
@@ -455,6 +491,19 @@ namespace StatusEditor
             bDisableUpdate = false;
             animBox.EndUpdate();
             ResumeLayout();
+        }
+
+        private void structView_DataError(object sender, DataGridViewDataErrorEventArgs ev)
+        {
+            bDataGridError = true;
+            structView.Rows[structView.SelectedCells[0].RowIndex].DefaultCellStyle.ForeColor = Color.Red;
+            sizeLabel.Text = "invalid data for " + structView.SelectedCells[0].ValueType.Name;
+        }
+
+        private void structView_CellEndEdit(object sender, EventArgs ev)
+        {
+            structView.Rows[structView.SelectedCells[0].RowIndex].DefaultCellStyle.ForeColor = Color.Black;
+            sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
         }
     }
 }

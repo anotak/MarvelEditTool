@@ -7,16 +7,60 @@ using System.Runtime.InteropServices;
 
 namespace MarvelData
 {
-    public unsafe class StructEntry<T> : TableEntry where T : struct
+    public class StructEntryBase : TableEntry
     {
-        public T data;
-        public IntPtr dataPtr;
-
-        public StructEntry() : base()
+        // NO IMPLEMENTATION
+        public virtual object GetDataObject()
         {
-            
+            throw new NotImplementedException();
         }
 
+        public virtual void SetDataObject(object o)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class StructEntry<T> : StructEntryBase where T : struct
+    {
+        public T data;
+
+        public override byte[] GetData()
+        {
+            byte[] output = new byte[size];
+            IntPtr dataPtr = Marshal.AllocHGlobal(size);
+            Marshal.StructureToPtr(data, dataPtr, true);
+            Marshal.Copy(dataPtr, output, 0, size);
+            Marshal.FreeHGlobal(dataPtr);
+
+            return output;
+        }
+
+        public override void SetData(byte[] bytes)
+        {
+            GCHandle handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+            data = (T)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(T));
+            handle.Free();
+        }
+
+        public override object GetDataObject()
+        {
+            return (object)data;
+        }
+
+        public override void SetDataObject(object o)
+        {
+            if (o is T)
+            {
+                data = (T)o;
+            }
+            else
+            {
+                throw new Exception("WRONG DATA, BIG ERROR");
+            }
+        }
+
+        /*
         public override byte[] GetData()
         {
             if (size == 0)
@@ -34,7 +78,9 @@ namespace MarvelData
 
             return output;
         }
+        */
 
+        /*
         public override void SetData(byte[] newdata)
         {
             if (size == 0)
@@ -57,6 +103,7 @@ namespace MarvelData
                 ptr++;
             }
         }
+        */
 
         public override string GetFilename()
         {

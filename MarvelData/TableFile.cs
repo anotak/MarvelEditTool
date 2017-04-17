@@ -14,7 +14,11 @@ namespace MarvelData
         public byte[] headerB;
         public byte[] footer;
         
-        public static TableFile LoadFile(string filename, Type entryType = null, int structsize = -1)
+        public static Type[] structTypes = { typeof(StructEntry<StatusChunk>), typeof(StructEntry<ATKInfoChunk>) };
+        public static int[] structSizes = { 0x350, 0x18C };
+        public static string[] structExtensions = { "CHS", "ATI" };
+
+        public static TableFile LoadFile(string filename, bool bAutoIdentify = false, Type entryType = null, int structsize = -1)
         {
             if (entryType == null)
             {
@@ -49,6 +53,26 @@ namespace MarvelData
                     AELogger.Log("TOO SHORT FILE tABble " + (16 + (entries * 8)));
                     throw new Exception();
                 }
+
+                if (bAutoIdentify)
+                {
+                    string typeString = ASCIIEncoding.Default.GetString(tablefile.header, 0, 3);
+                    for (int i = 0; i < structExtensions.Length; i++)
+                    {
+                        if (typeString == structExtensions[i])
+                        {
+                            AELogger.Log("autodetected " + structExtensions[i]);
+                            entryType = structTypes[i];
+                            structsize = structSizes[i];
+                            break;
+                        }
+                    }
+                    if (entryType == null)
+                    {
+                        throw new Exception("FILETYPE DETECTION FAILED W TYPE " + typeString);
+                    }
+                }
+
                 uint realCount = 0;
                 uint lastindex = 0;
                 for (int i = 0; i < entries; i++)
@@ -63,7 +87,7 @@ namespace MarvelData
                     while (newindex > lastindex + 1)
                     {
                         lastindex++;
-                        TableEntry filler = new TableEntry();
+                        TableEntry filler = (TableEntry)Activator.CreateInstance(entryType);
                         filler.bHasData = false;
                         filler.index = lastindex;
                         filler.name = "***EMPTY DATA***";
@@ -435,6 +459,20 @@ namespace MarvelData
                     bStreak = bCurrent;
                     streakStart = i;
                 }
+            }
+        }
+
+        public unsafe static void DataTest()
+        {
+            VerifySizes(sizeof(StatusChunk), 0);
+            VerifySizes(sizeof(ATKInfoChunk), 1);
+        }
+        public static void VerifySizes(int a, int b)
+        {
+            AELogger.Log("testing sizes a, b");
+            if (a != structSizes[b])
+            {
+                throw new Exception("AAAAAAA " + structTypes[b].Name + " size " + a + " != " + structSizes[b]);
             }
         }
     }

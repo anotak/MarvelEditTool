@@ -251,4 +251,121 @@ namespace MarvelData
         Unk0x400000 = 0x00400000,
         FrankUnk = 0x00800000
     }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct ATKInfoChunk
+    {
+        public int index;
+        public int startup;
+        public int unk008;
+        public int unk00C;
+        public int unk010;
+        public int unk014;
+        public int unk018;
+        public int multiHit;
+        public int unk020;
+        public int unk024;
+        public int unk028;
+        public int unk02c;
+        public int unk030;
+        public int unk034;
+        public int unk038;
+        public int atkflags;
+        public int atkflags2;
+        public int unk044;
+        public int hitstunAnim;
+        public int blockLevel;
+        public int unk050;
+        public int unk054;
+        public int unk058;
+        public int unk05c;
+        public int damage;
+        public float damageScaling;
+        public float damageMult;
+        public float unk06c;
+        public int unk070;
+        public float meterGain;
+        public float unk078;
+        public int unk07c;
+        public int unk080;
+        public int unk084;
+        public int unk088;
+        public int unk08c;
+        public int unk090;
+        public int unk094;
+        public int unk098;
+        public float enemyPush;
+        public float cornerPushInverse;
+        public float playerBlockPushCorner;
+        public float playerBlockPushInverse;
+        public float unk0AC;
+        public float unk0B0;
+        public float unk0B4;
+        public float unk0B8;
+        public float unk0BC;
+        public float unk0C0;
+        public int hitstop;
+        public int unk0C8;
+        public int unk0CC;
+        public int unk0D0;
+        public int juggleHeight;
+        public int unk0D8;
+        public float unk0DC;
+        public float juggleSpeed;
+        public int unk0E4;
+        public int unk0E8;
+        public int unk0EC;
+        public int unk0F0;
+        public int unk0F4;
+        public int unk0F8;
+        public int unk0FC;
+        public int unk100;
+        public int unk104;
+        public int unk108;
+        public int unk10C;
+        public int unk110;
+        public int unk114;
+        public int unk118;
+        public int unk11C;
+        public int unk120;
+        public int unk124;
+        public int unk128;
+        public int unk12C;
+        public int unk130;
+        public int unk134;
+        public int unk138;
+        public int unk13C;
+        public int unk140;
+        public int unk144;
+        public int unk148;
+        public int unk14C;
+        public int hitSFXGroup;
+        public int hitSFX;
+        public int unk158;
+        public int unk15C;
+        public int unk160;
+        public int unk164;
+        public float unk168;
+        public float unk16C;
+        public int unk170;
+        public int unk174;
+        public int unk178;
+        public int unk17c;
+        public int unk180;
+        public int unk184;
+        public int unk188;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct BaseActChunk
+    {
+        int index;
+        int anmchrAction;
+        int direction1;
+        int direction2;
+        int button;
+        int state;
+        int unk18;
+        int unk1C;
+    }
 }

@@ -151,7 +151,7 @@ namespace MarvelEditTool
                 openFile.ShowDialog();
                 if (openFile.FileNames.Length > 0)
                 {
-                    TableFile newTable = TableFile.LoadFile(openFile.FileNames[0]);
+                    TableFile newTable = TableFile.LoadFile(openFile.FileNames[0], false);
                     int count = newTable.table.Count;
                     if (newTable == null && count != 0)
                     {
