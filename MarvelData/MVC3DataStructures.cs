@@ -359,13 +359,13 @@ namespace MarvelData
     [StructLayout(LayoutKind.Sequential)]
     public struct BaseActChunk
     {
-        int index;
-        int anmchrAction;
-        int direction1;
-        int direction2;
-        int button;
-        int state;
-        int unk18;
-        int unk1C;
+        public int index;
+        public int anmchrAction;
+        public int direction1;
+        public int direction2;
+        public int button;
+        public int state;
+        public int unk18;
+        public int unk1C;
     }
 }

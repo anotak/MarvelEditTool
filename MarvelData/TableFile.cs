@@ -14,9 +14,9 @@ namespace MarvelData
         public byte[] headerB;
         public byte[] footer;
         
-        public static Type[] structTypes = { typeof(StructEntry<StatusChunk>), typeof(StructEntry<ATKInfoChunk>) };
-        public static int[] structSizes = { 0x350, 0x18C };
-        public static string[] structExtensions = { "CHS", "ATI" };
+        public static Type[] structTypes = { typeof(StructEntry<StatusChunk>), typeof(StructEntry<ATKInfoChunk>), typeof(StructEntry<BaseActChunk>) };
+        public static int[] structSizes = { 0x350, 0x18C, 0x20 };
+        public static string[] structExtensions = { "CHS", "ATI", "CBA" };
 
         public static TableFile LoadFile(string filename, bool bAutoIdentify = false, Type entryType = null, int structsize = -1)
         {
@@ -466,6 +466,7 @@ namespace MarvelData
         {
             VerifySizes(sizeof(StatusChunk), 0);
             VerifySizes(sizeof(ATKInfoChunk), 1);
+            VerifySizes(sizeof(BaseActChunk), 2);
         }
         public static void VerifySizes(int a, int b)
         {

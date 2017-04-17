@@ -155,7 +155,7 @@ namespace StatusEditor
             {
                 //openFile.DefaultExt = "bcm";
                 // The Filter property requires a search string after the pipe ( | )
-                openFile.Filter = "Supported Data (*.ati;*.227A8048;*.chs;*.3C41466B)|*.ati;*.227A8048;*.chs;*.3C41466B| ATI Files (*.ati;*.227A8048)|*.ati;*.227A8048|CHS Files (*.chs;*.3C41466B)|*.chs;*.3C41466B|All files (*.*)|*.*";
+                openFile.Filter = "Supported Data (*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504)|*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504|BaseAct Files (*.cba;*.3C6EA504)|*.cba;*.3C6EA504|AtkInfo Files (*.ati;*.227A8048)|*.ati;*.227A8048|CHS Files (*.chs;*.3C41466B)|*.chs;*.3C41466B|All files (*.*)|*.*";
                 openFile.ShowDialog();
                 if (openFile.FileNames.Length > 0)
                 {
