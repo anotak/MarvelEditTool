@@ -13,6 +13,8 @@ namespace MarvelData
         public byte[] header;
         public byte[] headerB;
         public byte[] footer;
+        public Type fileType;
+        public int defaultChunkSize;
         
         public static Type[] structTypes = { typeof(StructEntry<StatusChunk>), typeof(StructEntry<ATKInfoChunk>), typeof(StructEntry<BaseActChunk>) };
         public static int[] structSizes = { 0x350, 0x18C, 0x20 };
@@ -72,6 +74,9 @@ namespace MarvelData
                         throw new Exception("FILETYPE DETECTION FAILED W TYPE " + typeString);
                     }
                 }
+
+                tablefile.fileType = entryType;
+                tablefile.defaultChunkSize = structsize;
 
                 uint realCount = 0;
                 uint lastindex = 0;
@@ -194,8 +199,9 @@ namespace MarvelData
 
         public void Extend()
         {
-            TableEntry entry = new TableEntry();
+            TableEntry entry = (TableEntry)Activator.CreateInstance(fileType);
             entry.bHasData = false;
+            entry.size = defaultChunkSize;
             entry.index = (uint)table.Count;
             entry.originalPointer = 0;
             entry.name = "***EMPTY DATA***";

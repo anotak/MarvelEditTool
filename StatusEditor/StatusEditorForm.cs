@@ -293,6 +293,7 @@ namespace StatusEditor
                 {
                     tablefile.table[animBox.SelectedIndex].Import(openFile.FileNames[0]);
                     RefreshData();
+                    RefreshEditBox();
                     sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
                     ImportPath = openFile.FileNames[0];
                 }
@@ -448,7 +449,15 @@ namespace StatusEditor
             animBox.BeginUpdate();
             bDisableUpdate = true;
             importButton.Enabled = true;
+            RefreshEditBox();
 
+            bDisableUpdate = false;
+            animBox.EndUpdate();
+            ResumeLayout();
+        }
+
+        private void RefreshEditBox()
+        {
             if (
                 animBox.SelectedIndex >= 0
                 &&
@@ -459,6 +468,8 @@ namespace StatusEditor
                 tablefile.table[animBox.SelectedIndex] is StructEntryBase
                 )
             {
+                structView.Columns[0].DefaultCellStyle.ForeColor = Color.Black;
+                structView.Columns[1].DefaultCellStyle.ForeColor = Color.Black;
                 Type entryType = tablefile.table[animBox.SelectedIndex].GetType();
                 AELogger.Log(entryType.GenericTypeArguments[0].ToString() + " is the newly selected index");
                 if (!entryType.GenericTypeArguments[0].Equals(structViewType))
@@ -483,14 +494,11 @@ namespace StatusEditor
             else
             {
                 structView.Enabled = false;
+                structView.Columns[0].DefaultCellStyle.ForeColor = Color.White;
+                structView.Columns[1].DefaultCellStyle.ForeColor = Color.White;
                 exportButton.Enabled = false;
                 sizeLabel.Text = "size: N/A";
             }
-
-
-            bDisableUpdate = false;
-            animBox.EndUpdate();
-            ResumeLayout();
         }
 
         private void structView_DataError(object sender, DataGridViewDataErrorEventArgs ev)

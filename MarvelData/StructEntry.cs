@@ -27,17 +27,29 @@ namespace MarvelData
 
         public override byte[] GetData()
         {
-            byte[] output = new byte[size];
-            IntPtr dataPtr = Marshal.AllocHGlobal(size);
-            Marshal.StructureToPtr(data, dataPtr, true);
-            Marshal.Copy(dataPtr, output, 0, size);
-            Marshal.FreeHGlobal(dataPtr);
+            if (bHasData)
+            {
+                byte[] output = new byte[size];
+                IntPtr dataPtr = Marshal.AllocHGlobal(size);
+                Marshal.StructureToPtr(data, dataPtr, true);
+                Marshal.Copy(dataPtr, output, 0, size);
+                Marshal.FreeHGlobal(dataPtr);
 
-            return output;
+                return output;
+            }
+            else
+            {
+                throw new Exception("NO DATA FOR GETDATA");
+            }
         }
 
         public override void SetData(byte[] bytes)
         {
+            if (bytes.Length != size)
+            {
+                throw new Exception("WRONG SIZE IMPORT, IMPLODING"); // FIXME THIS SUCKS
+            }
+            bHasData = true;
             GCHandle handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             data = (T)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(T));
             handle.Free();
@@ -45,13 +57,21 @@ namespace MarvelData
 
         public override object GetDataObject()
         {
-            return (object)data;
+            if (bHasData)
+            {
+                return (object)data;
+            }
+            else
+            {
+                throw new Exception("NO DATA FOR GETDATA");
+            }
         }
 
         public override void SetDataObject(object o)
         {
             if (o is T)
             {
+                bHasData = true;
                 data = (T)o;
             }
             else

@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace MarvelData
 {
+    /*
     public unsafe class StatusEntry : TableEntry
     {
         public StatusChunk data;
@@ -57,4 +58,5 @@ namespace MarvelData
             }
         }
     }
+    */
 }
