@@ -36,14 +36,16 @@
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.animBox = new System.Windows.Forms.ListBox();
             this.structView = new System.Windows.Forms.DataGridView();
-            this.var = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.importButton = new System.Windows.Forms.Button();
             this.exportButton = new System.Windows.Forms.Button();
             this.extendButton = new System.Windows.Forms.Button();
             this.sizeLabel = new System.Windows.Forms.Label();
+            this.dataTextBox = new System.Windows.Forms.TextBox();
+            this.var = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hex = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -59,6 +61,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.structView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
+            this.splitContainer3.Panel2.SuspendLayout();
             this.splitContainer3.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -177,7 +180,8 @@
             this.structView.ColumnHeadersVisible = false;
             this.structView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.var,
-            this.value});
+            this.value,
+            this.hex});
             this.structView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.structView.Enabled = false;
             this.structView.Location = new System.Drawing.Point(0, 0);
@@ -186,17 +190,6 @@
             this.structView.RowTemplate.Height = 24;
             this.structView.Size = new System.Drawing.Size(424, 447);
             this.structView.TabIndex = 1;
-            // 
-            // var
-            // 
-            this.var.HeaderText = "var";
-            this.var.Name = "var";
-            this.var.ReadOnly = true;
-            // 
-            // value
-            // 
-            this.value.HeaderText = "value";
-            this.value.Name = "value";
             // 
             // splitContainer3
             // 
@@ -208,6 +201,10 @@
             // splitContainer3.Panel1
             // 
             this.splitContainer3.Panel1.Controls.Add(this.tableLayoutPanel1);
+            // 
+            // splitContainer3.Panel2
+            // 
+            this.splitContainer3.Panel2.Controls.Add(this.dataTextBox);
             this.splitContainer3.Size = new System.Drawing.Size(415, 526);
             this.splitContainer3.SplitterDistance = 179;
             this.splitContainer3.TabIndex = 5;
@@ -291,6 +288,38 @@
             this.sizeLabel.TabIndex = 4;
             this.sizeLabel.Text = "ready";
             // 
+            // dataTextBox
+            // 
+            this.dataTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataTextBox.Font = new System.Drawing.Font("Consolas", 10.2F);
+            this.dataTextBox.Location = new System.Drawing.Point(0, 0);
+            this.dataTextBox.Multiline = true;
+            this.dataTextBox.Name = "dataTextBox";
+            this.dataTextBox.ReadOnly = true;
+            this.dataTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.dataTextBox.Size = new System.Drawing.Size(415, 343);
+            this.dataTextBox.TabIndex = 0;
+            this.dataTextBox.WordWrap = false;
+            // 
+            // var
+            // 
+            this.var.FillWeight = 75F;
+            this.var.HeaderText = "var";
+            this.var.Name = "var";
+            this.var.ReadOnly = true;
+            // 
+            // value
+            // 
+            this.value.HeaderText = "value";
+            this.value.Name = "value";
+            // 
+            // hex
+            // 
+            this.hex.FillWeight = 20F;
+            this.hex.HeaderText = "hex";
+            this.hex.Name = "hex";
+            this.hex.ReadOnly = true;
+            // 
             // StatusEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -314,6 +343,8 @@
             this.splitContainer4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.structView)).EndInit();
             this.splitContainer3.Panel1.ResumeLayout(false);
+            this.splitContainer3.Panel2.ResumeLayout(false);
+            this.splitContainer3.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -338,8 +369,10 @@
         private System.Windows.Forms.Label filenameLabel;
         private System.Windows.Forms.SplitContainer splitContainer4;
         private System.Windows.Forms.DataGridView structView;
+        private System.Windows.Forms.TextBox dataTextBox;
         private System.Windows.Forms.DataGridViewTextBoxColumn var;
         private System.Windows.Forms.DataGridViewTextBoxColumn value;
+        private System.Windows.Forms.DataGridViewTextBoxColumn hex;
     }
 }
 

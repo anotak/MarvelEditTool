@@ -480,12 +480,35 @@ namespace StatusEditor
                 //StructEntry<StatusChunk> entry = (StructEntry<StatusChunk>)tablefile.table[animBox.SelectedIndex];
                 StructEntryBase entry = (StructEntryBase)tablefile.table[animBox.SelectedIndex];
                 exportButton.Enabled = true;
+                SetTextConcurrent(tablefile.table[animBox.SelectedIndex].GetData());
                 //dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].data).Replace("-","");
                 sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
 
+                object entrydataobject = entry.GetDataObject();
                 for (int i = 0; i < structFieldInfo.Length; i++)
                 {
-                    structView.Rows[i].Cells[1].Value = structFieldInfo[i].GetValue(entry.GetDataObject()).ToString();
+                    object value = structFieldInfo[i].GetValue(entrydataobject);
+                    structView.Rows[i].Cells[1].Value = value.ToString();
+                    if (structFieldInfo[i].FieldType.IsEnum)
+                    {
+                        structView.Rows[i].Cells[2].Value = Enum.Format(structFieldInfo[i].FieldType, value, "X");
+                    }
+                    /*else
+                    {
+                        TypeCode code = Type.GetTypeCode(structFieldInfo[i].FieldType);
+                        if (code >= TypeCode.SByte && code <= TypeCode.UInt64)
+                        {
+                            structView.Rows[i].Cells[2].Value = ((Int64)Convert.ChangeType(value, typeof(Int64))).ToString("X");
+                        }
+                        else if (code >= TypeCode.Single && code <= TypeCode.Decimal)
+                        {
+                            structView.Rows[i].Cells[2].Value = ((UInt64)Convert.ChangeType(value, typeof(UInt64))).ToString("X");
+                        }
+                        else
+                        {
+                            structView.Rows[i].Cells[2].Value = "";
+                        }
+                    }*/
                     //structValues[i] = structFieldInfo[i].GetValue(entry.data).ToString();
                 }
                 structView.Enabled = true;
@@ -497,6 +520,7 @@ namespace StatusEditor
                 structView.Columns[0].DefaultCellStyle.ForeColor = Color.White;
                 structView.Columns[1].DefaultCellStyle.ForeColor = Color.White;
                 exportButton.Enabled = false;
+                dataTextBox.Text = "";
                 sizeLabel.Text = "size: N/A";
             }
         }
@@ -507,11 +531,131 @@ namespace StatusEditor
             structView.Rows[structView.SelectedCells[0].RowIndex].DefaultCellStyle.ForeColor = Color.Red;
             sizeLabel.Text = "invalid data for " + structView.SelectedCells[0].ValueType.Name;
         }
-
-        private void structView_CellEndEdit(object sender, EventArgs ev)
+        
+        private void structView_CellEndEdit(object sender, DataGridViewCellEventArgs ev)
         {
+            SaveOldData(animBox.SelectedIndex);
+            SetTextConcurrent(tablefile.table[animBox.SelectedIndex].GetData());
+
             structView.Rows[structView.SelectedCells[0].RowIndex].DefaultCellStyle.ForeColor = Color.Black;
             sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
+
+            int index = ev.RowIndex;
+            object value = structFieldInfo[index].GetValue(((StructEntryBase)tablefile.table[animBox.SelectedIndex]).GetDataObject());
+            if (structFieldInfo[index].FieldType.IsEnum)
+            {
+                structView.Rows[index].Cells[2].Value = Enum.Format(structFieldInfo[index].FieldType, value, "X");
+            }
         }
+
+
+        // datatextbox stuff
+        // YES I KNOW THIS IS EXCESSIVE BUT LOOK I WANTED TO DO IT OKAY
+        public Task TextTask;
+        public byte[] newText;
+        public bool bTextNeedsToBeDone;
+        public void SetTextConcurrent(byte[] text)
+        {
+            bTextNeedsToBeDone = true;
+            newText = text;
+            if (TextTask == null)
+            {
+                TextTask = new Task(SetText);
+                TextTask.Start();
+            }
+            else if (TextTask.IsCompleted)
+            {
+                TextTask.Dispose();
+                TextTask = new Task(SetText);
+                TextTask.Start();
+            }
+        }
+
+        public void SetText()
+        {
+            try
+            {
+                int oldSelectionStart = dataTextBox.SelectionStart;
+                int textSize = 8;
+
+                if (dataTextBox.Width > 1140)
+                {
+                    textSize = 64;
+                }
+                else if (dataTextBox.Width > 570)
+                {
+                    textSize = 32;
+                }
+                else if (dataTextBox.Width > 285)
+                {
+                    textSize = 16;
+                }
+                while (bTextNeedsToBeDone)
+                {
+                    bTextNeedsToBeDone = false;
+                    dataTextBox.Clear();
+
+                    int newTextLength;
+                    string[] newLines;
+                    lock (newText)
+                    {
+                        newTextLength = newText.Length;
+                        int lineCount = newTextLength / textSize;
+                        if (newTextLength % textSize > 0)
+                        {
+                            lineCount++;
+                        }
+                        newLines = new string[lineCount];
+                    }
+                    for (int i = 0; i <= newTextLength / textSize; i++)
+                    {
+                        lock (newText)
+                        {
+                            if (bTextNeedsToBeDone)
+                            {
+                                break;
+                            }
+                            if (i == newTextLength / textSize)
+                            {
+                                if (newTextLength % textSize > 0)
+                                {
+                                    newLines[i] = BitConverter.ToString(newText, i * textSize, newTextLength % textSize).Replace("-", "");
+                                }
+                            }
+                            else
+                            {
+                                newLines[i] = BitConverter.ToString(newText, i * textSize, textSize).Replace("-", "");
+                            }
+                        }
+                    }
+
+                    if (!bTextNeedsToBeDone)
+                    {
+                        dataTextBox.Lines = newLines;
+                    }
+                }
+                dataTextBox.SelectionStart = oldSelectionStart;
+                //dataTextBox.Select(oldSelectionStart, 0);
+                dataTextBox.ScrollToCaret();
+            }
+            catch (Exception e)
+            {
+                bTextNeedsToBeDone = false;
+                AELogger.Log("Exception: " + e.Message);
+
+                AELogger.Log("Exception: " + e.StackTrace);
+
+                int i = 1;
+                while (e.InnerException != null)
+                {
+                    e = e.InnerException;
+                    AELogger.Log("InnerException " + i + ": " + e.Message);
+
+                    AELogger.Log("InnerException " + i + ": " + e.StackTrace);
+                    i++;
+                }
+            }
+        }
+        // end datatextbox stuff
     }
 }
