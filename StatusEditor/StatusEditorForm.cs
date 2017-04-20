@@ -22,8 +22,7 @@ namespace StatusEditor
         public List<string> tableNames;
         public bool bDisableUpdate;
         public string ImportPath;
-        public FieldInfo[] structFieldInfo;
-        public List<List<string>> structValues;
+        public Dictionary<Type, FieldInfo[]> structFieldInfo;
         public int previousSelectedIndex;
         public Type structViewType;
         public Type structViewEntryType;
@@ -37,6 +36,7 @@ namespace StatusEditor
             bDisableUpdate = true;
             previousSelectedIndex = 0;
             bDataGridError = false;
+            structView.Rows.Clear();
             AddItems(typeof(StatusChunk));
 
             structView.DataError += structView_DataError;
@@ -68,35 +68,52 @@ namespace StatusEditor
             }
         }
 
+        public void ClearItems()
+        {
+            structView.Rows.Clear();
+            structFieldInfo = null;
+        }
+
         public void AddItems(Type structtype)
         {
-            if (structViewType == structtype)
+            if (structFieldInfo == null)
             {
-                return;
+                structFieldInfo = new Dictionary<Type, FieldInfo[]>();
             }
-            //structView.Columns.Clear();
-            structView.Rows.Clear();
 
-            structFieldInfo = structtype.GetFields();
-            structValues = new List<List<string>>();
-            for (int i = 0; i < structFieldInfo.Length; i++)
+
+            FieldInfo[] fieldList = GetFieldInfo(structtype);
+
+            for (int i = 0; i < fieldList.Length; i++)
             {
-                structView.Rows.Add(structFieldInfo[i].Name);
-                if (structFieldInfo[i].FieldType == typeof(float))
+                structView.Rows.Add(fieldList[i].Name);
+                if (fieldList[i].FieldType == typeof(float))
                 {
                     structView.Rows[i].DefaultCellStyle.BackColor = Color.LightYellow;
                 }
-                structView.Rows[i].Cells[1].ValueType = structFieldInfo[i].FieldType;
-                //structValues.Add(new List<string>(2));
-                //structValues[i].Add(structFieldInfo[i].Name);
-                //structValues[i].Add(string.Empty);
+                structView.Rows[i].Cells[1].ValueType = fieldList[i].FieldType;
                 //AELogger.Log(structFieldInfo[i].Name.ToString());
             }
-            //structView.DataSource = structValues;
 
             structViewEntryType = typeof(StructEntry<>).MakeGenericType(structtype);
 
             structViewType = structtype;
+        }
+
+        private FieldInfo[] GetFieldInfo(Type structtype)
+        {
+            FieldInfo[] fieldList;
+            if (structFieldInfo.ContainsKey(structtype))
+            {
+                fieldList = structFieldInfo[structtype];
+            }
+            else
+            {
+                structFieldInfo.Add(structtype, structtype.GetFields());
+                fieldList = structFieldInfo[structtype];
+            }
+
+            return fieldList;
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -155,7 +172,7 @@ namespace StatusEditor
             {
                 //openFile.DefaultExt = "bcm";
                 // The Filter property requires a search string after the pipe ( | )
-                openFile.Filter = "Supported Data (*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504)|*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504|BaseAct Files (*.cba;*.3C6EA504)|*.cba;*.3C6EA504|AtkInfo Files (*.ati;*.227A8048)|*.ati;*.227A8048|CHS Files (*.chs;*.3C41466B)|*.chs;*.3C41466B|All files (*.*)|*.*";
+                openFile.Filter = "Supported Data (*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504;*.csp;*.52A8DBF6)|*.csp;*.52A8DBF6;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504|Cmdspatk Files (*.csp;*.52A8DBF6)|*.csp;*.52A8DBF6|BaseAct Files (*.cba;*.3C6EA504)|*.cba;*.3C6EA504|AtkInfo Files (*.ati;*.227A8048)|*.ati;*.227A8048|Status Files (*.chs;*.3C41466B)|*.chs;*.3C41466B|All files (*.*)|*.*";
                 openFile.ShowDialog();
                 if (openFile.FileNames.Length > 0)
                 {
@@ -397,7 +414,8 @@ namespace StatusEditor
             //Object entrydata = ((StructEntry)tablefile.table[index]).data; // turn it into a reference so SetValue works
 
             Object entrydata = ((StructEntryBase)tablefile.table[index]).GetDataObject(); // turn it into a reference so SetValue works
-            for (int i = 0; i < structFieldInfo.Length; i++)
+            FieldInfo[] fieldList = GetFieldInfo(entryType.GenericTypeArguments[0]);
+            for (int i = 0; i < fieldList.Length; i++)
             {
 
                 //structView.Rows[i].Cells[1].Value = structFieldInfo[i].GetValue(entry.data).ToString();
@@ -413,15 +431,15 @@ namespace StatusEditor
                 {
                     try
                     {
-                        Convert.ChangeType(structView.Rows[i].Cells[1].Value, structFieldInfo[i].FieldType);
+                        Convert.ChangeType(structView.Rows[i].Cells[1].Value, fieldList[i].FieldType);
                         //AELogger.Log(structFieldInfo[i].ToString() + " IS " + structView.Rows[i].Cells[1].Value + " VS " + Convert.ChangeType(structView.Rows[i].Cells[1].Value, structFieldInfo[i].FieldType));
                         //AELogger.Log(structFieldInfo[i].GetValue(entrydata).ToString());
-                        structFieldInfo[i].SetValue(entrydata, Convert.ChangeType(structView.Rows[i].Cells[1].Value, structFieldInfo[i].FieldType));
+                        fieldList[i].SetValue(entrydata, Convert.ChangeType(structView.Rows[i].Cells[1].Value, fieldList[i].FieldType));
                         //AELogger.Log(structFieldInfo[i].GetValue(entrydata).ToString());
                     }
                     catch (Exception e)
                     {
-                        AELogger.Log("failed type: val " + structFieldInfo[i].ToString() + " - value " + structView.Rows[i].Cells[1].Value);
+                        AELogger.Log("failed type: val " + fieldList[i].ToString() + " - value " + structView.Rows[i].Cells[1].Value);
 
 
                         AELogger.Log("Exception: " + e.Message);
@@ -474,6 +492,7 @@ namespace StatusEditor
                 AELogger.Log(entryType.GenericTypeArguments[0].ToString() + " is the newly selected index");
                 if (!entryType.GenericTypeArguments[0].Equals(structViewType))
                 {
+                    ClearItems();
                     AddItems(entryType.GenericTypeArguments[0]);
                 }
 
@@ -485,13 +504,14 @@ namespace StatusEditor
                 sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
 
                 object entrydataobject = entry.GetDataObject();
-                for (int i = 0; i < structFieldInfo.Length; i++)
+                FieldInfo[] fieldList = GetFieldInfo(entryType.GenericTypeArguments[0]);
+                for (int i = 0; i < fieldList.Length; i++)
                 {
-                    object value = structFieldInfo[i].GetValue(entrydataobject);
+                    object value = fieldList[i].GetValue(entrydataobject);
                     structView.Rows[i].Cells[1].Value = value.ToString();
-                    if (structFieldInfo[i].FieldType.IsEnum)
+                    if (fieldList[i].FieldType.IsEnum)
                     {
-                        structView.Rows[i].Cells[2].Value = Enum.Format(structFieldInfo[i].FieldType, value, "X");
+                        structView.Rows[i].Cells[2].Value = Enum.Format(fieldList[i].FieldType, value, "X");
                     }
                     /*else
                     {
@@ -541,11 +561,14 @@ namespace StatusEditor
             sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
 
             int index = ev.RowIndex;
+            // FIXME
+            /*
             object value = structFieldInfo[index].GetValue(((StructEntryBase)tablefile.table[animBox.SelectedIndex]).GetDataObject());
             if (structFieldInfo[index].FieldType.IsEnum)
             {
                 structView.Rows[index].Cells[2].Value = Enum.Format(structFieldInfo[index].FieldType, value, "X");
             }
+            */
         }
 
 

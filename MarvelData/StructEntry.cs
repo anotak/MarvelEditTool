@@ -19,6 +19,11 @@ namespace MarvelData
         {
             throw new NotImplementedException();
         }
+
+        public virtual void SetData(byte[] bytes, int offset)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class StructEntry<T> : StructEntryBase where T : struct
@@ -43,11 +48,23 @@ namespace MarvelData
             }
         }
 
+        public override void SetData(byte[] bytes, int offset)
+        {
+            if (bytes.Length - offset < size)
+            {
+                throw new Exception("WRONG SIZE IMPORT, IMPLODING " + bytes.Length + " is real, vs expected " + size); // FIXME THIS SUCKS
+            }
+            bHasData = true;
+            GCHandle handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+            data = (T)Marshal.PtrToStructure(handle.AddrOfPinnedObject() + offset, typeof(T));
+            handle.Free();
+        }
+
         public override void SetData(byte[] bytes)
         {
             if (bytes.Length != size)
             {
-                throw new Exception("WRONG SIZE IMPORT, IMPLODING"); // FIXME THIS SUCKS
+                throw new Exception("WRONG SIZE IMPORT, IMPLODING " + bytes.Length + " is real, vs expected " + size); // FIXME THIS SUCKS
             }
             bHasData = true;
             GCHandle handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);

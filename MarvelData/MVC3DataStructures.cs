@@ -368,4 +368,213 @@ namespace MarvelData
         public int unk18;
         public int unk1C;
     }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SpatkHeaderChunk
+    {
+        public int index;
+        public int size;
+        public int unk08;
+        public float meterrequirement;
+        public int disable;
+        public int cancelHierarchyThresh;
+        public int positionState;
+        public int comboState;
+        public int flags;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SpatkStandardChunk // 02
+    {
+        public int subChunkType; // 02
+        public int cancelWindow;
+        public int chargeTime;
+        public int unk0C;
+        public int negativeEdge;
+        public int leniencyMaybe;
+        public int inputCode;
+        public int unk1C;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SpatkDirectionalDashChunk // 03
+    {
+        public int subChunkType; // 03
+        public int cancelWindow;
+        public int unk08;
+        public int unk0C;
+        public int negativeEdge;
+        public int leniencyMaybe;
+        public int inputCode;
+        public int unk1C;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SpatkTwoButtonChunk // 04
+    {
+        public int subChunkType; // 04
+        public int cancelWindow;
+        public int unk08;
+        public int unk0C;
+        public int unk10;
+        public int unk14;
+        public int unk18;
+        public int unk1C;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SpatkDirButtonChunk // 05
+    {
+        public int subChunkType; // 05
+        public int cancelWindow;
+        public int leniencyMaybe;
+        public int inputCodeDirection;
+        public int inputCodeButton;
+        public int unk14;
+        public int unk18;
+        public int unk1C;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SpatkActionChunk // 09
+    {
+        public int subChunkType; // 09
+        public int actionClass;
+        public int actionIndex;
+        public int unk0C;
+        public int unk10;
+        public int unk14;
+        public int unk18;
+        public int unk1C;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SpatkStateFromChunk // 1E
+    {
+        public int subChunkType; // 1E
+        public int stateFrom;
+        public int unk08;
+        public int unk0C;
+        public int unk10;
+        public int unk14;
+        public int unk18;
+        public int unk1C;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SpatkTACDHCChunk // 23
+    {
+        public int subChunkType; //23
+        public int anmChrAction;
+        public int unk08;
+        public int unk0C;
+        public int unk10;
+        public int unk14;
+        public int unk18;
+        public int unk1C;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SpatkStateChangeChunk // 2F
+    {
+        public int subChunkType; //2F
+        public int unk04;
+        public int unk08;
+        public int unk0C;
+        public int unk10;
+        public int unk14;
+        public int unk18;
+        public int unk1C;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SpatkProhibitedChunk // 31
+    {
+        public int subChunkType; //31
+        public int prohibitedCategory;
+        public int prohibitedID;
+        public int unk0C;
+        public int unk10;
+        public int unk14;
+        public int unk18;
+        public int unk1C;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SpatkAirdashChunk // 34
+    {
+        public int subChunkType; //34
+        public int unk04;
+        public int unk08;
+        public int unk0C;
+        public int unk10;
+        public int unk14;
+        public int unk18;
+        public int unk1C;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SpatkAirSpecialLimiterChunk // 35
+    {
+        public int subChunkType; //35
+        public int limit;
+        public int unk08;
+        public int unk0C;
+        public int unk10;
+        public int unk14;
+        public int unk18;
+        public int unk1C;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SpatkGuardTACChunk // 38
+    {
+        public int subChunkType; //38
+        public int unk04;
+        public int unk08;
+        public int unk0C;
+        public int unk10;
+        public int unk14;
+        public int unk18;
+        public int unk1C;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SpatkHyperChunk // 3A
+    {
+        public int subChunkType; //3A
+        public int unk04;
+        public int unk08;
+        public int unk0C;
+        public int unk10;
+        public int unk14;
+        public int unk18;
+        public int unk1C;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SpatkPermitChainChunk // 3F
+    {
+        public int subChunkType; //3F
+        public int validityFlags;
+        public int unk08;
+        public int unk0C;
+        public int unk10;
+        public int unk14;
+        public int unk18;
+        public int unk1C;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SpatkUnkChunk // ??
+    {
+        public int subChunkType; //??
+        public int unk04;
+        public int unk08;
+        public int unk0C;
+        public int unk10;
+        public int unk14;
+        public int unk18;
+        public int unk1C;
+    }
 }
