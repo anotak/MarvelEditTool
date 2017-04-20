@@ -16,9 +16,9 @@ namespace MarvelData
         public Type fileType;
         public int defaultChunkSize;
         
-        public static Type[] structTypes = { typeof(StructEntry<StatusChunk>), typeof(StructEntry<ATKInfoChunk>), typeof(StructEntry<BaseActChunk>), typeof(CmdSpAtkEntry) };
-        public static int[] structSizes = { 0x350, 0x18C, 0x20, 0x00 };
-        public static string[] structExtensions = { "CHS", "ATI", "CBA", "CSP" };
+        public static Type[] structTypes = { typeof(StructEntry<StatusChunk>), typeof(StructEntry<ATKInfoChunk>), typeof(StructEntry<BaseActChunk>), typeof(CmdSpAtkEntry), typeof(CmdComboEntry) };
+        public static int[] structSizes = { 0x350, 0x18C, 0x20, 0x00, 0x00 };
+        public static string[] structExtensions = { "CHS", "ATI", "CBA", "CSP", "CCM" };
 
         public static TableFile LoadFile(string filename, bool bAutoIdentify = false, Type entryType = null, int structsize = -1)
         {

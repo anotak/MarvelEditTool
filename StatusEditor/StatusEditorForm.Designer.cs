@@ -43,9 +43,10 @@
             this.extendButton = new System.Windows.Forms.Button();
             this.sizeLabel = new System.Windows.Forms.Label();
             this.dataTextBox = new System.Windows.Forms.TextBox();
-            this.var = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.hex = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SubChunkColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.varColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hexColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -179,9 +180,10 @@
             this.structView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.structView.ColumnHeadersVisible = false;
             this.structView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.var,
-            this.value,
-            this.hex});
+            this.SubChunkColumn,
+            this.varColumn,
+            this.valueColumn,
+            this.hexColumn});
             this.structView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.structView.Enabled = false;
             this.structView.Location = new System.Drawing.Point(0, 0);
@@ -301,24 +303,35 @@
             this.dataTextBox.TabIndex = 0;
             this.dataTextBox.WordWrap = false;
             // 
-            // var
+            // SubChunkColumn
             // 
-            this.var.FillWeight = 75F;
-            this.var.HeaderText = "var";
-            this.var.Name = "var";
-            this.var.ReadOnly = true;
+            this.SubChunkColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
+            this.SubChunkColumn.FillWeight = 10F;
+            this.SubChunkColumn.HeaderText = "subchunk";
+            this.SubChunkColumn.Name = "SubChunkColumn";
+            this.SubChunkColumn.ReadOnly = true;
+            this.SubChunkColumn.Width = 5;
             // 
-            // value
+            // varColumn
             // 
-            this.value.HeaderText = "value";
-            this.value.Name = "value";
+            this.varColumn.FillWeight = 75F;
+            this.varColumn.HeaderText = "var";
+            this.varColumn.Name = "varColumn";
+            this.varColumn.ReadOnly = true;
             // 
-            // hex
+            // valueColumn
             // 
-            this.hex.FillWeight = 20F;
-            this.hex.HeaderText = "hex";
-            this.hex.Name = "hex";
-            this.hex.ReadOnly = true;
+            this.valueColumn.HeaderText = "value";
+            this.valueColumn.Name = "valueColumn";
+            // 
+            // hexColumn
+            // 
+            this.hexColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
+            this.hexColumn.FillWeight = 20F;
+            this.hexColumn.HeaderText = "hex";
+            this.hexColumn.Name = "hexColumn";
+            this.hexColumn.ReadOnly = true;
+            this.hexColumn.Width = 5;
             // 
             // StatusEditorForm
             // 
@@ -370,9 +383,10 @@
         private System.Windows.Forms.SplitContainer splitContainer4;
         private System.Windows.Forms.DataGridView structView;
         private System.Windows.Forms.TextBox dataTextBox;
-        private System.Windows.Forms.DataGridViewTextBoxColumn var;
-        private System.Windows.Forms.DataGridViewTextBoxColumn value;
-        private System.Windows.Forms.DataGridViewTextBoxColumn hex;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SubChunkColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn varColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn valueColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn hexColumn;
     }
 }
 

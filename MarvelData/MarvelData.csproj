@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="AEDataTools.cs" />
     <Compile Include="AELogger.cs" />
+    <Compile Include="CmdComboEntry.cs" />
     <Compile Include="CmdSpAtkEntry.cs" />
     <Compile Include="MultiStructEntry.cs" />
     <Compile Include="MVC3DataStructures.cs" />

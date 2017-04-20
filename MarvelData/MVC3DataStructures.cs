@@ -368,6 +368,27 @@ namespace MarvelData
         public int unk18;
         public int unk1C;
     }
+    [StructLayout(LayoutKind.Sequential)]
+    public struct CmdComboHeaderChunk
+    {
+        public int index;
+        public int size;
+        public int unk08;
+        public float meterRequirement;
+        public int disable;
+        public int unk14;
+        public int unk18;
+        public int delay;
+        public int anmChrAction;
+        public int unk24;
+        public int unk28;
+        public int unk2C;
+        public int unk30;
+        public int unk34;
+        public int unk38;
+        public int unk3C;
+        public int unk40;
+    }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct SpatkHeaderChunk

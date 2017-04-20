@@ -74,7 +74,7 @@ namespace StatusEditor
             structFieldInfo = null;
         }
 
-        public void AddItems(Type structtype)
+        public void AddItems(Type structtype, int structIndex = 0)
         {
             if (structFieldInfo == null)
             {
@@ -83,15 +83,17 @@ namespace StatusEditor
 
 
             FieldInfo[] fieldList = GetFieldInfo(structtype);
-
+            int offset = structView.Rows.Count;
             for (int i = 0; i < fieldList.Length; i++)
             {
-                structView.Rows.Add(fieldList[i].Name);
+                structView.Rows.Add(structIndex.ToString());
+                //structView.Rows.Add(fieldList[i].Name);
+                structView.Rows[i + offset].Cells[1].Value = fieldList[i].Name;
                 if (fieldList[i].FieldType == typeof(float))
                 {
-                    structView.Rows[i].DefaultCellStyle.BackColor = Color.LightYellow;
+                    structView.Rows[i + offset].DefaultCellStyle.BackColor = Color.LightYellow;
                 }
-                structView.Rows[i].Cells[1].ValueType = fieldList[i].FieldType;
+                structView.Rows[i + offset].Cells[2].ValueType = fieldList[i].FieldType;
                 //AELogger.Log(structFieldInfo[i].Name.ToString());
             }
 
@@ -172,7 +174,7 @@ namespace StatusEditor
             {
                 //openFile.DefaultExt = "bcm";
                 // The Filter property requires a search string after the pipe ( | )
-                openFile.Filter = "Supported Data (*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504;*.csp;*.52A8DBF6)|*.csp;*.52A8DBF6;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504|Cmdspatk Files (*.csp;*.52A8DBF6)|*.csp;*.52A8DBF6|BaseAct Files (*.cba;*.3C6EA504)|*.cba;*.3C6EA504|AtkInfo Files (*.ati;*.227A8048)|*.ati;*.227A8048|Status Files (*.chs;*.3C41466B)|*.chs;*.3C41466B|All files (*.*)|*.*";
+                openFile.Filter = "Supported Data (*.ccm;*.28DD8317;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504;*.csp;*.52A8DBF6)|*.ccm;*.28DD8317;*.csp;*.52A8DBF6;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504|Cmdcombo Files (*.ccm;*.28DD8317)|*.ccm;*.28DD8317|Cmdspatk Files (*.csp;*.52A8DBF6)|*.csp;*.52A8DBF6|BaseAct Files (*.cba;*.3C6EA504)|*.cba;*.3C6EA504|AtkInfo Files (*.ati;*.227A8048)|*.ati;*.227A8048|Status Files (*.chs;*.3C41466B)|*.chs;*.3C41466B|All files (*.*)|*.*";
                 openFile.ShowDialog();
                 if (openFile.FileNames.Length > 0)
                 {
@@ -402,44 +404,69 @@ namespace StatusEditor
 
         private void SaveOldData(int index)
         {
-            //if (!(tablefile.table[index] is StatusEntry))
             Type entryType = tablefile.table[index].GetType();
-            AELogger.Log(entryType.GenericTypeArguments[0].ToString() + " is the saveolddata");
-            if (!(tablefile.table[index] is StructEntryBase) && entryType.GenericTypeArguments[0].Equals(structViewType))
+            
+            if (tablefile.table[index] is StructEntryBase)
             {
-                MessageBox.Show("warning: there might be some kind error, attempted write of incorrect data, you probably should make backups and save and report this bug with the logfile");
-                AELogger.Log("warning saving attempted of non correct data");
-                return;
+                AELogger.Log(entryType.GenericTypeArguments[0].ToString() + " is the saveolddata");
+                if (entryType.GenericTypeArguments[0].Equals(structViewType))
+                {
+                    SaveOldData((StructEntryBase)tablefile.table[index], entryType, 0);
+                }
+                else
+                {
+                    MessageBox.Show("warning: there might be some kind error, attempted write of incorrect data, you probably should make backups and save and report this bug with the logfile");
+                    AELogger.Log("warning saving attempted of non correct data");
+                    return;
+                }
             }
+            else if (tablefile.table[index] is MultiStructEntry)
+            {
+                MultiStructEntry multientry = (MultiStructEntry)tablefile.table[index];
+                int offset = 0;
+                for (int i = 0; i < multientry.subEntries.Count; i++)
+                {
+                    entryType = multientry.subEntries[i].GetType();
+
+                    offset += SaveOldData((StructEntryBase)multientry.subEntries[i], entryType, offset);
+                }
+            }
+        }
+
+        private int SaveOldData(StructEntryBase entry, Type entryType, int offset)
+        {
+            //if (!(tablefile.table[index] is StatusEntry))
+            
             //Object entrydata = ((StructEntry)tablefile.table[index]).data; // turn it into a reference so SetValue works
 
-            Object entrydata = ((StructEntryBase)tablefile.table[index]).GetDataObject(); // turn it into a reference so SetValue works
+            Object entrydata = entry.GetDataObject(); // turn it into a reference so SetValue works
             FieldInfo[] fieldList = GetFieldInfo(entryType.GenericTypeArguments[0]);
-            for (int i = 0; i < fieldList.Length; i++)
+            int numFields = fieldList.Length;
+            for (int i = 0; i < numFields; i++)
             {
 
-                //structView.Rows[i].Cells[1].Value = structFieldInfo[i].GetValue(entry.data).ToString();
+                //structView.Rows[i].cells[2].Value = structFieldInfo[i].GetValue(entry.data).ToString();
 
                 // this part isnt needed anymore bc of magic with dataviewgrid
                 /*
                 if (structFieldInfo[i].FieldType.IsEnum)
                 {// check if enum
-                    structFieldInfo[i].SetValue(entrydata, Enum.Parse(structFieldInfo[i].FieldType, (string)structView.Rows[i].Cells[1].Value));
+                    structFieldInfo[i].SetValue(entrydata, Enum.Parse(structFieldInfo[i].FieldType, (string)structView.Rows[i].cells[2].Value));
                 }
                 else
                 */
                 {
                     try
                     {
-                        Convert.ChangeType(structView.Rows[i].Cells[1].Value, fieldList[i].FieldType);
-                        //AELogger.Log(structFieldInfo[i].ToString() + " IS " + structView.Rows[i].Cells[1].Value + " VS " + Convert.ChangeType(structView.Rows[i].Cells[1].Value, structFieldInfo[i].FieldType));
+                        Convert.ChangeType(structView.Rows[i + offset].Cells[2].Value, fieldList[i].FieldType);
+                        //AELogger.Log(structFieldInfo[i].ToString() + " IS " + structView.Rows[i].cells[2].Value + " VS " + Convert.ChangeType(structView.Rows[i].cells[2].Value, structFieldInfo[i].FieldType));
                         //AELogger.Log(structFieldInfo[i].GetValue(entrydata).ToString());
-                        fieldList[i].SetValue(entrydata, Convert.ChangeType(structView.Rows[i].Cells[1].Value, fieldList[i].FieldType));
+                        fieldList[i].SetValue(entrydata, Convert.ChangeType(structView.Rows[i + offset].Cells[2].Value, fieldList[i].FieldType));
                         //AELogger.Log(structFieldInfo[i].GetValue(entrydata).ToString());
                     }
                     catch (Exception e)
                     {
-                        AELogger.Log("failed type: val " + fieldList[i].ToString() + " - value " + structView.Rows[i].Cells[1].Value);
+                        AELogger.Log("failed type: val " + fieldList[i].ToString() + " - value " + structView.Rows[i + offset].Cells[2].Value);
 
 
                         AELogger.Log("Exception: " + e.Message);
@@ -449,7 +476,8 @@ namespace StatusEditor
                 }
             }
 
-            ((StructEntryBase)tablefile.table[index]).SetDataObject(entrydata);
+            entry.SetDataObject(entrydata);
+            return numFields;
         }
 
         private void animBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -482,56 +510,59 @@ namespace StatusEditor
                 animBox.SelectedIndex < tablefile.table.Count
                 &&
                 tablefile.table[animBox.SelectedIndex].bHasData
-                &&
-                tablefile.table[animBox.SelectedIndex] is StructEntryBase
                 )
             {
                 structView.Columns[0].DefaultCellStyle.ForeColor = Color.Black;
                 structView.Columns[1].DefaultCellStyle.ForeColor = Color.Black;
-                Type entryType = tablefile.table[animBox.SelectedIndex].GetType();
-                AELogger.Log(entryType.GenericTypeArguments[0].ToString() + " is the newly selected index");
-                if (!entryType.GenericTypeArguments[0].Equals(structViewType))
-                {
-                    ClearItems();
-                    AddItems(entryType.GenericTypeArguments[0]);
-                }
 
-                //StructEntry<StatusChunk> entry = (StructEntry<StatusChunk>)tablefile.table[animBox.SelectedIndex];
-                StructEntryBase entry = (StructEntryBase)tablefile.table[animBox.SelectedIndex];
                 exportButton.Enabled = true;
                 SetTextConcurrent(tablefile.table[animBox.SelectedIndex].GetData());
                 //dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].data).Replace("-","");
                 sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
 
-                object entrydataobject = entry.GetDataObject();
-                FieldInfo[] fieldList = GetFieldInfo(entryType.GenericTypeArguments[0]);
-                for (int i = 0; i < fieldList.Length; i++)
+                Type entryType = tablefile.table[animBox.SelectedIndex].GetType();
+
+                
+                if (tablefile.table[animBox.SelectedIndex] is StructEntryBase)
                 {
-                    object value = fieldList[i].GetValue(entrydataobject);
-                    structView.Rows[i].Cells[1].Value = value.ToString();
-                    if (fieldList[i].FieldType.IsEnum)
+                    AELogger.Log(entryType.GenericTypeArguments[0].ToString() + " is the newly selected index");
+                    /*
+                    if (!entryType.GenericTypeArguments[0].Equals(structViewType))
                     {
-                        structView.Rows[i].Cells[2].Value = Enum.Format(fieldList[i].FieldType, value, "X");
+                        ClearItems();
+                        AddItems(entryType.GenericTypeArguments[0]);
                     }
-                    /*else
-                    {
-                        TypeCode code = Type.GetTypeCode(structFieldInfo[i].FieldType);
-                        if (code >= TypeCode.SByte && code <= TypeCode.UInt64)
-                        {
-                            structView.Rows[i].Cells[2].Value = ((Int64)Convert.ChangeType(value, typeof(Int64))).ToString("X");
-                        }
-                        else if (code >= TypeCode.Single && code <= TypeCode.Decimal)
-                        {
-                            structView.Rows[i].Cells[2].Value = ((UInt64)Convert.ChangeType(value, typeof(UInt64))).ToString("X");
-                        }
-                        else
-                        {
-                            structView.Rows[i].Cells[2].Value = "";
-                        }
-                    }*/
-                    //structValues[i] = structFieldInfo[i].GetValue(entry.data).ToString();
+                    */
+
+                    //StructEntry<StatusChunk> entry = (StructEntry<StatusChunk>)tablefile.table[animBox.SelectedIndex];
+
+
+                    StructEntryBase entry = (StructEntryBase)tablefile.table[animBox.SelectedIndex];
+
+
+                    ClearItems();
+                    UpdateStructEntry(entryType, entry, 0);
+                    structView.Enabled = true;
                 }
-                structView.Enabled = true;
+                else if (tablefile.table[animBox.SelectedIndex] is MultiStructEntry)
+                {
+                    ClearItems();
+                    MultiStructEntry multi = (MultiStructEntry)tablefile.table[animBox.SelectedIndex];
+                    int offset = 0;
+                    for (int i = 0; i < multi.subEntries.Count; i++)
+                    {
+                        StructEntryBase entry = multi.subEntries[i];
+                        offset += UpdateStructEntry(entry.GetType(), entry, offset, i);
+                    }
+                    structView.Enabled = true;
+                }
+                else
+                {
+                    structView.Enabled = false;
+                    structView.Columns[0].DefaultCellStyle.ForeColor = Color.White;
+                    structView.Columns[1].DefaultCellStyle.ForeColor = Color.White;
+                }
+                
                 //structView.DataSource = structValues;
             }
             else
@@ -543,6 +574,42 @@ namespace StatusEditor
                 dataTextBox.Text = "";
                 sizeLabel.Text = "size: N/A";
             }
+        }
+
+        private int UpdateStructEntry(Type entryType, StructEntryBase entry, int offset, int structIndex = 0)
+        {
+            AddItems(entryType.GenericTypeArguments[0], structIndex);
+            object entrydataobject = entry.GetDataObject();
+            FieldInfo[] fieldList = GetFieldInfo(entryType.GenericTypeArguments[0]);
+            int numFields = fieldList.Length;
+            for (int i = 0; i < numFields; i++)
+            {
+                object value = fieldList[i].GetValue(entrydataobject);
+                structView.Rows[i + offset].Cells[2].Value = value.ToString();
+                if (fieldList[i].FieldType.IsEnum)
+                {
+                    structView.Rows[i + offset].Cells[3].Value = Enum.Format(fieldList[i].FieldType, value, "X");
+                }
+                /*else
+                {
+                    TypeCode code = Type.GetTypeCode(structFieldInfo[i].FieldType);
+                    if (code >= TypeCode.SByte && code <= TypeCode.UInt64)
+                    {
+                        structView.Rows[i].cells[3].Value = ((Int64)Convert.ChangeType(value, typeof(Int64))).ToString("X");
+                    }
+                    else if (code >= TypeCode.Single && code <= TypeCode.Decimal)
+                    {
+                        structView.Rows[i].cells[3].Value = ((UInt64)Convert.ChangeType(value, typeof(UInt64))).ToString("X");
+                    }
+                    else
+                    {
+                        structView.Rows[i].cells[3].Value = "";
+                    }
+                }*/
+                //structValues[i] = structFieldInfo[i].GetValue(entry.data).ToString();
+            }
+
+            return numFields;
         }
 
         private void structView_DataError(object sender, DataGridViewDataErrorEventArgs ev)
@@ -566,7 +633,7 @@ namespace StatusEditor
             object value = structFieldInfo[index].GetValue(((StructEntryBase)tablefile.table[animBox.SelectedIndex]).GetDataObject());
             if (structFieldInfo[index].FieldType.IsEnum)
             {
-                structView.Rows[index].Cells[2].Value = Enum.Format(structFieldInfo[index].FieldType, value, "X");
+                structView.Rows[index].cells[3].Value = Enum.Format(structFieldInfo[index].FieldType, value, "X");
             }
             */
         }
