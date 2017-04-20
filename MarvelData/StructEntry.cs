@@ -52,7 +52,7 @@ namespace MarvelData
         {
             if (bytes.Length - offset < size)
             {
-                throw new Exception("WRONG SIZE IMPORT, IMPLODING " + bytes.Length + " is real, vs expected " + size); // FIXME THIS SUCKS
+                throw new Exception("WRONG SIZE IMPORT, IMPLODING " + (bytes.Length - offset) + " is real, vs expected " + size); // FIXME THIS SUCKS
             }
             bHasData = true;
             GCHandle handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);

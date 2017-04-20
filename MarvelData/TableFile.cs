@@ -22,6 +22,7 @@ namespace MarvelData
 
         public static TableFile LoadFile(string filename, bool bAutoIdentify = false, Type entryType = null, int structsize = -1)
         {
+            AELogger.Log("attempting to open" + filename);
             if (entryType == null)
             {
                 entryType = typeof(RawEntry);
