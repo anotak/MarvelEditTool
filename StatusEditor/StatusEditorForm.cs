@@ -15,13 +15,13 @@ namespace StatusEditor
 {
     public partial class StatusEditorForm : Form
     {
-        public static bool bError;
-        public static bool bDataGridError;
+        public static bool bError = false;
+        public static bool bDataGridError = false;
         public string FilePath;
+        public string ImportPath;
         public TableFile tablefile;
         public List<string> tableNames;
         public bool bDisableUpdate;
-        public string ImportPath;
         public Dictionary<Type, FieldInfo[]> structFieldInfo;
         public int previousSelectedIndex;
         public Type structViewType;
@@ -33,9 +33,9 @@ namespace StatusEditor
             Text += ", build " + GetCompileDate();
             AELogger.Log(Text);
             FilePath = String.Empty;
+            ImportPath = String.Empty;
             bDisableUpdate = true;
             previousSelectedIndex = 0;
-            bDataGridError = false;
             structView.Rows.Clear();
             AddItems(typeof(StatusChunk));
 

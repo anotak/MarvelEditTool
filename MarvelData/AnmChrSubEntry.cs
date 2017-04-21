@@ -18,6 +18,13 @@ namespace MarvelData
         public List<byte[]> subsubEntries;
         public List<int> subsubIndices;
 
+        public AnmChrSubEntry()
+        {
+            subsubEntries = new List<byte[]>();
+            subsubIndices = new List<int>();
+            subsubPointers = new List<uint>();
+        }
+
         public void SetData(BinaryReader reader)
         {
             reader.BaseStream.Seek(originalPointer, SeekOrigin.Begin);

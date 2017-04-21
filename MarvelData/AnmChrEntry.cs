@@ -15,6 +15,10 @@ namespace MarvelData
         public int unk0C;
         public List<AnmChrSubEntry> subEntries;
 
+        public AnmChrEntry() : base()
+        {
+            subEntries = new List<AnmChrSubEntry>();
+        }
         public override void SetData(byte[] newdata)
         {
             using (MemoryStream stream = new MemoryStream(newdata))
@@ -32,6 +36,7 @@ namespace MarvelData
                         AnmChrSubEntry subentry = new AnmChrSubEntry();
                         subentry.tableindex = reader.ReadInt32();
                         subentry.originalPointer = reader.ReadUInt32();
+                        subEntries.Add(subentry);
                     }
 
                     for (int i = 0; i < subcount; i++)

@@ -56,7 +56,7 @@ namespace AnmChrEdit
             public void ApplicationThreadException(object sender, ThreadExceptionEventArgs e)
             {
 
-                TableEditor.bError = true;
+                AnmChrForm.bError = true;
                 AELogger.Log("Exception: " + e.Exception.Message);
 
                 AELogger.Log("Exception: " + e.Exception.StackTrace);
@@ -79,6 +79,5 @@ namespace AnmChrEdit
                 Application.Exit();
             }
         }
-    }
     }
 }
