@@ -408,8 +408,9 @@ namespace StatusEditor
             
             if (tablefile.table[index] is StructEntryBase)
             {
-                AELogger.Log(entryType.GenericTypeArguments[0].ToString() + " is the saveolddata");
-                if (entryType.GenericTypeArguments[0].Equals(structViewType))
+                Type generic = entryType.GetGenericArguments()[0];
+                AELogger.Log(generic.ToString() + " is the saveolddata");
+                if (generic.Equals(structViewType))
                 {
                     SaveOldData((StructEntryBase)tablefile.table[index], entryType, 0);
                 }
@@ -440,7 +441,7 @@ namespace StatusEditor
             //Object entrydata = ((StructEntry)tablefile.table[index]).data; // turn it into a reference so SetValue works
 
             Object entrydata = entry.GetDataObject(); // turn it into a reference so SetValue works
-            FieldInfo[] fieldList = GetFieldInfo(entryType.GenericTypeArguments[0]);
+            FieldInfo[] fieldList = GetFieldInfo(entryType.GetGenericArguments()[0]);
             int numFields = fieldList.Length;
             for (int i = 0; i < numFields; i++)
             {
@@ -525,7 +526,7 @@ namespace StatusEditor
                 
                 if (tablefile.table[animBox.SelectedIndex] is StructEntryBase)
                 {
-                    AELogger.Log(entryType.GenericTypeArguments[0].ToString() + " is the newly selected index");
+                    AELogger.Log(entryType.GetGenericArguments()[0].ToString() + " is the newly selected index");
                     /*
                     if (!entryType.GenericTypeArguments[0].Equals(structViewType))
                     {
@@ -578,9 +579,10 @@ namespace StatusEditor
 
         private int UpdateStructEntry(Type entryType, StructEntryBase entry, int offset, int structIndex = 0)
         {
-            AddItems(entryType.GenericTypeArguments[0], structIndex);
+            Type generic = entryType.GetGenericArguments()[0];
+            AddItems(entryType.GetGenericArguments()[0], structIndex);
             object entrydataobject = entry.GetDataObject();
-            FieldInfo[] fieldList = GetFieldInfo(entryType.GenericTypeArguments[0]);
+            FieldInfo[] fieldList = GetFieldInfo(entryType.GetGenericArguments()[0]);
             int numFields = fieldList.Length;
             for (int i = 0; i < numFields; i++)
             {

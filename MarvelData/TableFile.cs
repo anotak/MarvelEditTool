@@ -259,6 +259,7 @@ namespace MarvelData
 
                     b.Write(table[i].index);
                     b.Write(pointer);
+                    table[i].UpdateSize();
                     pointer += (uint)table[i].size;
                 }
             }
@@ -283,6 +284,12 @@ namespace MarvelData
                     AELogger.Log("writing actual data of " + table[i].GetFancyName() +
                         " with pointer " + pointer.ToString("X") + "h ");
                     b.Write(table[i].GetData());
+#if DEBUG
+                    if (table[i].GetData().Length != table[i].size)
+                    {
+                        AELogger.Log( i + " SIZE MISMATCH " + table[i].GetData().Length + " != " + table[i].size);
+                    }
+#endif
                 }
             }
 

@@ -141,5 +141,10 @@ namespace MarvelData
                 AELogger.Log("attempted import of nonexistent file " + filename + " to " + GetFancyName());
             }
         }
+
+        public virtual void UpdateSize()
+        {
+
+        }
     }
 }

@@ -25,7 +25,7 @@ namespace MarvelData
             subsubPointers = new List<uint>();
         }
 
-        public void SetData(BinaryReader reader)
+        public void SetData(BinaryReader reader, uint nextPointer)
         {
             reader.BaseStream.Seek(originalPointer, SeekOrigin.Begin);
 
@@ -52,7 +52,7 @@ namespace MarvelData
                 int currentSize;
                 if (i == subcount - 1)
                 {
-                    currentSize = (int)reader.BaseStream.Length - (int)subsubPointers[i];
+                    currentSize = (int)nextPointer - ((int)subsubPointers[i] + (int)originalPointer);
                 }
                 else
                 {
@@ -62,6 +62,45 @@ namespace MarvelData
 
                 subsubEntries.Add(reader.ReadBytes(currentSize));
             }
+        }
+
+        public void WriteData(BinaryWriter writer)
+        {
+            int subcount = subsubEntries.Count;
+            if (localindex != tableindex)
+            {
+                AELogger.Log(" localindex " + localindex + " != tableindex " + tableindex);
+            }
+
+            writer.Write(localindex);
+            writer.Write(subcount);
+            writer.Write(unk08);
+            writer.Write(unk0C);
+            int pointer = 16 + (subcount * 8);
+            for (int i = 0; i < subcount; i++)
+            {
+                writer.Write(pointer);
+                writer.Write(subsubIndices[i]);
+                pointer += subsubEntries[i].Length;
+            }
+            for (int i = 0; i < subcount; i++)
+            {
+#if DEBUG
+                AELogger.Log("position is: " + writer.BaseStream.Position + " / " + writer.BaseStream.Length + " and about to write " + subsubEntries[i].Length);
+#endif
+                writer.Write(subsubEntries[i]);
+            }
+        }
+
+        public int GetSize()
+        {
+            int subsubcount = subsubEntries.Count;
+            size = 16 + (subsubcount * 8);
+            for (int i = 0; i < subsubcount; i++)
+            {
+                size += subsubEntries[i].Length;
+            }
+            return size;
         }
     }
 }
