@@ -17,12 +17,14 @@ namespace MarvelData
         public List<uint> subsubPointers; // DONT SAVE THIS
         public List<byte[]> subsubEntries;
         public List<int> subsubIndices;
+        public bool bIsCopied;
 
         public AnmChrSubEntry()
         {
             subsubEntries = new List<byte[]>();
             subsubIndices = new List<int>();
             subsubPointers = new List<uint>();
+            bIsCopied = false;
         }
 
         public void SetData(BinaryReader reader, uint nextPointer)
@@ -101,6 +103,29 @@ namespace MarvelData
                 size += subsubEntries[i].Length;
             }
             return size;
+        }
+
+        public AnmChrSubEntry Copy()
+        {
+            AnmChrSubEntry output = new AnmChrSubEntry();
+            output.localindex = localindex;
+            output.tableindex = localindex;
+            using (MemoryStream stream = new MemoryStream())
+            {
+                using (BinaryWriter writer=  new BinaryWriter(stream))
+                {
+                    WriteData(writer);
+                    writer.Flush();
+                    stream.Seek(0, SeekOrigin.Begin);
+                    // dont close writer
+                    using (BinaryReader reader = new BinaryReader(stream))
+                    {
+                        output.SetData(reader, (uint)GetSize());
+                    }
+                }
+            }
+            output.bIsCopied = true;
+            return output;
         }
     }
 }

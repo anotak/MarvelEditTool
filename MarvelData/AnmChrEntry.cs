@@ -21,12 +21,28 @@ namespace MarvelData
 
         public List<int> getSubEntryList()
         {
+            subEntries.Sort(delegate (AnmChrSubEntry x, AnmChrSubEntry y)
+            {
+                if (x.localindex > y.localindex)
+                {
+                    return 1;
+                }
+                return -1;
+            });
+
             List<int> output = new List<int>();
             for (int i = 0; i < subEntries.Count; i++)
             {
                 output.Add(subEntries[i].localindex);
             }
             return output;
+        }
+
+        public override void ImportBytes(byte[] bytes)
+        {
+            originalPointer = 0;
+            size = bytes.Length;
+            base.ImportBytes(bytes);
         }
 
         public override void SetData(byte[] newdata)

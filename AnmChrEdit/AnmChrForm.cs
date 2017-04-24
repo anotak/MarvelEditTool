@@ -22,6 +22,11 @@ namespace AnmChrEdit
         public bool bDisableUpdate;
         public bool bDisableSubUpdate;
         public bool bDisableSubSubUpdate;
+        public AnmChrSubEntry subCopyInstance;
+        public byte[] subsubCopyInstance;
+        
+        public List<List<int>> selectedSubSubIndices;
+        public List<int> selectedSubIndices;
 
         public AnmChrForm()
         {
@@ -30,6 +35,9 @@ namespace AnmChrEdit
             AELogger.Log(Text);
             FilePath = String.Empty;
             ImportPath = String.Empty;
+
+            selectedSubIndices = new List<int>();
+            selectedSubSubIndices = new List<List<int>>();
         }
 
         public static string GetCompileDate()
@@ -113,6 +121,68 @@ namespace AnmChrEdit
             bDisableUpdate = false;
         }
 
+        public void SaveSelectedIndices()
+        {
+            //AELogger.Log("HAHA");
+            int s = animBox.SelectedIndex;
+            for (int i = selectedSubIndices.Count; i <= s; i++)
+            {
+                //AELogger.Log("a" + i);
+                selectedSubIndices.Add(-1);
+            }
+
+            int subS = subEntryBox.SelectedIndex;
+            selectedSubIndices[s] = subS;
+            
+            for (int i = selectedSubSubIndices.Count; i <= s; i++)
+            {
+                //AELogger.Log("b" + i);
+                selectedSubSubIndices.Add(new List<int>());
+            }
+
+            for (int i = selectedSubSubIndices[s].Count; i <= subS; i++)
+            {
+                //AELogger.Log("c" + i);
+                selectedSubSubIndices[s].Add(-1);
+            }
+
+            selectedSubSubIndices[s][subS] = subsubEntryBox.SelectedIndex;
+        }
+
+        public void RefreshSelectedIndices()
+        {
+            int s = animBox.SelectedIndex;
+
+            if (!tablefile.table[s].bHasData)
+            {
+                return;
+            }
+
+            if (!bDisableSubUpdate && selectedSubIndices.Count > s)
+            {
+                int selectedSub = selectedSubIndices[s];
+                if (selectedSub >= 0 && selectedSub < subEntryBox.Items.Count)
+                {
+                    subEntryBox.SelectedIndex = selectedSub;
+                }
+            }
+
+            if (selectedSubSubIndices.Count > s)
+            {
+                int subS = subEntryBox.SelectedIndex;
+                List<int> selectedList = selectedSubSubIndices[s];
+                if (selectedList.Count > subS)
+                {
+                    int selectedSub = selectedList[subS];
+
+                    if (selectedSub >= 0 && selectedSub < subsubEntryBox.Items.Count)
+                    {
+                        subsubEntryBox.SelectedIndex = selectedSub;
+                    }
+                }
+            }
+        }
+
         private void openButton_Click(object sender, EventArgs e)
         {
             if (bError)
@@ -136,6 +206,7 @@ namespace AnmChrEdit
                         AELogger.Log("load failed for some reason?");
                         return;
                     }
+
                     tablefile = newTable;
 
                     SuspendLayout();
@@ -148,6 +219,12 @@ namespace AnmChrEdit
                     sizeLabel.Text = count + " entries loaded";
                     FilePath = openFile.FileNames[0];
                     RefreshData();
+
+                    for (int i = 0; i < animBox.Items.Count; i++)
+                    {
+                        selectedSubSubIndices.Add(new List<int>());
+                    }
+
                     Text += " :: " + openFile.FileNames[0];
                     filenameLabel.Text = openFile.FileNames[0];
                     animBox.SelectedIndex = 0;
@@ -210,19 +287,128 @@ namespace AnmChrEdit
 
         }
 
-        private void importButton_Click(object sender, EventArgs e)
+        private void importButton_Click(object sender, EventArgs ev)
         {
+            if (animBox.SelectedIndex < 0
+                ||
+                animBox.SelectedIndex >= tablefile.table.Count)
+            {
+                return;
+            }
 
+            using (OpenFileDialog openFile = new OpenFileDialog())
+            {
+                openFile.DefaultExt = "mvc3data";
+                if (ImportPath != String.Empty)
+                {
+                    try
+                    {
+                        openFile.InitialDirectory = Path.GetDirectoryName(FilePath);
+                        openFile.FileName = Path.GetFileName(FilePath);
+                    }
+                    catch (Exception e)
+                    {
+                        AELogger.Log("some kind of exception setting save path from " + FilePath);
+                        AELogger.Log("Exception: " + e.Message);
+
+                        AELogger.Log("Exception: " + e.StackTrace);
+
+                        int i = 1;
+                        while (e.InnerException != null)
+                        {
+                            e = e.InnerException;
+                            AELogger.Log("InnerException " + i + ": " + e.Message);
+
+                            AELogger.Log("InnerException " + i + ": " + e.StackTrace);
+                            i++;
+                        }
+                    }
+                }
+                openFile.Title = "Import " + tablefile.table[animBox.SelectedIndex].GetFancyName();
+                // The Filter property requires a search string after the pipe ( | )
+                openFile.Filter = "mvc3 table data files (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
+
+                openFile.ShowDialog();
+                if (openFile.FileNames.Length > 0)
+                {
+                    tablefile.table[animBox.SelectedIndex].Import(openFile.FileNames[0]);
+                    RefreshData();
+                    bDisableUpdate = true;
+                    RefreshEditBox();
+                    bDisableUpdate = false;
+                    sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
+                    ImportPath = openFile.FileNames[0];
+                }
+                else
+                {
+                    AELogger.Log("nothing selected!");
+                }
+            }
         }
 
-        private void exportButton_Click(object sender, EventArgs e)
-        {
 
+        private void exportButton_Click(object sender, EventArgs ev)
+        {
+            if (animBox.SelectedIndex < 0
+                ||
+                animBox.SelectedIndex >= tablefile.table.Count)
+            {
+                return;
+            }
+
+            using (SaveFileDialog saveFileDialog1 = new SaveFileDialog())
+            {
+                saveFileDialog1.Title = "Export " + tablefile.table[animBox.SelectedIndex].GetFancyName();
+                saveFileDialog1.Filter = "mvc3 table data files (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
+                if (FilePath != String.Empty)
+                {
+                    try
+                    {
+                        saveFileDialog1.InitialDirectory = Path.GetDirectoryName(ImportPath);
+                    }
+                    catch (Exception e)
+                    {
+                        AELogger.Log("some kind of exception setting save path from " + ImportPath);
+                        AELogger.Log("Exception: " + e.Message);
+
+                        AELogger.Log("Exception: " + e.StackTrace);
+
+                        int i = 1;
+                        while (e.InnerException != null)
+                        {
+                            e = e.InnerException;
+                            AELogger.Log("InnerException " + i + ": " + e.Message);
+
+                            AELogger.Log("InnerException " + i + ": " + e.StackTrace);
+                            i++;
+                        }
+                    }
+                }
+                saveFileDialog1.FilterIndex = 2;
+                saveFileDialog1.RestoreDirectory = true;
+
+                saveFileDialog1.FileName = tablefile.table[animBox.SelectedIndex].GetFilename() + ".mvc3data";
+
+                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    if (saveFileDialog1.FileNames.Length > 0)
+                    {
+                        ImportPath = saveFileDialog1.FileNames[0];
+                        tablefile.table[animBox.SelectedIndex].Export(saveFileDialog1.FileNames[0]);
+                    }
+                }
+            }
         }
+
 
         private void extendButton_Click(object sender, EventArgs e)
         {
-
+            tablefile.Extend();
+            RefreshData();
+            if (animBox.TopIndex < animBox.Items.Count - 2)
+            {
+                animBox.TopIndex++;
+            }
         }
 
         private void animBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -236,6 +422,7 @@ namespace AnmChrEdit
             bDisableUpdate = true;
             importButton.Enabled = true;
             RefreshEditBox();
+            RefreshSelectedIndices();
             //sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
 
             bDisableUpdate = false;
@@ -256,15 +443,34 @@ namespace AnmChrEdit
             if (tablefile.table[s].bHasData && tablefile.table[s] is AnmChrEntry)
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[s];
+                dataTextBox.Enabled = true;
                 subEntryBox.DataSource = entry.getSubEntryList();
+                exportButton.Enabled = true;
+                subCopyButton.Enabled = true;
+                subDeleteButton.Enabled = entry.subEntries.Count > 1;
+                subsubCopyButton.Enabled = true;
+                lengthTextBox.Enabled = true;
+                lengthTextBox.Text = entry.animTime.ToString();
+                subPasteButton.Enabled = subCopyInstance != null;
+                subsubPasteButton.Enabled = subsubCopyInstance != null;
             }
             else
             {
                 //subsubEntryBox.BeginUpdate();
+                dataTextBox.Enabled = false;
+                dataTextBox.Clear();
+                lengthTextBox.Enabled = false;
+                lengthTextBox.Clear();
+                exportButton.Enabled = false;
                 subEntryBox.DataSource = null;
+                subDeleteButton.Enabled = false;
                 subsubEntryBox.DataSource = null;
                 subEntryBox.Items.Clear();
                 subsubEntryBox.Items.Clear();
+                subCopyButton.Enabled = false;
+                subsubCopyButton.Enabled = false;
+                subsubPasteButton.Enabled = true;
+                subPasteButton.Enabled = false;
                 //subsubEntryBox.EndUpdate();
             }
             //subEntryBox.EndUpdate();
@@ -286,10 +492,32 @@ namespace AnmChrEdit
             if (tablefile.table[s] is AnmChrEntry && tablefile.table[s].bHasData)
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[s];
-                subsubEntryBox.DataSource = entry.subEntries[subEntryBox.SelectedIndex].subsubPointers;
+
+                if (bDisableSubSubUpdate)
+                {
+                    subsubEntryBox.DataSource = entry.subEntries[subEntryBox.SelectedIndex].subsubPointers;
+                }
+                else
+                {
+                    bDisableSubSubUpdate = true;
+                    subsubEntryBox.DataSource = entry.subEntries[subEntryBox.SelectedIndex].subsubPointers;
+                    bDisableSubSubUpdate = false;
+                }
+                if (bDisableUpdate)
+                {
+                    RefreshSelectedIndices();
+                }
+                else
+                {
+                    SaveSelectedIndices();
+                }
+                RefreshText();
+                timeTextBox.Text = entry.subEntries[subEntryBox.SelectedIndex].tableindex.ToString();
+                timeTextBox.Enabled = true;
             }
             else
             {
+                timeTextBox.Enabled = false;
                 subsubEntryBox.DataSource = null;
                 subsubEntryBox.Items.Clear();
             }
@@ -299,7 +527,7 @@ namespace AnmChrEdit
             //ResumeLayout();
         }
 
-        private void subsubEntryBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void subsubEntryBox_SelectedIndexChanged(object sender, EventArgs ev)
         {
             if (bDisableSubSubUpdate)
             {
@@ -310,13 +538,30 @@ namespace AnmChrEdit
             int s = animBox.SelectedIndex;
             if (tablefile.table[s] is AnmChrEntry && tablefile.table[s].bHasData)
             {
+                RefreshText();
+
+                SaveSelectedIndices();
+            }
+            bDisableSubSubUpdate = false;
+        }
+
+        private void RefreshText()
+        {
+            int s = animBox.SelectedIndex;
+            if (tablefile.table[s] is AnmChrEntry)
+            {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[s];
 
                 byte[] data = entry.subEntries[subEntryBox.SelectedIndex].subsubEntries[subsubEntryBox.SelectedIndex];
-
+                dataTextBox.Enabled = true;
                 dataTextBox.Text = BitConverter.ToString(data).Replace("-", "");
+                dataTextBox.ForeColor = Color.White;
             }
-            bDisableSubSubUpdate = false;
+            else
+            {
+                dataTextBox.Enabled = false;
+                dataTextBox.Clear();
+            }
         }
 
         public static byte[] StringToByteArray(string input)
@@ -330,7 +575,7 @@ namespace AnmChrEdit
             return outBytes;
         }
 
-        private void dataTextBox_TextChanged(object sender, EventArgs e)
+        private void dataTextBox_TextChanged(object sender, EventArgs ev)
         {
             if (bDisableUpdate || bDisableSubUpdate || bDisableSubSubUpdate)
             {
@@ -351,12 +596,194 @@ namespace AnmChrEdit
 
                         entry.subEntries[subEntryBox.SelectedIndex].subsubEntries[subsubEntryBox.SelectedIndex] = StringToByteArray(dataTextBox.Text);
                     }
-                    dataTextBox.ForeColor = Color.Black;
+                    dataTextBox.ForeColor = Color.White;
+                }
+                catch(Exception e)
+                {
+                    AELogger.Log("Exception: " + e.Message);
+
+                    AELogger.Log("Exception: " + e.StackTrace);
+
+                    int i = 1;
+                    while (e.InnerException != null)
+                    {
+                        e = e.InnerException;
+                        AELogger.Log("InnerException " + i + ": " + e.Message);
+
+                        AELogger.Log("InnerException " + i + ": " + e.StackTrace);
+                        i++;
+                    }
+                    dataTextBox.ForeColor = Color.Red;
+                }
+            }
+        }
+
+        private void timeTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (!bDisableUpdate && !bDisableSubUpdate && !bDisableSubSubUpdate
+                && tablefile.table[animBox.SelectedIndex].bHasData
+                && tablefile.table[animBox.SelectedIndex] is AnmChrEntry)
+            {
+                AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
+
+                try
+                {
+                    int newTime = int.Parse(timeTextBox.Text);
+                    entry.subEntries[subEntryBox.SelectedIndex].tableindex = newTime;
+                    entry.subEntries[subEntryBox.SelectedIndex].localindex = newTime;
+                    timeTextBox.ForeColor = Color.White;
+                    bDisableSubSubUpdate = true;
+                    bDisableSubUpdate = true;
+                    int s = subEntryBox.SelectedIndex;
+                    subEntryBox.DataSource = entry.getSubEntryList();
+                    subEntryBox.SelectedIndex = s;
+                    bDisableSubUpdate = false;
+                    bDisableSubSubUpdate = false;
                 }
                 catch
                 {
-                    dataTextBox.ForeColor = Color.Red;
+                    timeTextBox.ForeColor = Color.Red;
                 }
+            } else {
+                timeTextBox.ForeColor = Color.White;
+            }
+        }
+
+        private void lengthTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (!bDisableUpdate && !bDisableSubUpdate && !bDisableSubSubUpdate
+                && tablefile.table[animBox.SelectedIndex].bHasData
+                && tablefile.table[animBox.SelectedIndex] is AnmChrEntry)
+            {
+                AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
+
+                try
+                {
+                    int newTime = int.Parse(lengthTextBox.Text);
+                    entry.animTime = newTime;
+                    lengthTextBox.ForeColor = Color.White;
+                }
+                catch
+                {
+                    lengthTextBox.ForeColor = Color.Red;
+                }
+            }
+            else
+            {
+                lengthTextBox.ForeColor = Color.White;
+            }
+        }
+
+        private void subCopyButton_Click(object sender, EventArgs e)
+        {
+            if (tablefile.table[animBox.SelectedIndex].bHasData
+                && tablefile.table[animBox.SelectedIndex] is AnmChrEntry)
+            {
+                AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
+
+
+                subCopyInstance = entry.subEntries[subEntryBox.SelectedIndex].Copy();
+                
+                subPasteButton.Enabled = true;
+            }
+        }
+
+        private void subPasteButton_Click(object sender, EventArgs e)
+        {
+            if (tablefile.table[animBox.SelectedIndex].bHasData
+                && tablefile.table[animBox.SelectedIndex] is AnmChrEntry
+                && subCopyInstance != null)
+            {
+                AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
+
+                bDisableSubUpdate = true;
+                bDisableSubSubUpdate = true;
+                
+                entry.subEntries.Add(subCopyInstance.Copy());
+                subEntryBox.DataSource = entry.getSubEntryList();
+
+
+                bDisableSubSubUpdate = false;
+                bDisableSubUpdate = false;
+
+                for (int i = 0; i < entry.subEntries.Count; i++)
+                {
+                    if (entry.subEntries[i].bIsCopied)
+                    {
+                        entry.subEntries[i].bIsCopied = false;
+                        subEntryBox.SelectedIndex = i;
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void subsubCopyButton_Click(object sender, EventArgs e)
+        {
+            if (tablefile.table[animBox.SelectedIndex].bHasData
+                && tablefile.table[animBox.SelectedIndex] is AnmChrEntry)
+            {
+                AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
+                byte[] source = entry.subEntries[subEntryBox.SelectedIndex].subsubEntries[subsubEntryBox.SelectedIndex];
+                subsubCopyInstance = new byte[source.Length];
+                source.CopyTo(subsubCopyInstance, 0);
+
+                subsubPasteButton.Enabled = true;
+            }
+        }
+
+        private void subsubPasteButton_Click(object sender, EventArgs e)
+        {
+            if (tablefile.table[animBox.SelectedIndex].bHasData
+                && tablefile.table[animBox.SelectedIndex] is AnmChrEntry
+                && subsubCopyInstance != null)
+            {
+                AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
+                byte[] dest = new byte[subsubCopyInstance.Length];
+                subsubCopyInstance.CopyTo(dest, 0);
+                entry.subEntries[subEntryBox.SelectedIndex].subsubEntries.Add(dest);
+                entry.subEntries[subEntryBox.SelectedIndex].subsubPointers.Add(uint.MaxValue);
+                entry.subEntries[subEntryBox.SelectedIndex].subsubIndices.Add(0);
+
+                bDisableSubUpdate = true;
+                bDisableSubSubUpdate = true;
+                subsubEntryBox.DataSource = null;
+                subsubEntryBox.DataSource = entry.subEntries[subEntryBox.SelectedIndex].subsubPointers;
+
+                bDisableSubSubUpdate = false;
+                bDisableSubUpdate = false;
+                subsubEntryBox.SelectedIndex = subsubEntryBox.Items.Count-1;
+            }
+        }
+
+        private void subDeleteButton_Click(object sender, EventArgs e)
+        {
+            if (tablefile.table[animBox.SelectedIndex].bHasData
+                && tablefile.table[animBox.SelectedIndex] is AnmChrEntry)
+            {
+                AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
+
+                if (MessageBox.Show(this, "Deleting subentry w time " + entry.subEntries[subEntryBox.SelectedIndex].localindex.ToString() + ", You sure bout dat?", "FINAL DELETION", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                {
+                    return;
+                }
+
+                bDisableSubUpdate = true;
+                bDisableSubSubUpdate = true;
+
+                entry.subEntries.RemoveAt(subEntryBox.SelectedIndex);
+                subsubEntryBox.DataSource = null;
+                subEntryBox.DataSource = entry.getSubEntryList();
+
+                bDisableSubSubUpdate = false;
+                bDisableSubUpdate = false;
+                
+                subEntryBox.SelectedIndex = 0;
+                RefreshSelectedIndices();
+                subsubEntryBox.DataSource = entry.subEntries[subEntryBox.SelectedIndex].subsubPointers;
+                subsubEntryBox.SelectedIndex = 0;
+
+                subDeleteButton.Enabled = entry.subEntries.Count > 1;
             }
         }
     }

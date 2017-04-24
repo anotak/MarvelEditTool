@@ -132,7 +132,7 @@ namespace MarvelData
                                 name = GuessAnmChrName(index);
                             }
                         }
-                        SetData(reader.ReadBytes((int)reader.BaseStream.Length));
+                        ImportBytes(reader.ReadBytes((int)reader.BaseStream.Length));
                     }
                 }
             }
@@ -140,6 +140,11 @@ namespace MarvelData
             {
                 AELogger.Log("attempted import of nonexistent file " + filename + " to " + GetFancyName());
             }
+        }
+
+        public virtual void ImportBytes(byte[] bytes)
+        {
+            SetData(bytes);
         }
 
         public virtual void UpdateSize()
