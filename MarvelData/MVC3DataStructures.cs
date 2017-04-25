@@ -384,9 +384,9 @@ namespace MarvelData
         ForceAirReset = 0x00400000,
         KnocksDown = 0x00800000,
         HardKD = 0x01000000,
-        Unk0x200000 = 0x000200000,
-        Unk0x400000 = 0x000400000,
-        Unk0x800000 = 0x000800000,
+        Unk0x2000000 = 0x0002000000,
+        Unk0x4000000 = 0x0004000000,
+        Unk0x8000000 = 0x0008000000,
         OTGOnly = 0x10000000,
     }
 
