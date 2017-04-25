@@ -12,12 +12,12 @@ namespace MarvelData
         public int index;
         public StatusFlags statusflags;
         public int totalhealth;
-        public float unk0C;
+        public float metergain;
         public float damagegiven;
         public float damagetaken;
         public float speedself;
         public float speedreceived;
-        public float unk20;
+        public float minlaunchheight;
         public float comboweight;
         public int unk28;
         public float unk2C;
@@ -32,8 +32,8 @@ namespace MarvelData
         public float unk50;
         public float dashTraction;
         public int unk58;
-        public float unk5C;
-        public float unk60;
+        public float flightaccel;
+        public float flightmaxspeed;
         public float flightClearance;
         public float unk68;
         public int unk6C; // 0x6c
@@ -257,32 +257,32 @@ namespace MarvelData
     {
         public int index;
         public int startup;
-        public int unk008;
+        public int activeframes;
         public int unk00C;
         public int unk010;
-        public int unk014;
-        public int unk018;
         public int multiHit;
+        public int unk018;
+        public int multiHitFrequency;
         public int unk020;
-        public int unk024;
+        public int HitsparkFrequency;
         public int unk028;
         public int unk02c;
-        public int unk030;
-        public int unk034;
-        public int unk038;
-        public int atkflags;
-        public int atkflags2;
-        public int unk044;
-        public int hitstunAnim;
-        public int blockLevel;
+        public float unk030;
+        public float unk034;
+        public float unk038;
+        public AtkFlagsA atkflags;
+        public AtkFlagsB atkflags2;
+        public int atkflags3;
+        public int AttackLevel;
+        public int GuardType;
         public int unk050;
-        public int unk054;
-        public int unk058;
-        public int unk05c;
+        public int HitAnim;
+        public int HitAnimCounter;
+        public int HitAnimAir;
         public int damage;
         public float damageScaling;
         public float damageMult;
-        public float unk06c;
+        public float ChipDamage;
         public int unk070;
         public float meterGain;
         public float unk078;
@@ -290,11 +290,11 @@ namespace MarvelData
         public int unk080;
         public int unk084;
         public int unk088;
-        public int unk08c;
+        public int AddedHitstun;
         public int unk090;
-        public int unk094;
+        public int AddedBlockstun;
         public int unk098;
-        public float enemyPush;
+        public float enemyPushbackandWallBouncedist;
         public float cornerPushInverse;
         public float playerBlockPushCorner;
         public float playerBlockPushInverse;
@@ -302,7 +302,7 @@ namespace MarvelData
         public float unk0B0;
         public float unk0B4;
         public float unk0B8;
-        public float unk0BC;
+        public float GroundBounceHeight;
         public float unk0C0;
         public int hitstop;
         public int unk0C8;
@@ -310,29 +310,29 @@ namespace MarvelData
         public int unk0D0;
         public int juggleHeight;
         public int unk0D8;
-        public float unk0DC;
+        public float juggleCarry;
         public float juggleSpeed;
-        public int unk0E4;
-        public int unk0E8;
+        public int FixedHitstunIfFlagOn;
+        public int SJJuggleHeight;
         public int unk0EC;
-        public int unk0F0;
-        public int unk0F4;
-        public int unk0F8;
-        public int unk0FC;
-        public int unk100;
-        public int unk104;
-        public int unk108;
+        public float SJJuggleCarry;
+        public float SJJuggleSpeed;
+        public int SJFixedHitstun;
+        public int PlayerCmdSPAtkClassOnHit;
+        public int PlayerCmdSPAtkIndexOnHit;
+        public int EnemyCmdSPAtkClassOnHit;
+        public int EnemyCmdSPAtkIndexOnHit;
         public int unk10C;
         public int unk110;
         public int unk114;
-        public int unk118;
+        public int Hitspark1;
         public int unk11C;
-        public int unk120;
-        public int unk124;
+        public int OnHitEffectOnEnemy;
+        public int OnBlockEffectOnEnemy;
         public int unk128;
         public int unk12C;
         public int unk130;
-        public int unk134;
+        public int HitSpark2;
         public int unk138;
         public int unk13C;
         public int unk140;
@@ -354,6 +354,73 @@ namespace MarvelData
         public int unk180;
         public int unk184;
         public int unk188;
+    }
+
+    [Flags]
+    public enum AtkFlagsA : int
+    {
+        Unk0x01 = 0x00000001,
+        LauncherSpecialHyperCancel = 0x00000002,
+        JumpCancel = 0x00000004,
+        CantHitGround = 0x00000008,
+        CantHitCrouch = 0x00000010,
+        Unk0x20 = 0x00000020,
+        CantHitAir = 0x00000040,
+        NoPushbackUnkA = 0x00000080,
+        NoPushbackUnkB = 0x00000100,
+        KeepMomentumX = 0x00000200,
+        KeepMomentumY = 0x00000400,
+        Unk0x800 = 0x00000800,
+        NoGroundBounceLimit = 0x00001000,
+        JuggledInvinc = 0x00002000,
+        Unk0x4000 = 0x00004000,
+        Unk0x8000 = 0x00008000,
+        Unk0x10000 = 0x00010000,
+        Unk0x20000 = 0x00020000,
+        Unk0x40000 = 0x00040000,
+        FlyingScreen = 0x00080000,
+        CanWallBounce = 0x00100000,
+        OTG = 0x00200000,
+        ForceAirReset = 0x00400000,
+        KnocksDown = 0x00800000,
+        HardKD = 0x01000000,
+        Unk0x200000 = 0x000200000,
+        Unk0x400000 = 0x000400000,
+        Unk0x800000 = 0x000800000,
+        OTGOnly = 0x10000000,
+    }
+
+    [Flags]
+    public enum AtkFlagsB : int
+    {
+        Unk0x01 = 0x00000001,
+        Unk0x02 = 0x00000002,
+        Unk0x04 = 0x00000004,
+        NeverCounterhit = 0x00000008,
+        Unk0x10 = 0x00000010,
+        Unk0x20 = 0x00000020,
+        ChipDamage = 0x00000040,
+        Unblockable = 0x00000080,
+        Unk0x100 = 0x00000100,
+        NoHitboxUnk = 0x00000200,
+        Unk0x400 = 0x00000400,
+        NoComboCounter = 0x00000800,
+        Unk0x1000 = 0x00001000,
+        Unk0x2000 = 0x00002000,
+        NoPushbackAttacker = 0x00004000,
+        PartnerTargeting = 0x00008000,
+        Unk0x10000 = 0x00010000,
+        Unk0x20000 = 0x00020000,
+        Unk0x40000 = 0x00040000,
+        TACGlow = 0x00080000,
+        Unk0x100000 = 0x00100000,
+        Unk0x200000 = 0x00200000,
+        Unk0x400000 = 0x00400000,
+        Unk0x800000 = 0x00800000,
+        Unk0x1000000 = 0x01000000,
+        Unk0x2000000 = 0x000200000,
+        Unk0x4000000 = 0x000400000,
+        Unk0x8000000 = 0x000800000
     }
 
     [StructLayout(LayoutKind.Sequential)]
