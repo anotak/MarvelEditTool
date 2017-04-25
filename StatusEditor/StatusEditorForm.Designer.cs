@@ -189,6 +189,7 @@
             this.structView.Location = new System.Drawing.Point(0, 0);
             this.structView.Name = "structView";
             this.structView.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.structView.RowHeadersVisible = false;
             this.structView.RowTemplate.Height = 24;
             this.structView.Size = new System.Drawing.Size(424, 447);
             this.structView.TabIndex = 1;
@@ -305,33 +306,31 @@
             // 
             // SubChunkColumn
             // 
-            this.SubChunkColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
-            this.SubChunkColumn.FillWeight = 10F;
+            this.SubChunkColumn.FillWeight = 4F;
             this.SubChunkColumn.HeaderText = "subchunk";
             this.SubChunkColumn.Name = "SubChunkColumn";
             this.SubChunkColumn.ReadOnly = true;
-            this.SubChunkColumn.Width = 5;
             // 
             // varColumn
             // 
-            this.varColumn.FillWeight = 75F;
+            this.varColumn.FillWeight = 50F;
             this.varColumn.HeaderText = "var";
             this.varColumn.Name = "varColumn";
             this.varColumn.ReadOnly = true;
             // 
             // valueColumn
             // 
+            this.valueColumn.FillWeight = 66.04459F;
             this.valueColumn.HeaderText = "value";
             this.valueColumn.Name = "valueColumn";
             // 
             // hexColumn
             // 
-            this.hexColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
-            this.hexColumn.FillWeight = 20F;
+            this.hexColumn.FillWeight = 45F;
             this.hexColumn.HeaderText = "hex";
+            this.hexColumn.MinimumWidth = 70;
             this.hexColumn.Name = "hexColumn";
             this.hexColumn.ReadOnly = true;
-            this.hexColumn.Width = 5;
             // 
             // StatusEditorForm
             // 

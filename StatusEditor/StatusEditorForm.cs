@@ -505,6 +505,7 @@ namespace StatusEditor
 
         private void RefreshEditBox()
         {
+            SuspendLayout();
             if (
                 animBox.SelectedIndex >= 0
                 &&
@@ -575,6 +576,7 @@ namespace StatusEditor
                 dataTextBox.Text = "";
                 sizeLabel.Text = "size: N/A";
             }
+            ResumeLayout();
         }
 
         private int UpdateStructEntry(Type entryType, StructEntryBase entry, int offset, int structIndex = 0)
@@ -588,30 +590,39 @@ namespace StatusEditor
             {
                 object value = fieldList[i].GetValue(entrydataobject);
                 structView.Rows[i + offset].Cells[2].Value = value.ToString();
-                if (fieldList[i].FieldType.IsEnum)
-                {
-                    structView.Rows[i + offset].Cells[3].Value = Enum.Format(fieldList[i].FieldType, value, "X");
-                }
-                /*else
-                {
-                    TypeCode code = Type.GetTypeCode(structFieldInfo[i].FieldType);
-                    if (code >= TypeCode.SByte && code <= TypeCode.UInt64)
-                    {
-                        structView.Rows[i].cells[3].Value = ((Int64)Convert.ChangeType(value, typeof(Int64))).ToString("X");
-                    }
-                    else if (code >= TypeCode.Single && code <= TypeCode.Decimal)
-                    {
-                        structView.Rows[i].cells[3].Value = ((UInt64)Convert.ChangeType(value, typeof(UInt64))).ToString("X");
-                    }
-                    else
-                    {
-                        structView.Rows[i].cells[3].Value = "";
-                    }
-                }*/
+                DoHex(fieldList[i].FieldType, i + offset, value);
                 //structValues[i] = structFieldInfo[i].GetValue(entry.data).ToString();
             }
 
             return numFields;
+        }
+
+        private void DoHex(Type type, int index, object value)
+        {
+            if (type.IsEnum)
+            {
+                structView.Rows[index].Cells[3].Value = Enum.Format(type, value, "X");
+            }
+            else
+            {
+                TypeCode code = Type.GetTypeCode(type);
+                if (code == TypeCode.Int32)
+                {
+                    structView.Rows[index].Cells[3].Value = ((Int32)value).ToString("X8");
+                }
+                else if (code == TypeCode.UInt32)
+                {
+                    structView.Rows[index].Cells[3].Value = ((UInt32)value).ToString("X8");
+                }
+                else if (code == TypeCode.Single)
+                {
+                    structView.Rows[index].Cells[3].Value = BitConverter.ToUInt32(BitConverter.GetBytes((float)value), 0).ToString("X8");
+                }
+                else
+                {
+                    structView.Rows[index].Cells[3].Value = "";
+                }
+            }
         }
 
         private void structView_DataError(object sender, DataGridViewDataErrorEventArgs ev)
@@ -627,6 +638,7 @@ namespace StatusEditor
             SetTextConcurrent(tablefile.table[animBox.SelectedIndex].GetData());
 
             structView.Rows[structView.SelectedCells[0].RowIndex].DefaultCellStyle.ForeColor = Color.Black;
+            structView.Rows[structView.SelectedCells[0].RowIndex].Cells[3].Value = "";
             sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
 
             int index = ev.RowIndex;

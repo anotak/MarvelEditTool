@@ -64,6 +64,7 @@ namespace AnmChrEdit
                     break;
             }
         }
+
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == (Keys.Control | Keys.S))
@@ -566,6 +567,8 @@ namespace AnmChrEdit
 
         public static byte[] StringToByteArray(string input)
         {
+            input = input.Replace("  ", "");
+            input = input.Replace(" ", "");
             int length = input.Length / 2;
             byte[] outBytes = new byte[length];
             for (int i = 0; i < length; i++)
