@@ -113,5 +113,4 @@ namespace AnmChrEdit
             }
         }
     }
-    }
 }
