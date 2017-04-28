@@ -38,24 +38,25 @@
             this.animBox = new System.Windows.Forms.ListBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.lengthTextBox = new System.Windows.Forms.TextBox();
+            this.subDeleteButton = new System.Windows.Forms.Button();
+            this.subPasteButton = new System.Windows.Forms.Button();
+            this.subCopyButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.timeTextBox = new System.Windows.Forms.TextBox();
-            this.subCopyButton = new System.Windows.Forms.Button();
-            this.subPasteButton = new System.Windows.Forms.Button();
-            this.subDeleteButton = new System.Windows.Forms.Button();
             this.subsubEntryBox = new System.Windows.Forms.ListBox();
             this.subEntryBox = new System.Windows.Forms.ListBox();
+            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.subsubPasteButton = new System.Windows.Forms.Button();
+            this.subsubCopyButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.dataTextBox = new System.Windows.Forms.TextBox();
             this.importButton = new System.Windows.Forms.Button();
             this.exportButton = new System.Windows.Forms.Button();
             this.extendButton = new System.Windows.Forms.Button();
             this.sizeLabel = new System.Windows.Forms.Label();
-            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-            this.subsubCopyButton = new System.Windows.Forms.Button();
-            this.subsubPasteButton = new System.Windows.Forms.Button();
-            this.lengthTextBox = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.subsubDeleteButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -70,8 +71,8 @@
             this.splitContainer4.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -222,6 +223,67 @@
             this.tableLayoutPanel2.Size = new System.Drawing.Size(258, 156);
             this.tableLayoutPanel2.TabIndex = 2;
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label2.Location = new System.Drawing.Point(3, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(164, 37);
+            this.label2.TabIndex = 7;
+            this.label2.Text = "total time:";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lengthTextBox
+            // 
+            this.lengthTextBox.BackColor = System.Drawing.Color.Black;
+            this.lengthTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lengthTextBox.Enabled = false;
+            this.lengthTextBox.ForeColor = System.Drawing.Color.White;
+            this.lengthTextBox.Location = new System.Drawing.Point(173, 3);
+            this.lengthTextBox.Name = "lengthTextBox";
+            this.lengthTextBox.Size = new System.Drawing.Size(208, 31);
+            this.lengthTextBox.TabIndex = 6;
+            this.lengthTextBox.TextChanged += new System.EventHandler(this.lengthTextBox_TextChanged);
+            // 
+            // subDeleteButton
+            // 
+            this.subDeleteButton.Enabled = false;
+            this.subDeleteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
+            this.subDeleteButton.Location = new System.Drawing.Point(173, 79);
+            this.subDeleteButton.Name = "subDeleteButton";
+            this.subDeleteButton.Size = new System.Drawing.Size(208, 33);
+            this.subDeleteButton.TabIndex = 4;
+            this.subDeleteButton.Text = "Delete";
+            this.subDeleteButton.UseVisualStyleBackColor = true;
+            this.subDeleteButton.Click += new System.EventHandler(this.subDeleteButton_Click);
+            // 
+            // subPasteButton
+            // 
+            this.subPasteButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.subPasteButton.Enabled = false;
+            this.subPasteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
+            this.subPasteButton.Location = new System.Drawing.Point(3, 118);
+            this.subPasteButton.Name = "subPasteButton";
+            this.subPasteButton.Size = new System.Drawing.Size(164, 35);
+            this.subPasteButton.TabIndex = 3;
+            this.subPasteButton.Text = "Paste";
+            this.subPasteButton.UseVisualStyleBackColor = true;
+            this.subPasteButton.Click += new System.EventHandler(this.subPasteButton_Click);
+            // 
+            // subCopyButton
+            // 
+            this.subCopyButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.subCopyButton.Enabled = false;
+            this.subCopyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
+            this.subCopyButton.Location = new System.Drawing.Point(3, 79);
+            this.subCopyButton.Name = "subCopyButton";
+            this.subCopyButton.Size = new System.Drawing.Size(164, 33);
+            this.subCopyButton.TabIndex = 2;
+            this.subCopyButton.Text = "Copy";
+            this.subCopyButton.UseVisualStyleBackColor = true;
+            this.subCopyButton.Click += new System.EventHandler(this.subCopyButton_Click);
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -244,44 +306,6 @@
             this.timeTextBox.Size = new System.Drawing.Size(208, 31);
             this.timeTextBox.TabIndex = 1;
             this.timeTextBox.TextChanged += new System.EventHandler(this.timeTextBox_TextChanged);
-            // 
-            // subCopyButton
-            // 
-            this.subCopyButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.subCopyButton.Enabled = false;
-            this.subCopyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
-            this.subCopyButton.Location = new System.Drawing.Point(3, 79);
-            this.subCopyButton.Name = "subCopyButton";
-            this.subCopyButton.Size = new System.Drawing.Size(164, 33);
-            this.subCopyButton.TabIndex = 2;
-            this.subCopyButton.Text = "Copy";
-            this.subCopyButton.UseVisualStyleBackColor = true;
-            this.subCopyButton.Click += new System.EventHandler(this.subCopyButton_Click);
-            // 
-            // subPasteButton
-            // 
-            this.subPasteButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.subPasteButton.Enabled = false;
-            this.subPasteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
-            this.subPasteButton.Location = new System.Drawing.Point(3, 118);
-            this.subPasteButton.Name = "subPasteButton";
-            this.subPasteButton.Size = new System.Drawing.Size(164, 35);
-            this.subPasteButton.TabIndex = 3;
-            this.subPasteButton.Text = "Paste";
-            this.subPasteButton.UseVisualStyleBackColor = true;
-            this.subPasteButton.Click += new System.EventHandler(this.subPasteButton_Click);
-            // 
-            // subDeleteButton
-            // 
-            this.subDeleteButton.Enabled = false;
-            this.subDeleteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
-            this.subDeleteButton.Location = new System.Drawing.Point(173, 79);
-            this.subDeleteButton.Name = "subDeleteButton";
-            this.subDeleteButton.Size = new System.Drawing.Size(208, 33);
-            this.subDeleteButton.TabIndex = 4;
-            this.subDeleteButton.Text = "Delete";
-            this.subDeleteButton.UseVisualStyleBackColor = true;
-            this.subDeleteButton.Click += new System.EventHandler(this.subDeleteButton_Click);
             // 
             // subsubEntryBox
             // 
@@ -310,6 +334,49 @@
             this.subEntryBox.Size = new System.Drawing.Size(123, 198);
             this.subEntryBox.TabIndex = 0;
             this.subEntryBox.SelectedIndexChanged += new System.EventHandler(this.subEntryBox_SelectedIndexChanged);
+            // 
+            // tableLayoutPanel4
+            // 
+            this.tableLayoutPanel4.ColumnCount = 1;
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel4.Controls.Add(this.subsubDeleteButton, 0, 2);
+            this.tableLayoutPanel4.Controls.Add(this.subsubPasteButton, 0, 1);
+            this.tableLayoutPanel4.Controls.Add(this.subsubCopyButton, 0, 0);
+            this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(132, 207);
+            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+            this.tableLayoutPanel4.RowCount = 3;
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(258, 199);
+            this.tableLayoutPanel4.TabIndex = 3;
+            // 
+            // subsubPasteButton
+            // 
+            this.subsubPasteButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.subsubPasteButton.Enabled = false;
+            this.subsubPasteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
+            this.subsubPasteButton.Location = new System.Drawing.Point(3, 69);
+            this.subsubPasteButton.Name = "subsubPasteButton";
+            this.subsubPasteButton.Size = new System.Drawing.Size(252, 60);
+            this.subsubPasteButton.TabIndex = 1;
+            this.subsubPasteButton.Text = "paste";
+            this.subsubPasteButton.UseVisualStyleBackColor = true;
+            this.subsubPasteButton.Click += new System.EventHandler(this.subsubPasteButton_Click);
+            // 
+            // subsubCopyButton
+            // 
+            this.subsubCopyButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.subsubCopyButton.Enabled = false;
+            this.subsubCopyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
+            this.subsubCopyButton.Location = new System.Drawing.Point(3, 3);
+            this.subsubCopyButton.Name = "subsubCopyButton";
+            this.subsubCopyButton.Size = new System.Drawing.Size(252, 60);
+            this.subsubCopyButton.TabIndex = 0;
+            this.subsubCopyButton.Text = "copy";
+            this.subsubCopyButton.UseVisualStyleBackColor = true;
+            this.subsubCopyButton.Click += new System.EventHandler(this.subsubCopyButton_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -405,69 +472,18 @@
             this.sizeLabel.TabIndex = 4;
             this.sizeLabel.Text = "ready";
             // 
-            // tableLayoutPanel4
+            // subsubDeleteButton
             // 
-            this.tableLayoutPanel4.ColumnCount = 1;
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel4.Controls.Add(this.subsubPasteButton, 0, 1);
-            this.tableLayoutPanel4.Controls.Add(this.subsubCopyButton, 0, 0);
-            this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel4.Location = new System.Drawing.Point(132, 207);
-            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
-            this.tableLayoutPanel4.RowCount = 2;
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(258, 199);
-            this.tableLayoutPanel4.TabIndex = 3;
-            // 
-            // subsubCopyButton
-            // 
-            this.subsubCopyButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.subsubCopyButton.Enabled = false;
-            this.subsubCopyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
-            this.subsubCopyButton.Location = new System.Drawing.Point(3, 3);
-            this.subsubCopyButton.Name = "subsubCopyButton";
-            this.subsubCopyButton.Size = new System.Drawing.Size(252, 93);
-            this.subsubCopyButton.TabIndex = 0;
-            this.subsubCopyButton.Text = "copy";
-            this.subsubCopyButton.UseVisualStyleBackColor = true;
-            this.subsubCopyButton.Click += new System.EventHandler(this.subsubCopyButton_Click);
-            // 
-            // subsubPasteButton
-            // 
-            this.subsubPasteButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.subsubPasteButton.Enabled = false;
-            this.subsubPasteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
-            this.subsubPasteButton.Location = new System.Drawing.Point(3, 102);
-            this.subsubPasteButton.Name = "subsubPasteButton";
-            this.subsubPasteButton.Size = new System.Drawing.Size(252, 94);
-            this.subsubPasteButton.TabIndex = 1;
-            this.subsubPasteButton.Text = "paste";
-            this.subsubPasteButton.UseVisualStyleBackColor = true;
-            this.subsubPasteButton.Click += new System.EventHandler(this.subsubPasteButton_Click);
-            // 
-            // lengthTextBox
-            // 
-            this.lengthTextBox.BackColor = System.Drawing.Color.Black;
-            this.lengthTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lengthTextBox.Enabled = false;
-            this.lengthTextBox.ForeColor = System.Drawing.Color.White;
-            this.lengthTextBox.Location = new System.Drawing.Point(173, 3);
-            this.lengthTextBox.Name = "lengthTextBox";
-            this.lengthTextBox.Size = new System.Drawing.Size(208, 31);
-            this.lengthTextBox.TabIndex = 6;
-            this.lengthTextBox.TextChanged += new System.EventHandler(this.lengthTextBox_TextChanged);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label2.Location = new System.Drawing.Point(3, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(164, 37);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "total time:";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.subsubDeleteButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.subsubDeleteButton.Enabled = false;
+            this.subsubDeleteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
+            this.subsubDeleteButton.Location = new System.Drawing.Point(3, 135);
+            this.subsubDeleteButton.Name = "subsubDeleteButton";
+            this.subsubDeleteButton.Size = new System.Drawing.Size(252, 61);
+            this.subsubDeleteButton.TabIndex = 2;
+            this.subsubDeleteButton.Text = "delete";
+            this.subsubDeleteButton.UseVisualStyleBackColor = true;
+            this.subsubDeleteButton.Click += new System.EventHandler(this.subsubDeleteButton_Click);
             // 
             // AnmChrForm
             // 
@@ -493,9 +509,9 @@
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
+            this.tableLayoutPanel4.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            this.tableLayoutPanel4.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -529,6 +545,7 @@
         private System.Windows.Forms.Button subsubCopyButton;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox lengthTextBox;
+        private System.Windows.Forms.Button subsubDeleteButton;
     }
 }
 

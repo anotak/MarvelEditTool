@@ -450,6 +450,7 @@ namespace AnmChrEdit
                 subCopyButton.Enabled = true;
                 subDeleteButton.Enabled = entry.subEntries.Count > 1;
                 subsubCopyButton.Enabled = true;
+                subsubDeleteButton.Enabled = true;
                 lengthTextBox.Enabled = true;
                 lengthTextBox.Text = entry.animTime.ToString();
                 subPasteButton.Enabled = subCopyInstance != null;
@@ -470,6 +471,7 @@ namespace AnmChrEdit
                 subsubEntryBox.Items.Clear();
                 subCopyButton.Enabled = false;
                 subsubCopyButton.Enabled = false;
+                subsubDeleteButton.Enabled = false;
                 subsubPasteButton.Enabled = true;
                 subPasteButton.Enabled = false;
                 //subsubEntryBox.EndUpdate();
@@ -493,6 +495,11 @@ namespace AnmChrEdit
             if (tablefile.table[s] is AnmChrEntry && tablefile.table[s].bHasData)
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[s];
+
+                if (subEntryBox.SelectedIndex >= entry.subEntries.Count)
+                {
+                    subsubEntryBox.SelectedIndex = entry.subEntries.Count - 1;
+                }
 
                 if (bDisableSubSubUpdate)
                 {
@@ -539,9 +546,25 @@ namespace AnmChrEdit
             int s = animBox.SelectedIndex;
             if (tablefile.table[s] is AnmChrEntry && tablefile.table[s].bHasData)
             {
-                RefreshText();
+                AnmChrEntry entry = (AnmChrEntry)tablefile.table[s];
 
-                SaveSelectedIndices();
+                if (subEntryBox.SelectedIndex >= entry.subEntries.Count)
+                {
+                    AELogger.Log("possible big error");
+
+                    RefreshText();
+                }
+                else
+                {
+                    if (subsubEntryBox.SelectedIndex >= entry.subEntries[subEntryBox.SelectedIndex].subsubEntries.Count)
+                    {
+                        subsubEntryBox.SelectedIndex = entry.subEntries.Count - 1;
+                    }
+
+                    RefreshText();
+
+                    SaveSelectedIndices();
+                }
             }
             bDisableSubSubUpdate = false;
         }
@@ -553,6 +576,20 @@ namespace AnmChrEdit
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[s];
 
+                if (subEntryBox.SelectedIndex >= entry.subEntries.Count)
+                {
+                    dataTextBox.Enabled = false;
+                    AELogger.Log("weird otherwise probably nonharmful data index error A");
+                    dataTextBox.Text = "weird otherwise probably nonharmful data index error";
+                    return;
+                }
+                if (subsubEntryBox.SelectedIndex >= entry.subEntries[subEntryBox.SelectedIndex].subsubEntries.Count)
+                {
+                    AELogger.Log("weird otherwise probably nonharmful data index error B");
+                    dataTextBox.Enabled = false;
+                    dataTextBox.Text = "weird otherwise probably nonharmful data index error";
+                    return;
+                }
                 byte[] data = entry.subEntries[subEntryBox.SelectedIndex].subsubEntries[subsubEntryBox.SelectedIndex];
                 dataTextBox.Enabled = true;
                 dataTextBox.Text = BitConverter.ToString(data).Replace("-", "");
@@ -781,6 +818,45 @@ namespace AnmChrEdit
                 bDisableSubSubUpdate = false;
                 bDisableSubUpdate = false;
                 
+                subEntryBox.SelectedIndex = 0;
+                RefreshSelectedIndices();
+                subsubEntryBox.DataSource = entry.subEntries[subEntryBox.SelectedIndex].subsubPointers;
+                subsubEntryBox.SelectedIndex = 0;
+
+                subDeleteButton.Enabled = entry.subEntries.Count > 1;
+            }
+        }
+
+        private void subsubDeleteButton_Click(object sender, EventArgs e)
+        {
+            if (tablefile.table[animBox.SelectedIndex].bHasData
+                && tablefile.table[animBox.SelectedIndex] is AnmChrEntry)
+            {
+                AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
+
+                if (entry.subEntries[subEntryBox.SelectedIndex].subsubPointers.Count <= 1)
+                {
+                    // FIXME THIS SUX
+                    return;
+                }
+
+                if (MessageBox.Show(this, "Deleting subsubentry w time " + entry.subEntries[subEntryBox.SelectedIndex].localindex.ToString() + " and ptr " + entry.subEntries[subEntryBox.SelectedIndex].subsubPointers[subsubEntryBox.SelectedIndex] + ", You sure bout dat?", "FINAL DELETION", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                {
+                    return;
+                }
+
+                bDisableSubUpdate = true;
+                bDisableSubSubUpdate = true;
+
+                entry.subEntries[subEntryBox.SelectedIndex].subsubPointers.RemoveAt(subsubEntryBox.SelectedIndex);
+                entry.subEntries[subEntryBox.SelectedIndex].subsubEntries.RemoveAt(subsubEntryBox.SelectedIndex);
+                entry.subEntries[subEntryBox.SelectedIndex].subsubIndices.RemoveAt(subsubEntryBox.SelectedIndex);
+                subsubEntryBox.DataSource = null;
+                subEntryBox.DataSource = entry.getSubEntryList();
+
+                bDisableSubSubUpdate = false;
+                bDisableSubUpdate = false;
+
                 subEntryBox.SelectedIndex = 0;
                 RefreshSelectedIndices();
                 subsubEntryBox.DataSource = entry.subEntries[subEntryBox.SelectedIndex].subsubPointers;

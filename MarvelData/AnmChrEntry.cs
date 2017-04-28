@@ -128,10 +128,10 @@ namespace MarvelData
         public override void UpdateSize()
         {
             int subcount = subEntries.Count;
-            int outsize = 16 + (subcount * 8);
+            size = 16 + (subcount * 8);
             for (int i = 0; i < subcount; i++)
             {
-                outsize += subEntries[i].GetSize();
+                size += subEntries[i].GetSize();
             }
         }
     }
