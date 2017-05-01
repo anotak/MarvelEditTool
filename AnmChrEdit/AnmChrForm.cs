@@ -195,7 +195,7 @@ namespace AnmChrEdit
             {
                 //openFile.DefaultExt = "bcm";
                 // The Filter property requires a search string after the pipe ( | )
-                openFile.Filter = "AnmChr Files (*.cac;*.5A7E5D8A)|*.cac;*.5A7E5D8A|All files (*.*)|*.*";
+                openFile.Filter = "AnmChr Files (*.cac;*.5A7E5D8A; *.anm)|*.cac;*.5A7E5D8A;*.anm|All files (*.*)|*.*";
                 openFile.ShowDialog();
                 if (openFile.FileNames.Length > 0)
                 {
