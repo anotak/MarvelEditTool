@@ -420,6 +420,7 @@ namespace AnmChrEdit
             }
             //SuspendLayout();
             animBox.BeginUpdate();
+            AELogger.Log("selected animbox " + animBox.SelectedIndex);
             bDisableUpdate = true;
             importButton.Enabled = true;
             RefreshEditBox();
@@ -485,7 +486,7 @@ namespace AnmChrEdit
             {
                 return;
             }
-
+            AELogger.Log("selected subox " + subEntryBox.SelectedIndex);
             //SuspendLayout();
             //subsubEntryBox.BeginUpdate();
             bDisableSubUpdate = true;
@@ -542,13 +543,15 @@ namespace AnmChrEdit
                 return;
             }
 
+            AELogger.Log("selected subsubox " + subsubEntryBox.SelectedIndex);
+
             bDisableSubSubUpdate = true;
             int s = animBox.SelectedIndex;
             if (tablefile.table[s] is AnmChrEntry && tablefile.table[s].bHasData)
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[s];
 
-                if (subEntryBox.SelectedIndex >= entry.subEntries.Count)
+                if (subEntryBox.SelectedIndex >= entry.subEntries.Count && subEntryBox.SelectedIndex >= 0)
                 {
                     AELogger.Log("possible big error");
 
@@ -576,18 +579,18 @@ namespace AnmChrEdit
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[s];
 
-                if (subEntryBox.SelectedIndex >= entry.subEntries.Count)
+                if (subEntryBox.SelectedIndex >= entry.subEntries.Count || subEntryBox.SelectedIndex < 0)
                 {
                     dataTextBox.Enabled = false;
                     AELogger.Log("weird otherwise probably nonharmful data index error A");
-                    dataTextBox.Text = "weird otherwise probably nonharmful data index error";
+                    dataTextBox.Text = "no data selected?";
                     return;
                 }
-                if (subsubEntryBox.SelectedIndex >= entry.subEntries[subEntryBox.SelectedIndex].subsubEntries.Count)
+                if (subsubEntryBox.SelectedIndex >= entry.subEntries[subEntryBox.SelectedIndex].subsubEntries.Count || subsubEntryBox.SelectedIndex < 0)
                 {
                     AELogger.Log("weird otherwise probably nonharmful data index error B");
                     dataTextBox.Enabled = false;
-                    dataTextBox.Text = "weird otherwise probably nonharmful data index error";
+                    dataTextBox.Text = "no data selected?";
                     return;
                 }
                 byte[] data = entry.subEntries[subEntryBox.SelectedIndex].subsubEntries[subsubEntryBox.SelectedIndex];
@@ -719,6 +722,7 @@ namespace AnmChrEdit
             if (tablefile.table[animBox.SelectedIndex].bHasData
                 && tablefile.table[animBox.SelectedIndex] is AnmChrEntry)
             {
+                AELogger.Log("copying sub " + animBox.SelectedIndex + "." + subEntryBox.SelectedIndex);
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
 
 
@@ -735,6 +739,7 @@ namespace AnmChrEdit
                 && subCopyInstance != null)
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
+                AELogger.Log("pasting sub to " + animBox.SelectedIndex);
 
                 bDisableSubUpdate = true;
                 bDisableSubSubUpdate = true;
@@ -764,6 +769,7 @@ namespace AnmChrEdit
                 && tablefile.table[animBox.SelectedIndex] is AnmChrEntry)
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
+                AELogger.Log("copying subsub " + animBox.SelectedIndex + "." + subEntryBox.SelectedIndex + "." + subsubEntryBox.SelectedIndex);
                 byte[] source = entry.subEntries[subEntryBox.SelectedIndex].subsubEntries[subsubEntryBox.SelectedIndex];
                 subsubCopyInstance = new byte[source.Length];
                 source.CopyTo(subsubCopyInstance, 0);
@@ -779,6 +785,7 @@ namespace AnmChrEdit
                 && subsubCopyInstance != null)
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
+                AELogger.Log("pasting subsub to " + animBox.SelectedIndex + "." + subsubEntryBox.SelectedIndex);
                 byte[] dest = new byte[subsubCopyInstance.Length];
                 subsubCopyInstance.CopyTo(dest, 0);
                 entry.subEntries[subEntryBox.SelectedIndex].subsubEntries.Add(dest);
@@ -807,6 +814,7 @@ namespace AnmChrEdit
                 {
                     return;
                 }
+                AELogger.Log("deleting sub " + animBox.SelectedIndex + "." + subEntryBox.SelectedIndex);
 
                 bDisableSubUpdate = true;
                 bDisableSubSubUpdate = true;
@@ -844,6 +852,8 @@ namespace AnmChrEdit
                 {
                     return;
                 }
+
+                AELogger.Log("deleting subsub " + animBox.SelectedIndex + "." + subEntryBox.SelectedIndex + "." + subsubEntryBox.SelectedIndex);
 
                 bDisableSubUpdate = true;
                 bDisableSubSubUpdate = true;

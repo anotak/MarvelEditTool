@@ -200,6 +200,7 @@ namespace MarvelData
 
         public void Extend()
         {
+            AELogger.Log("extending");
             TableEntry entry = (TableEntry)Activator.CreateInstance(fileType);
             entry.bHasData = false;
             entry.size = defaultChunkSize;

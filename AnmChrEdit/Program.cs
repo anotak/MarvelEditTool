@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections;
 using System.Windows.Forms;
 using System.Threading;
 using MarvelData;
@@ -71,6 +72,15 @@ namespace AnmChrEdit
 
                     AELogger.Log("Exception: " + e.StackTrace);
 
+                    if (e.Data.Count > 0)
+                    {
+                        AELogger.Log("Exception: additional data:");
+                        foreach (DictionaryEntry d in e.Data)
+                        {
+                            AELogger.Log("             " + d.Key + ": " + d.Value);
+                        }
+                    }
+
                     int i = 1;
                     Exception a = e;
                     while (a.InnerException != null)
@@ -79,6 +89,16 @@ namespace AnmChrEdit
                         AELogger.Log("InnerException " + i + ": " + a.Message);
 
                         AELogger.Log("InnerException " + i + ": " + a.StackTrace);
+
+                        if (a.Data.Count > 0)
+                        {
+                            AELogger.Log("InnerException " + i + ": additional data:");
+                            foreach (DictionaryEntry d in a.Data)
+                            {
+                                AELogger.Log("             " + d.Key + ": " + d.Value);
+                            }
+                        }
+
                         i++;
                     }
                     Console.WriteLine(e.Message);
@@ -95,6 +115,8 @@ namespace AnmChrEdit
                     AELogger.Log("sender is null");
                     exceptionString += "sender is null";
                 }
+
+
                 MessageBox.Show(exceptionString, "Exception!", MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
                 AELogger.WriteLog();
                 Application.Exit();

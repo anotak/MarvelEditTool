@@ -48,6 +48,7 @@
             this.subsubEntryBox = new System.Windows.Forms.ListBox();
             this.subEntryBox = new System.Windows.Forms.ListBox();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.subsubDeleteButton = new System.Windows.Forms.Button();
             this.subsubPasteButton = new System.Windows.Forms.Button();
             this.subsubCopyButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -56,7 +57,6 @@
             this.exportButton = new System.Windows.Forms.Button();
             this.extendButton = new System.Windows.Forms.Button();
             this.sizeLabel = new System.Windows.Forms.Label();
-            this.subsubDeleteButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -352,6 +352,19 @@
             this.tableLayoutPanel4.Size = new System.Drawing.Size(258, 199);
             this.tableLayoutPanel4.TabIndex = 3;
             // 
+            // subsubDeleteButton
+            // 
+            this.subsubDeleteButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.subsubDeleteButton.Enabled = false;
+            this.subsubDeleteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
+            this.subsubDeleteButton.Location = new System.Drawing.Point(3, 135);
+            this.subsubDeleteButton.Name = "subsubDeleteButton";
+            this.subsubDeleteButton.Size = new System.Drawing.Size(252, 61);
+            this.subsubDeleteButton.TabIndex = 2;
+            this.subsubDeleteButton.Text = "delete";
+            this.subsubDeleteButton.UseVisualStyleBackColor = true;
+            this.subsubDeleteButton.Click += new System.EventHandler(this.subsubDeleteButton_Click);
+            // 
             // subsubPasteButton
             // 
             this.subsubPasteButton.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -471,19 +484,6 @@
             this.sizeLabel.Size = new System.Drawing.Size(44, 17);
             this.sizeLabel.TabIndex = 4;
             this.sizeLabel.Text = "ready";
-            // 
-            // subsubDeleteButton
-            // 
-            this.subsubDeleteButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.subsubDeleteButton.Enabled = false;
-            this.subsubDeleteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
-            this.subsubDeleteButton.Location = new System.Drawing.Point(3, 135);
-            this.subsubDeleteButton.Name = "subsubDeleteButton";
-            this.subsubDeleteButton.Size = new System.Drawing.Size(252, 61);
-            this.subsubDeleteButton.TabIndex = 2;
-            this.subsubDeleteButton.Text = "delete";
-            this.subsubDeleteButton.UseVisualStyleBackColor = true;
-            this.subsubDeleteButton.Click += new System.EventHandler(this.subsubDeleteButton_Click);
             // 
             // AnmChrForm
             // 
