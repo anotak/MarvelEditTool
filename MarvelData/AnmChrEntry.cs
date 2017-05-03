@@ -23,9 +23,25 @@ namespace MarvelData
         {
             subEntries.Sort(delegate (AnmChrSubEntry x, AnmChrSubEntry y)
             {
+                if (y == null)
+                {
+                    if (x == null)
+                    {
+                        return 0;
+                    }
+                    return 1;
+                }
+                if (x == null)
+                {
+                    return -1;
+                }
                 if (x.localindex > y.localindex)
                 {
                     return 1;
+                }
+                else if (x.localindex == y.localindex)
+                {
+                    return 0;
                 }
                 return -1;
             });

@@ -229,9 +229,9 @@
             this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label2.Location = new System.Drawing.Point(3, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(164, 37);
+            this.label2.Size = new System.Drawing.Size(186, 37);
             this.label2.TabIndex = 7;
-            this.label2.Text = "total time:";
+            this.label2.Text = "↑ total time:";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lengthTextBox
@@ -240,7 +240,7 @@
             this.lengthTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lengthTextBox.Enabled = false;
             this.lengthTextBox.ForeColor = System.Drawing.Color.White;
-            this.lengthTextBox.Location = new System.Drawing.Point(173, 3);
+            this.lengthTextBox.Location = new System.Drawing.Point(195, 3);
             this.lengthTextBox.Name = "lengthTextBox";
             this.lengthTextBox.Size = new System.Drawing.Size(208, 31);
             this.lengthTextBox.TabIndex = 6;
@@ -250,7 +250,7 @@
             // 
             this.subDeleteButton.Enabled = false;
             this.subDeleteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
-            this.subDeleteButton.Location = new System.Drawing.Point(173, 79);
+            this.subDeleteButton.Location = new System.Drawing.Point(195, 79);
             this.subDeleteButton.Name = "subDeleteButton";
             this.subDeleteButton.Size = new System.Drawing.Size(208, 33);
             this.subDeleteButton.TabIndex = 4;
@@ -265,7 +265,7 @@
             this.subPasteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
             this.subPasteButton.Location = new System.Drawing.Point(3, 118);
             this.subPasteButton.Name = "subPasteButton";
-            this.subPasteButton.Size = new System.Drawing.Size(164, 35);
+            this.subPasteButton.Size = new System.Drawing.Size(186, 35);
             this.subPasteButton.TabIndex = 3;
             this.subPasteButton.Text = "Paste";
             this.subPasteButton.UseVisualStyleBackColor = true;
@@ -278,7 +278,7 @@
             this.subCopyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
             this.subCopyButton.Location = new System.Drawing.Point(3, 79);
             this.subCopyButton.Name = "subCopyButton";
-            this.subCopyButton.Size = new System.Drawing.Size(164, 33);
+            this.subCopyButton.Size = new System.Drawing.Size(186, 33);
             this.subCopyButton.TabIndex = 2;
             this.subCopyButton.Text = "Copy";
             this.subCopyButton.UseVisualStyleBackColor = true;
@@ -290,9 +290,9 @@
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label1.Location = new System.Drawing.Point(3, 37);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(164, 39);
+            this.label1.Size = new System.Drawing.Size(186, 39);
             this.label1.TabIndex = 0;
-            this.label1.Text = "subchunk time:";
+            this.label1.Text = "← subchunk time:";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // timeTextBox
@@ -301,7 +301,7 @@
             this.timeTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.timeTextBox.Enabled = false;
             this.timeTextBox.ForeColor = System.Drawing.Color.White;
-            this.timeTextBox.Location = new System.Drawing.Point(173, 40);
+            this.timeTextBox.Location = new System.Drawing.Point(195, 40);
             this.timeTextBox.Name = "timeTextBox";
             this.timeTextBox.Size = new System.Drawing.Size(208, 31);
             this.timeTextBox.TabIndex = 1;

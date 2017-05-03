@@ -17,14 +17,14 @@ namespace MarvelData
         public List<uint> subsubPointers; // DONT SAVE THIS
         public List<byte[]> subsubEntries;
         public List<int> subsubIndices;
-        public bool bIsCopied;
+        public bool bEdited;
 
         public AnmChrSubEntry()
         {
             subsubEntries = new List<byte[]>();
             subsubIndices = new List<int>();
             subsubPointers = new List<uint>();
-            bIsCopied = false;
+            bEdited = false;
         }
 
         public void SetData(BinaryReader reader, uint nextPointer)
@@ -124,7 +124,7 @@ namespace MarvelData
                     }
                 }
             }
-            output.bIsCopied = true;
+            output.bEdited = true;
             return output;
         }
     }

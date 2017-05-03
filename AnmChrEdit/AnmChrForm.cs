@@ -672,6 +672,7 @@ namespace AnmChrEdit
                 try
                 {
                     int newTime = int.Parse(timeTextBox.Text);
+                    entry.subEntries[subEntryBox.SelectedIndex].bEdited = true;
                     entry.subEntries[subEntryBox.SelectedIndex].tableindex = newTime;
                     entry.subEntries[subEntryBox.SelectedIndex].localindex = newTime;
                     timeTextBox.ForeColor = Color.White;
@@ -679,7 +680,23 @@ namespace AnmChrEdit
                     bDisableSubUpdate = true;
                     int s = subEntryBox.SelectedIndex;
                     subEntryBox.DataSource = entry.getSubEntryList();
-                    subEntryBox.SelectedIndex = s;
+                    bool bDontSelect = true;
+                    for (int i = 0; i < entry.subEntries.Count; i++)
+                    {
+                        if (entry.subEntries[i].bEdited)
+                        {
+                            entry.subEntries[i].bEdited = false;
+                            subEntryBox.SelectedIndex = i;
+                            bDontSelect = false;
+                            break;
+                        }
+                    }
+
+                    if (bDontSelect)
+                    {
+                        subEntryBox.SelectedIndex = s;
+                    }
+
                     bDisableSubUpdate = false;
                     bDisableSubSubUpdate = false;
                 }
@@ -753,9 +770,9 @@ namespace AnmChrEdit
 
                 for (int i = 0; i < entry.subEntries.Count; i++)
                 {
-                    if (entry.subEntries[i].bIsCopied)
+                    if (entry.subEntries[i].bEdited)
                     {
-                        entry.subEntries[i].bIsCopied = false;
+                        entry.subEntries[i].bEdited = false;
                         subEntryBox.SelectedIndex = i;
                         break;
                     }
