@@ -35,7 +35,7 @@ namespace MarvelData
         public float flightaccel;
         public float flightmaxspeed;
         public float flightClearance;
-        public float unk68;
+        public float flightMaxHeight;
         public int unk6C; // 0x6c
         public int unk70;
         public int unk74;
@@ -307,7 +307,7 @@ namespace MarvelData
         public int hitstop;
         public int unk0C8;
         public int unk0CC;
-        public int unk0D0;
+        public int sjCancelDelay;
         public int juggleHeight;
         public int unk0D8;
         public float juggleCarry;
@@ -664,5 +664,22 @@ namespace MarvelData
         public int unk14;
         public int unk18;
         public int unk1C;
+    }
+
+    public class MVC3DataStructures
+    {
+        public static Type[] SpatkChunkTypes =
+        {
+            typeof(SpatkUnkChunk), // 00
+            typeof(SpatkUnkChunk), // 01
+            typeof(SpatkStandardChunk), // 02
+            typeof(SpatkDirectionalDashChunk), // 03
+            typeof(SpatkTwoButtonChunk), // 04
+            typeof(SpatkDirButtonChunk), // 05
+            typeof(SpatkUnkChunk), // 06
+            typeof(SpatkUnkChunk), // 07
+            typeof(SpatkUnkChunk), // 08
+            typeof(SpatkActionChunk), // 09
+        }; // if it's past the end of this list, it'll default to SpatkUnkChunk
     }
 }

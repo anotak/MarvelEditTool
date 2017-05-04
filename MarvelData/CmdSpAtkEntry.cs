@@ -29,12 +29,33 @@ namespace MarvelData
             header.SetData(newdata,0);
             subEntries.Add(header);
 
-            for (int i = 0x24; i < size; i += 0x20)
+            for (int i = 0x24; i + 0x19 < size; i += 0x20)
             {
-                StructEntry<SpatkUnkChunk> newChunk = new StructEntry<SpatkUnkChunk>();
-                newChunk.size = 0x20;
-                newChunk.SetData(newdata,i);
-                subEntries.Add(newChunk);
+                int subType = newdata[i];
+                AELogger.Log("subtype " + subType);
+                if (subType < MVC3DataStructures.SpatkChunkTypes.Length
+                    && MVC3DataStructures.SpatkChunkTypes[subType] != typeof(SpatkUnkChunk))
+                {
+                    Type entryType = typeof(StructEntry<>).MakeGenericType(MVC3DataStructures.SpatkChunkTypes[subType]);
+                    StructEntryBase newChunk = (StructEntryBase)Activator.CreateInstance(entryType);
+                    newChunk.size = 0x20;
+                    newChunk.SetData(newdata, i);
+
+                    subEntries.Add(newChunk);
+                    /*
+#if DEBUG
+                    AELogger.Log("creating subchunk of type" + entryType);
+#endif
+                    */
+                }
+                else
+                {
+                    StructEntry<SpatkUnkChunk> newChunk = new StructEntry<SpatkUnkChunk>();
+                    newChunk.size = 0x20;
+                    newChunk.SetData(newdata, i);
+
+                    subEntries.Add(newChunk);
+                }
             }
         }
     }

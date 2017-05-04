@@ -93,6 +93,10 @@ namespace StatusEditor
                 {
                     structView.Rows[i + offset].DefaultCellStyle.BackColor = Color.LightYellow;
                 }
+                else if (fieldList[i].Name == "subChunkType")
+                {
+                    structView.Rows[i + offset].DefaultCellStyle.BackColor = Color.LightGray;
+                }
                 structView.Rows[i + offset].Cells[2].ValueType = fieldList[i].FieldType;
                 //AELogger.Log(structFieldInfo[i].Name.ToString());
             }
