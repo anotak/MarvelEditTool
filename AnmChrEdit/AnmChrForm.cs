@@ -28,6 +28,8 @@ namespace AnmChrEdit
         public List<List<int>> selectedSubSubIndices;
         public List<int> selectedSubIndices;
 
+        public BindingList<String> subsubDataSource;
+
         public AnmChrForm()
         {
             InitializeComponent();
@@ -504,12 +506,14 @@ namespace AnmChrEdit
 
                 if (bDisableSubSubUpdate)
                 {
-                    subsubEntryBox.DataSource = entry.subEntries[subEntryBox.SelectedIndex].subsubPointers;
+                    subsubDataSource = entry.subEntries[subEntryBox.SelectedIndex].GetCommandList();
+                    subsubEntryBox.DataSource = subsubDataSource;
                 }
                 else
                 {
                     bDisableSubSubUpdate = true;
-                    subsubEntryBox.DataSource = entry.subEntries[subEntryBox.SelectedIndex].subsubPointers;
+                    subsubDataSource = entry.subEntries[subEntryBox.SelectedIndex].GetCommandList();
+                    subsubEntryBox.DataSource = subsubDataSource;
                     bDisableSubSubUpdate = false;
                 }
                 if (bDisableUpdate)
@@ -638,6 +642,10 @@ namespace AnmChrEdit
                         AnmChrEntry entry = (AnmChrEntry)tablefile.table[s];
 
                         entry.subEntries[subEntryBox.SelectedIndex].subsubEntries[subsubEntryBox.SelectedIndex] = StringToByteArray(dataTextBox.Text);
+
+                        bDisableSubSubUpdate = true;
+                        subsubDataSource[subsubEntryBox.SelectedIndex] = entry.subEntries[subEntryBox.SelectedIndex].GetSubSubName(subsubEntryBox.SelectedIndex);
+                        bDisableSubSubUpdate = false;
                     }
                     dataTextBox.ForeColor = Color.White;
                 }
@@ -812,7 +820,8 @@ namespace AnmChrEdit
                 bDisableSubUpdate = true;
                 bDisableSubSubUpdate = true;
                 subsubEntryBox.DataSource = null;
-                subsubEntryBox.DataSource = entry.subEntries[subEntryBox.SelectedIndex].subsubPointers;
+                subsubDataSource = entry.subEntries[subEntryBox.SelectedIndex].GetCommandList();
+                subsubEntryBox.DataSource = subsubDataSource;
 
                 bDisableSubSubUpdate = false;
                 bDisableSubUpdate = false;
@@ -845,7 +854,8 @@ namespace AnmChrEdit
                 
                 subEntryBox.SelectedIndex = 0;
                 RefreshSelectedIndices();
-                subsubEntryBox.DataSource = entry.subEntries[subEntryBox.SelectedIndex].subsubPointers;
+                subsubDataSource = entry.subEntries[subEntryBox.SelectedIndex].GetCommandList();
+                subsubEntryBox.DataSource = subsubDataSource;
                 subsubEntryBox.SelectedIndex = 0;
 
                 subDeleteButton.Enabled = entry.subEntries.Count > 1;
@@ -886,7 +896,8 @@ namespace AnmChrEdit
 
                 subEntryBox.SelectedIndex = 0;
                 RefreshSelectedIndices();
-                subsubEntryBox.DataSource = entry.subEntries[subEntryBox.SelectedIndex].subsubPointers;
+                subsubDataSource = entry.subEntries[subEntryBox.SelectedIndex].GetCommandList();
+                subsubEntryBox.DataSource = subsubDataSource;
                 subsubEntryBox.SelectedIndex = 0;
 
                 subDeleteButton.Enabled = entry.subEntries.Count > 1;

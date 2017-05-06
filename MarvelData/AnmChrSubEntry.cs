@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.ComponentModel;
 
 namespace MarvelData
 {
@@ -18,6 +19,7 @@ namespace MarvelData
         public List<byte[]> subsubEntries;
         public List<int> subsubIndices;
         public bool bEdited;
+        public static StringBuilder sb = new StringBuilder();
 
         public AnmChrSubEntry()
         {
@@ -126,6 +128,40 @@ namespace MarvelData
             }
             output.bEdited = true;
             return output;
+        }
+
+        public BindingList<string> GetCommandList()
+        {
+            int subsubcount = subsubEntries.Count;
+            BindingList<string> output = new BindingList<string>();
+
+            
+            for (int i = 0; i < subsubcount; i++)
+            {
+                output.Add(GetSubSubName(i));
+            }
+            return output;
+        }
+
+        public String GetSubSubName(int i)
+        {
+            sb.Clear();
+            int currentCount = subsubEntries[i].Length;
+            if (currentCount > 4)
+            {
+                sb.Append("cmd ");
+                sb.Append(subsubEntries[i][0].ToString("X2"));
+                sb.Append(",");
+                sb.Append(subsubEntries[i][4].ToString("X2"));
+            }
+            else
+            {
+                sb.Append("unk");
+                sb.Append(subsubPointers[i]);
+                sb.Append(" w size ");
+                sb.Append(currentCount);
+            }
+            return sb.ToString();
         }
     }
 }

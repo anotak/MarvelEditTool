@@ -184,6 +184,7 @@
             // 
             // tableLayoutPanel3
             // 
+            this.tableLayoutPanel3.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
             this.tableLayoutPanel3.ColumnCount = 2;
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 32.92978F));
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 67.07022F));
@@ -213,14 +214,14 @@
             this.tableLayoutPanel2.Controls.Add(this.label1, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.timeTextBox, 1, 1);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(132, 3);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(133, 4);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 4;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(258, 156);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(256, 156);
             this.tableLayoutPanel2.TabIndex = 2;
             // 
             // label2
@@ -314,10 +315,10 @@
             this.subsubEntryBox.ForeColor = System.Drawing.Color.White;
             this.subsubEntryBox.FormattingEnabled = true;
             this.subsubEntryBox.ItemHeight = 23;
-            this.subsubEntryBox.Location = new System.Drawing.Point(3, 207);
+            this.subsubEntryBox.Location = new System.Drawing.Point(4, 208);
             this.subsubEntryBox.Name = "subsubEntryBox";
             this.subsubEntryBox.ScrollAlwaysVisible = true;
-            this.subsubEntryBox.Size = new System.Drawing.Size(123, 199);
+            this.subsubEntryBox.Size = new System.Drawing.Size(122, 197);
             this.subsubEntryBox.TabIndex = 0;
             this.subsubEntryBox.SelectedIndexChanged += new System.EventHandler(this.subsubEntryBox_SelectedIndexChanged);
             // 
@@ -328,10 +329,10 @@
             this.subEntryBox.ForeColor = System.Drawing.Color.White;
             this.subEntryBox.FormattingEnabled = true;
             this.subEntryBox.ItemHeight = 23;
-            this.subEntryBox.Location = new System.Drawing.Point(3, 3);
+            this.subEntryBox.Location = new System.Drawing.Point(4, 4);
             this.subEntryBox.Name = "subEntryBox";
             this.subEntryBox.ScrollAlwaysVisible = true;
-            this.subEntryBox.Size = new System.Drawing.Size(123, 198);
+            this.subEntryBox.Size = new System.Drawing.Size(122, 197);
             this.subEntryBox.TabIndex = 0;
             this.subEntryBox.SelectedIndexChanged += new System.EventHandler(this.subEntryBox_SelectedIndexChanged);
             // 
@@ -343,13 +344,13 @@
             this.tableLayoutPanel4.Controls.Add(this.subsubPasteButton, 0, 1);
             this.tableLayoutPanel4.Controls.Add(this.subsubCopyButton, 0, 0);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel4.Location = new System.Drawing.Point(132, 207);
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(133, 208);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
             this.tableLayoutPanel4.RowCount = 3;
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(258, 199);
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(256, 197);
             this.tableLayoutPanel4.TabIndex = 3;
             // 
             // subsubDeleteButton
@@ -357,9 +358,9 @@
             this.subsubDeleteButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.subsubDeleteButton.Enabled = false;
             this.subsubDeleteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
-            this.subsubDeleteButton.Location = new System.Drawing.Point(3, 135);
+            this.subsubDeleteButton.Location = new System.Drawing.Point(3, 133);
             this.subsubDeleteButton.Name = "subsubDeleteButton";
-            this.subsubDeleteButton.Size = new System.Drawing.Size(252, 61);
+            this.subsubDeleteButton.Size = new System.Drawing.Size(250, 61);
             this.subsubDeleteButton.TabIndex = 2;
             this.subsubDeleteButton.Text = "delete";
             this.subsubDeleteButton.UseVisualStyleBackColor = true;
@@ -370,9 +371,9 @@
             this.subsubPasteButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.subsubPasteButton.Enabled = false;
             this.subsubPasteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
-            this.subsubPasteButton.Location = new System.Drawing.Point(3, 69);
+            this.subsubPasteButton.Location = new System.Drawing.Point(3, 68);
             this.subsubPasteButton.Name = "subsubPasteButton";
-            this.subsubPasteButton.Size = new System.Drawing.Size(252, 60);
+            this.subsubPasteButton.Size = new System.Drawing.Size(250, 59);
             this.subsubPasteButton.TabIndex = 1;
             this.subsubPasteButton.Text = "paste";
             this.subsubPasteButton.UseVisualStyleBackColor = true;
@@ -385,7 +386,7 @@
             this.subsubCopyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
             this.subsubCopyButton.Location = new System.Drawing.Point(3, 3);
             this.subsubCopyButton.Name = "subsubCopyButton";
-            this.subsubCopyButton.Size = new System.Drawing.Size(252, 60);
+            this.subsubCopyButton.Size = new System.Drawing.Size(250, 59);
             this.subsubCopyButton.TabIndex = 0;
             this.subsubCopyButton.Text = "copy";
             this.subsubCopyButton.UseVisualStyleBackColor = true;
