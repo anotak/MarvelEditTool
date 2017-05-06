@@ -19,7 +19,108 @@ namespace MarvelData
         public List<byte[]> subsubEntries;
         public List<int> subsubIndices;
         public bool bEdited;
+
+        #region STATIC
         public static StringBuilder sb = new StringBuilder();
+        public static Dictionary<long, string> cmdNames;
+
+        public static string InitCmdNames(string filename = "AnmChrCmds.cfg")
+        {
+            AELogger.Log("InitCmdNames " + filename);
+            if (!File.Exists(filename))
+            {
+                AELogger.Log("warning: command label file " + filename + " does not exist!");
+                return "command label file " + filename + " does not exist!";
+            }
+
+            if (cmdNames == null)
+            {
+                cmdNames = new Dictionary<long, string>();
+            }
+            else
+            {
+                AELogger.Log("odd? cmdNames already initialized?");
+            }
+
+            using (StreamReader reader = new StreamReader(File.OpenRead(filename)))
+            {
+                string line;
+                line = reader.ReadLine();
+                int i = 0;
+                while (line != null)
+                {
+                    i++;
+                    if (line.IndexOf('#') >= 0)
+                    {
+                        AELogger.Log("comment found " + line);
+                        line = line.Substring(0,line.IndexOf('#'));
+                    }
+
+                    if (string.IsNullOrWhiteSpace(line))
+                    {
+                        line = reader.ReadLine();
+                        continue;
+                    }
+
+                    line = line.Trim();
+                    long key = 0;
+                    if (line.IndexOf(',') >= 0)
+                    {
+                        try
+                        {
+                            key = long.Parse(line.Substring(0, line.IndexOf(',')), System.Globalization.NumberStyles.HexNumber) << 32;
+                        }
+                        catch(Exception e)
+                        {
+                            AELogger.Log("PARSE ERROR 1ST AROUND LINE " + i + ": " + line + "\nDETAILS: " + e.Message);
+                            return "PARSE ERROR 1ST AROUND LINE " + i + ": " + line + "\nDETAILS: " + e.Message;
+                        }
+                    }
+                    else
+                    {
+                        AELogger.Log("PARSE ERROR 1ST AROUND LINE " + i + ": NO 1ST COMMA DETECTED: " + line);
+                        return "PARSE ERROR 1ST AROUND LINE " + i + ": NO 1ST COMMA DETECTED: " + line;
+                    }
+                    line = line.Substring(line.IndexOf(',') + 1);
+
+                    if (line.IndexOf(',') >= 0)
+                    {
+                        try
+                        {
+                            key += long.Parse(line.Substring(0, line.IndexOf(',')), System.Globalization.NumberStyles.HexNumber);
+                        }
+                        catch (Exception e)
+                        {
+                            AELogger.Log("PARSE ERROR 2ND AROUND LINE " + i + ": " + line + "\nDETAILS: " + e.Message);
+                            return "PARSE ERROR 2ND AROUND LINE " + i + ": " + line + "\nDETAILS: " + e.Message;
+                        }
+                    }
+                    else
+                    {
+                        AELogger.Log("PARSE ERROR 2ND AROUND LINE " + i + ": NO 2ND COMMA DETECTED: " + line);
+                        return "PARSE ERROR 2ND AROUND LINE " + i + ": NO 2ND COMMA DETECTED: " + line;
+                    }
+
+                    line = line.Substring(line.IndexOf(',') + 1);
+                    line = line.TrimStart();
+                    if (cmdNames.ContainsKey(key))
+                    {
+                        AELogger.Log("warning, duplicate key " + key.ToString("X") + " with old value '" + cmdNames[key] + "' overwritten with '" + line + "' on line number " + i);
+                        cmdNames[key] = line;
+                    }
+                    else
+                    {
+                        AELogger.Log("line " + i + ": " + key.ToString("X") + " set to '" + line + "'");
+                        cmdNames.Add(key, line);
+                    }
+
+                    line = reader.ReadLine();
+                } // while 
+            } // using
+            AELogger.Log("end InitCmdNames");
+            return string.Empty;
+        }
+        #endregion
 
         public AnmChrSubEntry()
         {
@@ -134,7 +235,6 @@ namespace MarvelData
         {
             int subsubcount = subsubEntries.Count;
             BindingList<string> output = new BindingList<string>();
-
             
             for (int i = 0; i < subsubcount; i++)
             {
@@ -149,9 +249,18 @@ namespace MarvelData
             int currentCount = subsubEntries[i].Length;
             if (currentCount > 4)
             {
-                sb.Append("cmd ");
-                sb.Append(subsubEntries[i][0].ToString("X2"));
-                sb.Append(",");
+                if (cmdNames != null)
+                {
+                    long header = ((long)subsubEntries[i][0] << 32) + (long)subsubEntries[i][4];
+                    if (cmdNames.ContainsKey(header))
+                    {
+                        return cmdNames[header];
+                    }
+                }
+                
+                //sb.Append("cmd ");
+                sb.Append(subsubEntries[i][0].ToString("X"));
+                sb.Append("_");
                 sb.Append(subsubEntries[i][4].ToString("X2"));
             }
             else

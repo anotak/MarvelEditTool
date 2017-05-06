@@ -40,6 +40,7 @@ namespace AnmChrEdit
 
             selectedSubIndices = new List<int>();
             selectedSubSubIndices = new List<List<int>>();
+            AnmChrSubEntry.InitCmdNames();
         }
 
         public static string GetCompileDate()
