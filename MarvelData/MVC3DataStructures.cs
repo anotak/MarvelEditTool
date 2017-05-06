@@ -423,14 +423,48 @@ namespace MarvelData
         Unk0x8000000 = 0x000800000
     }
 
+    [Flags]
+    public enum InputCode : int
+    {
+        None = 0,
+        Forward = 0x00000001,
+        Back = 0x00000002,
+        Up = 0x00000004,
+        Down = 0x00000008,
+        L = 0x00000010,
+        M = 0x00000020,
+        H = 0x00000040,
+        S = 0x00000080,
+        A1 = 0x00000100,
+        A2 = 0x00000200,
+        Unk0x400 = 0x00000400,
+        Unk0x800 = 0x00000800,
+        Taunt = 0x00001000,
+        Unk0x2000 = 0x00002000,
+        Unk0x4000 = 0x00004000,
+        Unk0x8000 = 0x00008000,
+        Unk0x10000 = 0x00010000,
+        Unk0x20000 = 0x00020000,
+        Unk0x40000 = 0x00040000,
+        Unk0x80000 = 0x00080000,
+        Unk0x100000 = 0x00100000,
+        Unk0x200000 = 0x00200000,
+        Unk0x400000 = 0x00400000,
+        Unk0x800000 = 0x00800000,
+        Unk0x1000000 = 0x01000000,
+        Unk0x2000000 = 0x000200000,
+        Unk0x4000000 = 0x000400000,
+        Unk0x8000000 = 0x000800000
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct BaseActChunk
     {
         public int index;
         public int anmchrAction;
-        public int direction1;
-        public int direction2;
-        public int button;
+        public InputCode directionLeniency;
+        public InputCode direction2;
+        public InputCode button;
         public int state;
         public int unk18;
         public int unk1C;
@@ -480,7 +514,7 @@ namespace MarvelData
         public int unk0C;
         public int negativeEdge;
         public int leniencyMaybe;
-        public int inputCode;
+        public InputCode inputCode;
         public int unk1C;
     }
 
@@ -493,7 +527,7 @@ namespace MarvelData
         public int unk0C;
         public int negativeEdge;
         public int leniencyMaybe;
-        public int inputCode;
+        public InputCode inputCode;
         public int unk1C;
     }
 
@@ -516,8 +550,8 @@ namespace MarvelData
         public int subChunkType; // 05
         public int cancelWindow;
         public int leniencyMaybe;
-        public int inputCodeDirection;
-        public int inputCodeButton;
+        public InputCode inputCodeDirection;
+        public InputCode inputCodeButton;
         public int unk14;
         public int unk18;
         public int unk1C;

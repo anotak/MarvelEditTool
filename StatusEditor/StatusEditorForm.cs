@@ -93,6 +93,10 @@ namespace StatusEditor
                 {
                     structView.Rows[i + offset].DefaultCellStyle.BackColor = Color.LightYellow;
                 }
+                else if (fieldList[i].FieldType.IsEnum)
+                {
+                    structView.Rows[i + offset].DefaultCellStyle.BackColor = Color.Linen;
+                }
                 else if (fieldList[i].Name == "subChunkType")
                 {
                     structView.Rows[i + offset].DefaultCellStyle.BackColor = Color.LightGray;
