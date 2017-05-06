@@ -500,9 +500,16 @@ namespace MarvelData
         public float meterrequirement;
         public int disable;
         public int cancelHierarchyThresh;
-        public int positionState;
+        public PositionState positionState;
         public int comboState;
         public int flags;
+    }
+
+    public enum PositionState : int
+    {
+        Ground = 0,
+        Air = 1,
+        Either = 2
     }
 
     [StructLayout(LayoutKind.Sequential)]
