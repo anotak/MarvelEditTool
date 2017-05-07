@@ -153,5 +153,36 @@ namespace MarvelData
                 return base.GetFilename();
             }
         }
+
+        public override void GuessName()
+        {
+            if (data is BaseActChunk)
+            {
+                if (nameSB == null)
+                {
+                    nameSB = new StringBuilder();
+                }
+                else
+                {
+                    nameSB.Clear();
+                }
+                BaseActChunk b = (BaseActChunk)((object)data); // weird (object) because T makes C# mad
+
+                if ((int)b.direction2 <= 10)
+                {
+                    nameSB.Append(MVC3DataStructures.NumpadDirections[(int)b.direction2]);
+                }
+                else
+                {
+                    nameSB.Append(b.direction2);
+                }
+                nameSB.Append(b.button);
+                name = nameSB.ToString();
+            }
+            else
+            {
+                base.GuessName();
+            }
+        }
     }
 }
