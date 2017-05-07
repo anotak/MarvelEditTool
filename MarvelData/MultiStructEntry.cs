@@ -56,6 +56,18 @@ namespace MarvelData
                         nameSB.Append(chunk.inputCode);
                     }
                 }
+                else if (subEntries[i] is StructEntry<SpatkDirectionalDashChunk>)
+                {
+                    SpatkDirectionalDashChunk chunk = ((StructEntry<SpatkDirectionalDashChunk>)subEntries[i]).data;
+                    if ((int)chunk.inputCode <= 10)
+                    {
+                        nameSB.Append(MVC3DataStructures.NumpadDirections[(int)chunk.inputCode]);
+                    }
+                    else
+                    {
+                        nameSB.Append(chunk.inputCode);
+                    }
+                }
                 else if (subEntries[i] is StructEntry<SpatkDirButtonChunk>)
                 {
                     SpatkDirButtonChunk chunk = ((StructEntry<SpatkDirButtonChunk>)subEntries[i]).data;
@@ -69,6 +81,10 @@ namespace MarvelData
                     }
 
                     nameSB.Append(chunk.inputCodeButton);
+                }
+                else if (subEntries[i] is StructEntry<SpatkTwoButtonChunk>)
+                {
+                    nameSB.Append("PP");
                 }
             }
         }

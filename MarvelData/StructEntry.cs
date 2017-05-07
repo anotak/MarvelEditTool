@@ -166,6 +166,7 @@ namespace MarvelData
                 {
                     nameSB.Clear();
                 }
+
                 BaseActChunk b = (BaseActChunk)((object)data); // weird (object) because T makes C# mad
 
                 if ((int)b.direction2 <= 10)
@@ -176,6 +177,7 @@ namespace MarvelData
                 {
                     nameSB.Append(b.direction2);
                 }
+
                 nameSB.Append(b.button);
                 name = nameSB.ToString();
             }

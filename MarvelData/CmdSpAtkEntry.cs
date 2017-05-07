@@ -88,6 +88,12 @@ namespace MarvelData
 
             SubNameLoop();
 
+
+            if (header.data.comboState > 1)
+            {
+                nameSB.Append(" in block/hitstun?");
+            }
+
             // finish up
             if (nameSB.Length > 0)
             {
