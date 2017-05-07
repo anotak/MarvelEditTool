@@ -57,6 +57,40 @@ namespace MarvelData
                     subEntries.Add(newChunk);
                 }
             }
+        } // setdata
+
+
+        public override void GuessName()
+        {
+            if (nameSB == null)
+            {
+                nameSB = new StringBuilder();
+            }
+            else
+            {
+                nameSB.Clear();
+            }
+            
+            StructEntry<CmdComboHeaderChunk> header = (StructEntry<CmdComboHeaderChunk>)subEntries[0];
+
+            if (header.data.meterRequirement > 0)
+            {
+                nameSB.Append(header.data.meterRequirement);
+                nameSB.Append("bar ");
+            }
+
+            SubNameLoop();
+
+            // finish up
+            if (nameSB.Length > 0)
+            {
+                name = nameSB.ToString();
+            }
+            else
+            {
+                name = "unknown";
+            }
         }
-    }
+
+    } // class
 }

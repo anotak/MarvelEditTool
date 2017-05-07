@@ -15,7 +15,7 @@ namespace MarvelData
         public string name; // DONT SAVE THIS (??)
         public int size;
 
-        public static StringBuilder FancyNameStringBuilder;
+        public static StringBuilder nameSB;
 
         public TableEntry()
         {
@@ -46,18 +46,18 @@ namespace MarvelData
 
         public virtual string GetFancyName()
         {
-            if(FancyNameStringBuilder == null)
+            if(nameSB == null)
             {
-                FancyNameStringBuilder = new StringBuilder();
+                nameSB = new StringBuilder();
             }
             else
             {
-                FancyNameStringBuilder.Clear();
+                nameSB.Clear();
             }
-            FancyNameStringBuilder.Append(index.ToString("X3"));
-            FancyNameStringBuilder.Append("h: ");
-            FancyNameStringBuilder.Append(name);
-            return  FancyNameStringBuilder.ToString();
+            nameSB.Append(index.ToString("X3"));
+            nameSB.Append("h: ");
+            nameSB.Append(name);
+            return  nameSB.ToString();
         }
 
         public virtual string GetFilename()

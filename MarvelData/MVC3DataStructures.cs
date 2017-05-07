@@ -457,6 +457,19 @@ namespace MarvelData
         Unk0x8000000 = 0x000800000
     }
 
+    public enum NumpadDirections
+    {
+        _5 = 0,
+        _6 = 0x00000001,
+        _4 = 0x00000002,
+        _8 = 0x00000004,
+        _2 = 0x00000008,
+        _9 = 0x00000005,
+        _3 = 0x00000009,
+        _1 = 0x0000000A,
+        _7 = 0x00000006
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct BaseActChunk
     {
@@ -709,6 +722,8 @@ namespace MarvelData
 
     public class MVC3DataStructures
     {
+        public static string[] NumpadDirections = { "5", "6", "4", "?", "8", "9", "7", "?", "2", "3", "1" };
+
         public static Type[] SpatkChunkTypes =
         {
             typeof(SpatkUnkChunk), // 00

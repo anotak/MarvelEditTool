@@ -38,5 +38,39 @@ namespace MarvelData
                 throw new Exception("NO DATA FOR GETDATA");
             }
         }
+
+        public void SubNameLoop()
+        {
+            int subCount = subEntries.Count;
+            for (int i = 0; i < subCount; i++)
+            {
+                if (subEntries[i] is StructEntry<SpatkStandardChunk>)
+                {
+                    SpatkStandardChunk chunk = ((StructEntry<SpatkStandardChunk>)subEntries[i]).data;
+                    if ((int)chunk.inputCode <= 10)
+                    {
+                        nameSB.Append(MVC3DataStructures.NumpadDirections[(int)chunk.inputCode]);
+                    }
+                    else
+                    {
+                        nameSB.Append(chunk.inputCode);
+                    }
+                }
+                else if (subEntries[i] is StructEntry<SpatkDirButtonChunk>)
+                {
+                    SpatkDirButtonChunk chunk = ((StructEntry<SpatkDirButtonChunk>)subEntries[i]).data;
+                    if ((int)chunk.inputCodeDirection <= 10)
+                    {
+                        nameSB.Append(MVC3DataStructures.NumpadDirections[(int)chunk.inputCodeDirection]);
+                    }
+                    else
+                    {
+                        nameSB.Append("?");
+                    }
+
+                    nameSB.Append(chunk.inputCodeButton);
+                }
+            }
+        }
     }
 }
