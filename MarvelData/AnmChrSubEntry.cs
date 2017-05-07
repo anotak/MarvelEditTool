@@ -243,6 +243,20 @@ namespace MarvelData
             return output;
         }
 
+        public string GetName()
+        {
+            sb.Clear();
+
+            sb.Append("time ");
+            sb.Append(localindex.ToString("000;-00"));
+
+            sb.Append(": ");
+            sb.Append(subsubEntries.Count);
+            sb.Append(" cmds");
+
+            return sb.ToString();
+        }
+
         public String GetSubSubName(int i)
         {
             sb.Clear();

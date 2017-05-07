@@ -106,7 +106,7 @@ namespace MarvelData
                     TableEntry current = (TableEntry)Activator.CreateInstance(entryType);
                     current.bHasData = true;
                     current.index = newindex;
-                    current.name = TableEntry.GuessAnmChrName(current.index);
+                    //current.name = current.GuessAnmChrName(); // moved later?
 
                     current.originalPointer = reader.ReadUInt32();
 
@@ -179,6 +179,7 @@ namespace MarvelData
                             tablefile.table[i].size = structsize;
                         }
                         tablefile.table[i].SetData(reader.ReadBytes((int)entrysize));
+                        tablefile.table[i].GuessName();
                         position += entrysize;
                     } // if bhasdata
                 } // for i -> count

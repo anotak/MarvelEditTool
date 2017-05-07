@@ -12,14 +12,18 @@ namespace MarvelData
         public uint index;
         public uint originalPointer; // DONT SAVE THIS
         public bool bHasData;  // DONT SAVE THIS
-        public string name; // DONT SAVE THIS
+        public string name; // DONT SAVE THIS (??)
         public int size;
 
         public static StringBuilder FancyNameStringBuilder;
 
-        public static string GuessAnmChrName(uint index)
+        public TableEntry()
         {
-            string output;
+            name = "";
+        }
+
+        public virtual void GuessName()
+        {
             switch(index)
             {
                 /*case 0x0:
@@ -35,14 +39,12 @@ namespace MarvelData
                 case 0x168:
                     return "5S";*/
                 default:
-                    output = "unknown";
+                    name = "unknown";
                     break;
             }
-
-            return output;
         }
 
-        public string GetFancyName()
+        public virtual string GetFancyName()
         {
             if(FancyNameStringBuilder == null)
             {
@@ -121,15 +123,16 @@ namespace MarvelData
                     }
                     else
                     {
-                        if(!bHasData)
+                        if (!bHasData)
                         {
                             bHasData = true;
-                            try { 
+                            try
+                            {
                                 name = Path.GetFileNameWithoutExtension(filename);
                             }
                             catch
                             {
-                                name = GuessAnmChrName(index);
+                                GuessName();
                             }
                         }
                         ImportBytes(reader.ReadBytes((int)reader.BaseStream.Length));

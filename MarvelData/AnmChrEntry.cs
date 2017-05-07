@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.ComponentModel;
 
 namespace MarvelData
 {
@@ -19,7 +20,7 @@ namespace MarvelData
             subEntries = new List<AnmChrSubEntry>();
         }
 
-        public List<int> getSubEntryList()
+        public BindingList<string> getSubEntryList()
         {
             subEntries.Sort(delegate (AnmChrSubEntry x, AnmChrSubEntry y)
             {
@@ -46,10 +47,10 @@ namespace MarvelData
                 return -1;
             });
 
-            List<int> output = new List<int>();
+            BindingList<string> output = new BindingList<string>();
             for (int i = 0; i < subEntries.Count; i++)
             {
-                output.Add(subEntries[i].localindex);
+                output.Add(subEntries[i].GetName());
             }
             return output;
         }
@@ -150,5 +151,13 @@ namespace MarvelData
                 size += subEntries[i].GetSize();
             }
         }
+
+        /*
+        public override void GuessName()
+        {
+            base.GuessName();
+            name += " len " + animTime;
+        }
+        */
     }
 }
