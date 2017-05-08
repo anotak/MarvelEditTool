@@ -190,6 +190,11 @@ namespace MarvelData
             {
                 string spatkpath = Path.Combine(Path.GetDirectoryName(filename), "cmdspatk.52A8DBF6");
 
+                if (!File.Exists(spatkpath))
+                {
+                    spatkpath = Path.Combine(Path.GetDirectoryName(filename), "cmdspatk.CSP");
+                }
+
                 if (File.Exists(spatkpath))
                 {
                     TableFile spatkfile = LoadFile(spatkpath, true);
