@@ -185,6 +185,26 @@ namespace MarvelData
                 } // for i -> count
                 tablefile.footer = reader.ReadBytes(16);
             } // using(reader)
+
+            if (tablefile.fileType == typeof(AnmChrEntry))
+            {
+                string spatkpath = Path.Combine(Path.GetDirectoryName(filename), "cmdspatk.52A8DBF6");
+
+                if (File.Exists(spatkpath))
+                {
+                    TableFile spatkfile = LoadFile(spatkpath, true);
+
+                    int spatkcount = spatkfile.table.Count;
+                    for (int i = 0; i < spatkcount; i++)
+                    {
+                        if (spatkfile.table[i].bHasData && spatkfile.table[i] is CmdSpAtkEntry)
+                        {
+                            ((CmdSpAtkEntry)spatkfile.table[i]).TryToLabelAnmChr(tablefile);
+                        }
+                    }
+                }
+            }
+
             return tablefile;
         }
 

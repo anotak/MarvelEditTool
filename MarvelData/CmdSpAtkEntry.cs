@@ -7,8 +7,30 @@ namespace MarvelData
 {
     public class CmdSpAtkEntry : MultiStructEntry
     {
+        public int anmChrIndexMaybe;
+        public static int[] anmChrIndexOffsets = {
+            0, // 0 movement
+            -1, // 1 blockin
+            -1,
+            -1,
+            -1,
+            -1,
+            0x96, // normals?
+            0xAA, // airdashes?
+            0xBE, // 8 specials
+            0xDC, //9 supers
+            0xF0, // 10 ?? dormamu air spell charge
+            -1,
+            -1,
+            -1,
+            -1,
+            0x17C, // 15, flight
+        };
+
+
         public override void SetData(byte[] newdata)
         {
+            anmChrIndexMaybe = 0;
             bHasData = true;
 
             if (subEntries == null)
@@ -42,6 +64,15 @@ namespace MarvelData
                     newChunk.SetData(newdata, i);
 
                     subEntries.Add(newChunk);
+
+                    if (subType == 9 && newChunk is StructEntry<SpatkActionChunk>)
+                    {
+                        SpatkActionChunk action = ((StructEntry<SpatkActionChunk>)newChunk).data;
+                        if (action.actionClass < anmChrIndexOffsets.Length && anmChrIndexOffsets[action.actionClass] >= 0)
+                        {
+                            anmChrIndexMaybe = anmChrIndexOffsets[action.actionClass] + action.actionIndex;
+                        }
+                    }
                     /*
 #if DEBUG
                     AELogger.Log("creating subchunk of type" + entryType);
@@ -94,6 +125,13 @@ namespace MarvelData
                 nameSB.Append(" in block/hitstun?");
             }
 
+            if (anmChrIndexMaybe > 0)
+            {
+                nameSB.Append(" ... anmchr ?= ");
+                nameSB.Append(anmChrIndexMaybe.ToString("X"));
+                nameSB.Append("?");
+            }
+
             // finish up
             if (nameSB.Length > 0)
             {
@@ -105,7 +143,15 @@ namespace MarvelData
             }
         }
 
-
-
+        public void TryToLabelAnmChr(TableFile file)
+        {
+            if (anmChrIndexMaybe > 0)
+            {
+                if (file.table[anmChrIndexMaybe].bHasData && file.table[anmChrIndexMaybe].name == "unknown")
+                {
+                    file.table[anmChrIndexMaybe].name = name;
+                }
+            }
+        }
     } // class
 }
