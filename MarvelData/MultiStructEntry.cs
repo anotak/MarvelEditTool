@@ -86,6 +86,20 @@ namespace MarvelData
                 {
                     nameSB.Append("PP");
                 }
+                else if (subEntries[i] is StructEntry<SpatkTwoButtonAirdashChunk>)
+                {
+                    SpatkTwoButtonAirdashChunk chunk = ((StructEntry<SpatkTwoButtonAirdashChunk>)subEntries[i]).data;
+
+                    if ((int)chunk.inputCodeDirection <= 10)
+                    {
+                        nameSB.Append(MVC3DataStructures.NumpadDirections[(int)chunk.inputCodeDirection]);
+                    }
+                    else
+                    {
+                        nameSB.Append("?");
+                    }
+                    nameSB.Append("PP");
+                }
             }
         }
     }

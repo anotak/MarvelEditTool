@@ -36,17 +36,18 @@
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.animBox = new System.Windows.Forms.ListBox();
             this.structView = new System.Windows.Forms.DataGridView();
+            this.SubChunkColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.varColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hexColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.importButton = new System.Windows.Forms.Button();
             this.exportButton = new System.Windows.Forms.Button();
             this.extendButton = new System.Windows.Forms.Button();
+            this.duplicateButton = new System.Windows.Forms.Button();
             this.sizeLabel = new System.Windows.Forms.Label();
             this.dataTextBox = new System.Windows.Forms.TextBox();
-            this.SubChunkColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.varColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.hexColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -194,6 +195,34 @@
             this.structView.Size = new System.Drawing.Size(424, 447);
             this.structView.TabIndex = 1;
             // 
+            // SubChunkColumn
+            // 
+            this.SubChunkColumn.FillWeight = 4F;
+            this.SubChunkColumn.HeaderText = "subchunk";
+            this.SubChunkColumn.Name = "SubChunkColumn";
+            this.SubChunkColumn.ReadOnly = true;
+            // 
+            // varColumn
+            // 
+            this.varColumn.FillWeight = 50F;
+            this.varColumn.HeaderText = "var";
+            this.varColumn.Name = "varColumn";
+            this.varColumn.ReadOnly = true;
+            // 
+            // valueColumn
+            // 
+            this.valueColumn.FillWeight = 66.04459F;
+            this.valueColumn.HeaderText = "value";
+            this.valueColumn.Name = "valueColumn";
+            // 
+            // hexColumn
+            // 
+            this.hexColumn.FillWeight = 45F;
+            this.hexColumn.HeaderText = "hex";
+            this.hexColumn.MinimumWidth = 70;
+            this.hexColumn.Name = "hexColumn";
+            this.hexColumn.ReadOnly = true;
+            // 
             // splitContainer3
             // 
             this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -219,18 +248,20 @@
             this.tableLayoutPanel1.Controls.Add(this.importButton, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.exportButton, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.extendButton, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.sizeLabel, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.duplicateButton, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.sizeLabel, 0, 5);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 7;
+            this.tableLayoutPanel1.RowCount = 6;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(415, 179);
             this.tableLayoutPanel1.TabIndex = 4;
             // 
@@ -282,10 +313,23 @@
             this.extendButton.UseVisualStyleBackColor = true;
             this.extendButton.Click += new System.EventHandler(this.extendButton_Click);
             // 
+            // duplicateButton
+            // 
+            this.duplicateButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.duplicateButton.Enabled = false;
+            this.duplicateButton.Location = new System.Drawing.Point(3, 102);
+            this.duplicateButton.Name = "duplicateButton";
+            this.duplicateButton.Size = new System.Drawing.Size(409, 23);
+            this.duplicateButton.TabIndex = 5;
+            this.duplicateButton.Text = "Duplicate";
+            this.duplicateButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.duplicateButton.UseVisualStyleBackColor = true;
+            this.duplicateButton.Click += new System.EventHandler(this.duplicateButton_Click);
+            // 
             // sizeLabel
             // 
             this.sizeLabel.AutoSize = true;
-            this.sizeLabel.Location = new System.Drawing.Point(3, 99);
+            this.sizeLabel.Location = new System.Drawing.Point(3, 128);
             this.sizeLabel.Name = "sizeLabel";
             this.sizeLabel.Size = new System.Drawing.Size(44, 17);
             this.sizeLabel.TabIndex = 4;
@@ -303,34 +347,6 @@
             this.dataTextBox.Size = new System.Drawing.Size(415, 343);
             this.dataTextBox.TabIndex = 0;
             this.dataTextBox.WordWrap = false;
-            // 
-            // SubChunkColumn
-            // 
-            this.SubChunkColumn.FillWeight = 4F;
-            this.SubChunkColumn.HeaderText = "subchunk";
-            this.SubChunkColumn.Name = "SubChunkColumn";
-            this.SubChunkColumn.ReadOnly = true;
-            // 
-            // varColumn
-            // 
-            this.varColumn.FillWeight = 50F;
-            this.varColumn.HeaderText = "var";
-            this.varColumn.Name = "varColumn";
-            this.varColumn.ReadOnly = true;
-            // 
-            // valueColumn
-            // 
-            this.valueColumn.FillWeight = 66.04459F;
-            this.valueColumn.HeaderText = "value";
-            this.valueColumn.Name = "valueColumn";
-            // 
-            // hexColumn
-            // 
-            this.hexColumn.FillWeight = 45F;
-            this.hexColumn.HeaderText = "hex";
-            this.hexColumn.MinimumWidth = 70;
-            this.hexColumn.Name = "hexColumn";
-            this.hexColumn.ReadOnly = true;
             // 
             // StatusEditorForm
             // 
@@ -376,7 +392,6 @@
         private System.Windows.Forms.Button extendButton;
         private System.Windows.Forms.Button importButton;
         private System.Windows.Forms.Button exportButton;
-        private System.Windows.Forms.Label sizeLabel;
         private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.Label filenameLabel;
         private System.Windows.Forms.SplitContainer splitContainer4;
@@ -386,6 +401,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn varColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn valueColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn hexColumn;
+        private System.Windows.Forms.Label sizeLabel;
+        private System.Windows.Forms.Button duplicateButton;
     }
 }
 

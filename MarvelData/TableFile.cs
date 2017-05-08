@@ -236,6 +236,29 @@ namespace MarvelData
             table.Add(entry);
         }
 
+        public void Duplicate(int index)
+        {
+            int newindex = table.Count;
+            if (index < 0 || index > newindex)
+            {
+                return;
+            }
+
+            if (table[index].bHasData)
+            {
+                TableEntry dupe = table[index].Duplicate();
+                dupe.index = (uint)newindex;
+                dupe.UpdateSize();
+                dupe.GuessName();
+                dupe.name += " duplicate";
+                table.Add(dupe);
+            }
+            else
+            {
+                Extend();
+            }
+        }
+
         public void WriteFile(string filename, bool bDoNames = false)
         {
             if (File.Exists(filename))

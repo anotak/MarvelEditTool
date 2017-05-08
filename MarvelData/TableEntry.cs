@@ -150,6 +150,14 @@ namespace MarvelData
             SetData(bytes);
         }
 
+        public virtual TableEntry Duplicate()
+        {
+            TableEntry dupe = (TableEntry)Activator.CreateInstance(GetType());
+            dupe.name = "duplicate " + name;
+            dupe.ImportBytes(GetData());
+            return dupe;
+        }
+
         public virtual void UpdateSize()
         {
 

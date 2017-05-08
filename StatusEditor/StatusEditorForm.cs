@@ -168,6 +168,14 @@ namespace StatusEditor
                 }
                 return true;
             }
+            else if (keyData == (Keys.Control | Keys.D))
+            {
+                if (duplicateButton.Enabled)
+                {
+                    duplicateButton_Click(null, null);
+                }
+                return true;
+            }
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
@@ -199,6 +207,7 @@ namespace StatusEditor
                     SuspendLayout();
                     saveButton.Enabled = true;
                     importButton.Enabled = false;
+                    duplicateButton.Enabled = false;
                     exportButton.Enabled = false;
                     openButton.Enabled = false;
                     animBox.Enabled = true;
@@ -388,6 +397,25 @@ namespace StatusEditor
             }
         }
 
+
+        private void duplicateButton_Click(object sender, EventArgs e)
+        {
+            if (animBox.SelectedIndex < 0
+                ||
+                animBox.SelectedIndex >= tablefile.table.Count
+                ||
+                !tablefile.table[animBox.SelectedIndex].bHasData)
+            {
+                return;
+            }
+            tablefile.Duplicate(animBox.SelectedIndex);
+            RefreshData();
+            if (animBox.TopIndex < animBox.Items.Count - 2)
+            {
+                animBox.TopIndex++;
+            }
+        }
+
         private void extendButton_Click(object sender, EventArgs e)
         {
             tablefile.Extend();
@@ -504,6 +532,7 @@ namespace StatusEditor
             animBox.BeginUpdate();
             bDisableUpdate = true;
             importButton.Enabled = true;
+            
             RefreshEditBox();
 
             bDisableUpdate = false;
@@ -526,6 +555,7 @@ namespace StatusEditor
                 structView.Columns[1].DefaultCellStyle.ForeColor = Color.Black;
 
                 exportButton.Enabled = true;
+                duplicateButton.Enabled = true;
                 SetTextConcurrent(tablefile.table[animBox.SelectedIndex].GetData());
                 //dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].data).Replace("-","");
                 sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
@@ -581,6 +611,7 @@ namespace StatusEditor
                 structView.Columns[0].DefaultCellStyle.ForeColor = Color.White;
                 structView.Columns[1].DefaultCellStyle.ForeColor = Color.White;
                 exportButton.Enabled = false;
+                duplicateButton.Enabled = false;
                 dataTextBox.Text = "";
                 sizeLabel.Text = "size: N/A";
             }
@@ -660,7 +691,7 @@ namespace StatusEditor
             */
         }
 
-
+        #region DATATEXTBOX
         // datatextbox stuff
         // YES I KNOW THIS IS EXCESSIVE BUT LOOK I WANTED TO DO IT OKAY
         public Task TextTask;
@@ -769,5 +800,7 @@ namespace StatusEditor
             }
         }
         // end datatextbox stuff
+        #endregion
+
     }
 }

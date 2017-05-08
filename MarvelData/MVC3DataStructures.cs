@@ -565,6 +565,19 @@ namespace MarvelData
     }
 
     [StructLayout(LayoutKind.Sequential)]
+    public struct SpatkTwoButtonAirdashChunk // 07
+    {
+        public int subChunkType; // 07
+        public int cancelWindow;
+        public int chargeTimeMaybe;
+        public InputCode inputCodeLeniency;
+        public InputCode inputCodeDirection;
+        public int unk14;
+        public int unk18;
+        public int unk1C;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
     public struct SpatkActionChunk // 09
     {
         public int subChunkType; // 09
@@ -720,7 +733,7 @@ namespace MarvelData
             typeof(SpatkTwoButtonChunk), // 04
             typeof(SpatkDirButtonChunk), // 05
             typeof(SpatkUnkChunk), // 06
-            typeof(SpatkUnkChunk), // 07
+            typeof(SpatkTwoButtonAirdashChunk), // 07
             typeof(SpatkUnkChunk), // 08
             typeof(SpatkActionChunk), // 09
         }; // if it's past the end of this list, it'll default to SpatkUnkChunk
