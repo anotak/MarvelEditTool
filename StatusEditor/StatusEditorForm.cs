@@ -160,6 +160,14 @@ namespace StatusEditor
                 }
                 return true;
             }
+            else if (keyData == (Keys.Control | Keys.A))
+            {
+                if (addSubChunkButton.Enabled)
+                {
+                    addSubChunkButton_Click(null, null);
+                }
+                return true;
+            }
             else if (keyData == (Keys.Control | Keys.R))
             {
                 if (importButton.Enabled)
@@ -209,6 +217,7 @@ namespace StatusEditor
                     importButton.Enabled = false;
                     duplicateButton.Enabled = false;
                     exportButton.Enabled = false;
+                    addSubChunkButton.Enabled = false;
                     openButton.Enabled = false;
                     animBox.Enabled = true;
                     extendButton.Enabled = true;
@@ -420,10 +429,31 @@ namespace StatusEditor
         {
             tablefile.Extend();
             RefreshData();
+
             if (animBox.TopIndex < animBox.Items.Count - 2)
             {
                 animBox.TopIndex++;
             }
+        }
+
+
+        private void addSubChunkButton_Click(object sender, EventArgs e)
+        {
+            if (animBox.SelectedIndex < 0
+                ||
+                animBox.SelectedIndex >= tablefile.table.Count
+                ||
+                !tablefile.table[animBox.SelectedIndex].bHasData
+                ||
+                !(tablefile.table[animBox.SelectedIndex] is MultiStructEntry))
+            {
+                return;
+            }
+
+            MultiStructEntry entry = (MultiStructEntry)tablefile.table[animBox.SelectedIndex];
+            SaveOldData(animBox.SelectedIndex);
+            entry.AddSubChunk();
+            animBox_SelectedIndexChanged(null, null);
         }
 
         private void RefreshData()
@@ -479,7 +509,8 @@ namespace StatusEditor
             Object entrydata = entry.GetDataObject(); // turn it into a reference so SetValue works
             FieldInfo[] fieldList = GetFieldInfo(entryType.GetGenericArguments()[0]);
             int numFields = fieldList.Length;
-            for (int i = 0; i < numFields; i++)
+            int numRows = structView.Rows.Count;
+            for (int i = 0; i < numFields && i + offset < numRows; i++)
             {
 
                 //structView.Rows[i].cells[2].Value = structFieldInfo[i].GetValue(entry.data).ToString();
@@ -555,6 +586,7 @@ namespace StatusEditor
                 structView.Columns[1].DefaultCellStyle.ForeColor = Color.Black;
 
                 exportButton.Enabled = true;
+                addSubChunkButton.Enabled = false;
                 duplicateButton.Enabled = true;
                 SetTextConcurrent(tablefile.table[animBox.SelectedIndex].GetData());
                 //dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].data).Replace("-","");
@@ -586,6 +618,7 @@ namespace StatusEditor
                 }
                 else if (tablefile.table[animBox.SelectedIndex] is MultiStructEntry)
                 {
+                    addSubChunkButton.Enabled = true;
                     ClearItems();
                     MultiStructEntry multi = (MultiStructEntry)tablefile.table[animBox.SelectedIndex];
                     int offset = 0;
@@ -718,7 +751,7 @@ namespace StatusEditor
         {
             try
             {
-                int oldSelectionStart = dataTextBox.SelectionStart;
+                //int oldSelectionStart = dataTextBox.SelectionStart;
                 int textSize = 8;
 
                 if (dataTextBox.Width > 1140)
@@ -777,9 +810,9 @@ namespace StatusEditor
                         dataTextBox.Lines = newLines;
                     }
                 }
-                dataTextBox.SelectionStart = oldSelectionStart;
+                //dataTextBox.SelectionStart = oldSelectionStart;
                 //dataTextBox.Select(oldSelectionStart, 0);
-                dataTextBox.ScrollToCaret();
+                //dataTextBox.ScrollToCaret();
             }
             catch (Exception e)
             {

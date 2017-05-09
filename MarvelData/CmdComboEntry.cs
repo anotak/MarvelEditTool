@@ -91,6 +91,5 @@ namespace MarvelData
                 name = "unknown";
             }
         }
-
     } // class
 }

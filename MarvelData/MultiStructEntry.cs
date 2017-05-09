@@ -8,7 +8,7 @@ namespace MarvelData
     public class MultiStructEntry : TableEntry
     {
         public List<StructEntryBase> subEntries;
-
+        
         public MultiStructEntry() : base()
         {
             subEntries = new List<StructEntryBase>();
@@ -101,6 +101,16 @@ namespace MarvelData
                     nameSB.Append("PP");
                 }
             }
+        }
+
+        public virtual void AddSubChunk()
+        {
+            StructEntry<SpatkUnkChunk> chunk = new StructEntry<SpatkUnkChunk>();
+            chunk.data = new SpatkUnkChunk();
+            size += 0x20;
+            chunk.size = 0x20;
+            chunk.bHasData = true;
+            subEntries.Add(chunk);
         }
     }
 }
