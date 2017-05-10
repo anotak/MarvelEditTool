@@ -591,10 +591,10 @@ namespace MarvelData
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct SpatkStateFromChunk // 1E
+    public struct SpatkModeRequiredChunk // 1E
     {
         public int subChunkType; // 1E
-        public int stateFrom;
+        public int modeNumber;
         public int unk08;
         public int unk0C;
         public int unk10;
