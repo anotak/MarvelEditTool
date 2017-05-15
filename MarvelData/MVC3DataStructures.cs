@@ -467,8 +467,9 @@ namespace MarvelData
         public InputCode button;
         public int state;
         public int unk18;
-        public int unk1C;
+        public float unk1C;
     }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct CmdComboHeaderChunk
     {

@@ -147,7 +147,9 @@ namespace MarvelData
         {
             if (anmChrIndexMaybe > 0)
             {
-                if (file.table[anmChrIndexMaybe].bHasData && file.table[anmChrIndexMaybe].name == "unknown")
+                if (file.table.Count > anmChrIndexMaybe
+                    &&
+                    file.table[anmChrIndexMaybe].bHasData && file.table[anmChrIndexMaybe].name == "unknown")
                 {
                     file.table[anmChrIndexMaybe].name = name;
                 }

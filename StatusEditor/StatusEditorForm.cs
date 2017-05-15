@@ -216,6 +216,7 @@ namespace StatusEditor
                     saveButton.Enabled = true;
                     importButton.Enabled = false;
                     duplicateButton.Enabled = false;
+                    upButton.Enabled = false;
                     exportButton.Enabled = false;
                     addSubChunkButton.Enabled = false;
                     openButton.Enabled = false;
@@ -588,6 +589,7 @@ namespace StatusEditor
                 exportButton.Enabled = true;
                 addSubChunkButton.Enabled = false;
                 duplicateButton.Enabled = true;
+                upButton.Enabled = true;
                 SetTextConcurrent(tablefile.table[animBox.SelectedIndex].GetData());
                 //dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].data).Replace("-","");
                 sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
@@ -645,6 +647,7 @@ namespace StatusEditor
                 structView.Columns[1].DefaultCellStyle.ForeColor = Color.White;
                 exportButton.Enabled = false;
                 duplicateButton.Enabled = false;
+                upButton.Enabled = false;
                 dataTextBox.Text = "";
                 sizeLabel.Text = "size: N/A";
             }
@@ -835,5 +838,22 @@ namespace StatusEditor
         // end datatextbox stuff
         #endregion
 
+        private void upButton_Click(object sender, EventArgs e)
+        {
+            if (animBox.SelectedIndex < 0
+                ||
+                animBox.SelectedIndex >= tablefile.table.Count
+                ||
+                !tablefile.table[animBox.SelectedIndex].bHasData)
+            {
+                return;
+            }
+            int newindex = tablefile.Move(animBox.SelectedIndex,1);
+            RefreshData();
+            if (newindex < animBox.Items.Count && newindex >= 0)
+            {
+                animBox.SelectedIndex = newindex;
+            }
+        }
     }
 }

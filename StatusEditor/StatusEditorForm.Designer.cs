@@ -49,6 +49,7 @@
             this.sizeLabel = new System.Windows.Forms.Label();
             this.addSubChunkButton = new System.Windows.Forms.Button();
             this.dataTextBox = new System.Windows.Forms.TextBox();
+            this.upButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -250,8 +251,9 @@
             this.tableLayoutPanel1.Controls.Add(this.exportButton, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.extendButton, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.duplicateButton, 0, 4);
-            this.tableLayoutPanel1.Controls.Add(this.sizeLabel, 0, 6);
             this.tableLayoutPanel1.Controls.Add(this.addSubChunkButton, 0, 5);
+            this.tableLayoutPanel1.Controls.Add(this.sizeLabel, 0, 7);
+            this.tableLayoutPanel1.Controls.Add(this.upButton, 0, 6);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -262,7 +264,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(415, 237);
             this.tableLayoutPanel1.TabIndex = 4;
@@ -334,7 +336,7 @@
             // sizeLabel
             // 
             this.sizeLabel.AutoSize = true;
-            this.sizeLabel.Location = new System.Drawing.Point(3, 165);
+            this.sizeLabel.Location = new System.Drawing.Point(3, 198);
             this.sizeLabel.Name = "sizeLabel";
             this.sizeLabel.Size = new System.Drawing.Size(44, 17);
             this.sizeLabel.TabIndex = 4;
@@ -367,6 +369,21 @@
             this.dataTextBox.Size = new System.Drawing.Size(415, 285);
             this.dataTextBox.TabIndex = 0;
             this.dataTextBox.WordWrap = false;
+            // 
+            // upButton
+            // 
+            this.upButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.upButton.AutoSize = true;
+            this.upButton.Enabled = false;
+            this.upButton.Location = new System.Drawing.Point(3, 168);
+            this.upButton.Name = "upButton";
+            this.upButton.Size = new System.Drawing.Size(409, 27);
+            this.upButton.TabIndex = 7;
+            this.upButton.Text = "Move Up";
+            this.upButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.upButton.UseVisualStyleBackColor = true;
+            this.upButton.Click += new System.EventHandler(this.upButton_Click);
             // 
             // StatusEditorForm
             // 
@@ -424,6 +441,7 @@
         private System.Windows.Forms.Label sizeLabel;
         private System.Windows.Forms.Button duplicateButton;
         private System.Windows.Forms.Button addSubChunkButton;
+        private System.Windows.Forms.Button upButton;
     }
 }
 

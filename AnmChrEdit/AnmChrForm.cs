@@ -213,6 +213,9 @@ namespace AnmChrEdit
                     }
 
                     tablefile = newTable;
+#if DEBUG
+                    tablefile.AnalyzeAnmChr();
+#endif
 
                     SuspendLayout();
                     saveButton.Enabled = true;

@@ -186,7 +186,10 @@ namespace MarvelData
                 tablefile.footer = reader.ReadBytes(16);
             } // using(reader)
 
-            if (tablefile.fileType == typeof(AnmChrEntry))
+            string filenamelower = filename.ToLowerInvariant();
+            if (tablefile.fileType == typeof(AnmChrEntry)
+                && !filenamelower.Contains("anmtdown")
+                && !filenamelower.Contains("anmcmn") )
             {
                 string spatkpath = Path.Combine(Path.GetDirectoryName(filename), "cmdspatk.52A8DBF6");
 
@@ -234,6 +237,27 @@ namespace MarvelData
             entry.originalPointer = 0;
             entry.name = "***EMPTY DATA***";
             table.Add(entry);
+        }
+
+        public int Move(int index, int offset)
+        {
+            int newindex = index - offset;
+            if (newindex < 0)
+            {
+                newindex = table.Count + newindex;
+            }
+            while(newindex >= table.Count)
+            {
+                newindex -= table.Count;
+            }
+
+            TableEntry first = table[index];
+            TableEntry second = table[newindex];
+            table[index] = second;
+            table[newindex] = first;
+            first.index = (uint)newindex;
+            second.index = (uint)index;
+            return newindex;
         }
 
         public void Duplicate(int index)
@@ -349,6 +373,53 @@ namespace MarvelData
             t.Close();
             File.Copy(filename + ".temp", filename, true);
             File.Delete(filename + ".temp");
+        }
+
+
+        // this analyze stuff is bad code and im sorry but its quick unoptimized and dirty since its just meant for me
+        public void AnalyzeAnmChr()
+        {
+            StringBuilder builder = new StringBuilder();
+            SortedDictionary<long, HashSet<AnmChrEntry>> cmds = new SortedDictionary<long, HashSet<AnmChrEntry>>();
+            //count
+            for (int i = 0; i < table.Count; i++)
+            {
+                if (table[i].bHasData && table[i] is AnmChrEntry)
+                {
+                    AnmChrEntry entry = (AnmChrEntry)table[i];
+                    for (int j = 0; j < entry.subEntries.Count; j++)
+                    {
+                        for (int k = 0; k < entry.subEntries[j].subsubEntries.Count; k++)
+                        {
+                            long header = ((long)entry.subEntries[j].subsubEntries[k][0] << 32) + (long)entry.subEntries[j].subsubEntries[k][4];
+
+                            if (!cmds.ContainsKey(header))
+                            {
+                                cmds.Add(header, new HashSet<AnmChrEntry>());
+                            }
+
+                            cmds[header].Add(entry);
+                        }
+                    }
+                }
+            }
+            // print
+            foreach (KeyValuePair<long, HashSet<AnmChrEntry>> pair in cmds)
+            {
+                builder.Append("key: ");
+                builder.Append(pair.Key.ToString("X10"));
+                builder.Append("\ncount: ");
+                builder.Append(pair.Value.Count);
+                builder.Append("\n");
+                
+                foreach(AnmChrEntry entry in pair.Value)
+                {
+                    builder.Append(entry.index.ToString("X2"));
+                    builder.Append(",");
+                }
+                AELogger.Log(builder);
+                builder.Clear();
+            }
         }
 
         public void Analyze()
