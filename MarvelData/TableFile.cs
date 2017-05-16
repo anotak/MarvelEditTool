@@ -22,6 +22,10 @@ namespace MarvelData
 
         public static TableFile LoadFile(string filename, bool bAutoIdentify = false, Type entryType = null, int structsize = -1)
         {
+#if DEBUG
+            AELogger.Log("WARNING: THIS IS A DEBUG BUILD");
+#endif
+
             AELogger.Log("attempting to open" + filename);
             if (entryType == null)
             {
@@ -381,6 +385,7 @@ namespace MarvelData
         {
             StringBuilder builder = new StringBuilder();
             SortedDictionary<long, HashSet<AnmChrEntry>> cmds = new SortedDictionary<long, HashSet<AnmChrEntry>>();
+            SortedDictionary<long, HashSet<int>> csizes = new SortedDictionary<long, HashSet<int>>();
             //count
             for (int i = 0; i < table.Count; i++)
             {
@@ -391,14 +396,24 @@ namespace MarvelData
                     {
                         for (int k = 0; k < entry.subEntries[j].subsubEntries.Count; k++)
                         {
-                            long header = ((long)entry.subEntries[j].subsubEntries[k][0] << 32) + (long)entry.subEntries[j].subsubEntries[k][4];
-
-                            if (!cmds.ContainsKey(header))
+                            if (entry.subEntries[j].subsubEntries[k].Length < 8)
                             {
-                                cmds.Add(header, new HashSet<AnmChrEntry>());
+                                AELogger.Log("length too short ?? " + entry.subEntries[j].subsubEntries[k].Length);
                             }
+                            else
+                            {
+                                long header = ((long)entry.subEntries[j].subsubEntries[k][0] << 32)
+                                     + (long)entry.subEntries[j].subsubEntries[k][4];
 
-                            cmds[header].Add(entry);
+                                if (!cmds.ContainsKey(header))
+                                {
+                                    cmds.Add(header, new HashSet<AnmChrEntry>());
+                                    csizes.Add(header, new HashSet<int>());
+                                }
+
+                                cmds[header].Add(entry);
+                                csizes[header].Add(entry.subEntries[j].subsubEntries[k].Length);
+                            }
                         }
                     }
                 }
@@ -417,6 +432,15 @@ namespace MarvelData
                     builder.Append(entry.index.ToString("X2"));
                     builder.Append(",");
                 }
+                builder.Append("\nsizes: ");
+
+                foreach (int size in csizes[pair.Key])
+                {
+                    builder.Append(size);
+                    builder.Append(",");
+                }
+
+                builder.Append("\n");
                 AELogger.Log(builder);
                 builder.Clear();
             }
