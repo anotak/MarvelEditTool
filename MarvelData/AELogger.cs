@@ -31,6 +31,9 @@ namespace MarvelData
             stopwatch.Start();
             Log("logging started @ " + DateTime.Now.ToString(@"HH:mm:ss.fff", culture));
             Log("working directory " + Directory.GetCurrentDirectory());
+#if DEBUG
+            Log("WARNING: THIS IS A DEBUG BUILD");
+#endif
         }
 
         public static void Log(string message, Boolean time = true, Boolean print = false)
