@@ -293,7 +293,7 @@ namespace MarvelData
         public int AddedHitstun;
         public int unk090;
         public int AddedBlockstun;
-        public int unk098;
+        public int hardKDTime;
         public float enemyPushbackandWallBouncedist;
         public float cornerPushInverse;
         public float playerBlockPushCorner;

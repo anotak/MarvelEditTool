@@ -22,11 +22,7 @@ namespace MarvelData
 
         public static TableFile LoadFile(string filename, bool bAutoIdentify = false, Type entryType = null, int structsize = -1)
         {
-#if DEBUG
-            AELogger.Log("WARNING: THIS IS A DEBUG BUILD");
-#endif
-
-            AELogger.Log("attempting to open" + filename);
+            AELogger.Log("attempting to open table " + filename);
             if (entryType == null)
             {
                 entryType = typeof(RawEntry);
@@ -48,7 +44,7 @@ namespace MarvelData
                 if (length < 16)
                 {
                     // FIXME THIS SUCKS
-                    AELogger.Log("TOO SHORT FILE HEADEr < " + 16);
+                    AELogger.Log("TOO SHORT FILE HEADEr " + length + " < " + 16);
                     throw new Exception();
                 }
                 tablefile.header = reader.ReadBytes(8);
