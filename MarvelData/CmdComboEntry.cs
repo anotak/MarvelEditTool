@@ -79,6 +79,40 @@ namespace MarvelData
                 nameSB.Append("bar ");
             }
 
+            switch (header.data.anmChrAction)
+            {
+                case 0x96:
+                    nameSB.Append("5L?->");
+                    break;
+                case 0x97:
+                    nameSB.Append("5M?->");
+                    break;
+                case 0x98:
+                    nameSB.Append("5H?->");
+                    break;
+                case 0x99:
+                    nameSB.Append("2L?->");
+                    break;
+                case 0x9A:
+                    nameSB.Append("2M?->");
+                    break;
+                case 0x9B:
+                    nameSB.Append("2H?->");
+                    break;
+                case 0x9C:
+                    nameSB.Append("jL?->");
+                    break;
+                case 0x9D:
+                    nameSB.Append("jM?->");
+                    break;
+                case 0x9E:
+                    nameSB.Append("jH?->");
+                    break;
+                default:
+                    nameSB.Append("??->");
+                    break;
+            }
+
             SubNameLoop();
 
             // finish up
