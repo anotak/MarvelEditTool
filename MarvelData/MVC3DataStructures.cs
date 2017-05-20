@@ -482,8 +482,8 @@ namespace MarvelData
         public int unk18;
         public int delay;
         public int anmChrAction;
-        public int unk24;
-        public int unk28;
+        public int anmChrAction2;
+        public int anmChrAction3;
         public int unk2C;
         public int unk30;
         public int unk34;

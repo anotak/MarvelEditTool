@@ -865,7 +865,16 @@ namespace AnmChrEdit
                 RefreshSelectedIndices();
                 subsubDataSource = entry.subEntries[subEntryBox.SelectedIndex].GetCommandList();
                 subsubEntryBox.DataSource = subsubDataSource;
-                subsubEntryBox.SelectedIndex = 0;
+                if (subsubDataSource.Count > 0)
+                {
+                    subsubEntryBox.SelectedIndex = 0;
+                }
+                else
+                {
+                    AELogger.Log("odd issue ???????");
+                    dataTextBox.Enabled = false;
+                }
+                
 
                 subDeleteButton.Enabled = entry.subEntries.Count > 1;
             }
