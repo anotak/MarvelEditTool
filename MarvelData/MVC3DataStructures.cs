@@ -478,8 +478,8 @@ namespace MarvelData
         public int unk08;
         public float meterRequirement;
         public int disable;
-        public int unk14;
-        public int unk18;
+        public int windowStart;
+        public int windowEnd;
         public int delay;
         public int anmChrAction;
         public int anmChrAction2;
