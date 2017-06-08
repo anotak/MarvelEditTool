@@ -41,11 +41,11 @@ namespace MarvelData
         public int unk74;
         public int unk78;
         public int unk7C;
-        public int unk80;
+        public int meterSteal;
         public int unk84;
-        public int unk88;
+        public int stunTimer;
         public int unk8C;
-        public int unk90;
+        public int chainingUnk;
         public int unk94;
         public float minDamageScalingNormals;
         public float minScalingSpecials;
@@ -266,7 +266,7 @@ namespace MarvelData
         public int unk020;
         public int HitsparkFrequency;
         public int unk028;
-        public int unk02c;
+        public int kdBounceSize;
         public float unk030;
         public float unk034;
         public float unk038;
