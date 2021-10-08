@@ -169,16 +169,16 @@ namespace MarvelData
 
                 BaseActChunk b = (BaseActChunk)((object)data); // weird (object) because T makes C# mad
 
-                if ((int)b.direction2 <= 10)
+                if ((int)b.inputCodeDirection <= 10)
                 {
-                    nameSB.Append(MVC3DataStructures.NumpadDirections[(int)b.direction2]);
+                    nameSB.Append(MVC3DataStructures.NumpadDirections[(int)b.inputCodeDirection]);
                 }
                 else
                 {
-                    nameSB.Append(b.direction2);
+                    nameSB.Append(b.inputCodeDirection);
                 }
 
-                nameSB.Append(b.button);
+                nameSB.Append(b.inputCodeButton);
                 name = nameSB.ToString();
             }
             else

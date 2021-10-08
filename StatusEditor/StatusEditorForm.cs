@@ -1,15 +1,13 @@
-﻿using System;
+﻿using MarvelData;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
-using MarvelData;
-using System.Reflection;
 
 namespace StatusEditor
 {
@@ -26,16 +24,21 @@ namespace StatusEditor
         public int previousSelectedIndex;
         public Type structViewType;
         public Type structViewEntryType;
+        private bool isSameFile;
+        private System.Windows.Forms.DataGridViewEditingControlShowingEventArgs dgvE;
+        private System.Windows.Forms.DataGridView dgvSender;
 
         public StatusEditorForm()
         {
             InitializeComponent();
+            isSameFile = true;
             Text += ", build " + GetCompileDate();
             AELogger.Log(Text);
             FilePath = String.Empty;
             ImportPath = String.Empty;
             bDisableUpdate = true;
             previousSelectedIndex = 0;
+            tagsDataGridView.Rows.Clear();            
             structView.Rows.Clear();
             AddItems(typeof(StatusChunk));
 
@@ -110,6 +113,28 @@ namespace StatusEditor
             structViewType = structtype;
         }
 
+        public class TypeViewModel
+        {
+            public string hex { get; set; }
+            public string name { get; set; }
+        }
+
+        private void AddTags(Type type, Boolean isHex)
+        {
+
+            var typeList = Enum.GetValues(type)
+               .Cast<Object>()
+               .Select(t => new TypeViewModel
+               {
+                   hex = isHex ? ((uint)t).ToString("X8") : ((int)t).ToString(),
+                   name = t.ToString()
+               });
+
+            tagsDataGridView.DataSource = typeList.ToArray();
+            tagsDataGridView.RowHeadersVisible = false;
+
+        }
+
         private FieldInfo[] GetFieldInfo(Type structtype)
         {
             FieldInfo[] fieldList;
@@ -141,6 +166,14 @@ namespace StatusEditor
                 if (openButton.Enabled)
                 {
                     openButton_Click(null, null);
+                }
+                return true;
+            }
+            else if (keyData == (Keys.Control | Keys.N))
+            {
+                if (openNewButton.Enabled)
+                {
+                    openNewButton_Click(null, null);
                 }
                 return true;
             }
@@ -184,6 +217,22 @@ namespace StatusEditor
                 }
                 return true;
             }
+            else if (keyData == (Keys.Decimal)) //110
+            {
+                if (dgvSender != null)
+                {
+                    isCommaInput = true;
+                    StructView_EditingControlShowing(dgvSender, dgvE);
+                }
+            }
+            else if (keyData == (Keys.Oemcomma)) //110
+            {
+                if (dgvSender != null)
+                {
+                    isCommaInput = true;
+                    StructView_EditingControlShowing(dgvSender, dgvE);
+                }
+            }
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
@@ -212,30 +261,85 @@ namespace StatusEditor
                     }
                     tablefile = newTable;
 
-                    SuspendLayout();
-                    saveButton.Enabled = true;
-                    importButton.Enabled = false;
-                    duplicateButton.Enabled = false;
-                    upButton.Enabled = false;
-                    exportButton.Enabled = false;
-                    addSubChunkButton.Enabled = false;
-                    openButton.Enabled = false;
-                    animBox.Enabled = true;
-                    extendButton.Enabled = true;
-                    sizeLabel.Text = count + " entries loaded";
-                    FilePath = openFile.FileNames[0];
-                    RefreshData();
-                    Text += " :: " + openFile.FileNames[0];
-                    filenameLabel.Text = openFile.FileNames[0];
-                    animBox.SelectedIndex = 0;
-                    structView.Focus();
-                    ResumeLayout();
+                    ResetLayout(openFile, count);
                 }
                 else
                 {
                     AELogger.Log("nothing selected!");
                 }
             }
+        }
+
+        private void openNewButton_Click(object sender, EventArgs e)
+        {
+
+            // Confirm user wants to open a new instance
+            switch (MessageBox.Show(this, "Are you sure you want to open a new instance?" + Environment.NewLine + "All current data will be lost!", "Warning", MessageBoxButtons.YesNo))
+            {
+                case DialogResult.No:
+                    AELogger.Log("procedure canceled!");
+                    return;
+                default:
+                    AELogger.WriteLog();
+                    break;
+            }
+
+            if (bError)
+            {
+                return;
+            }
+
+            new StatusEditorForm();
+            using (OpenFileDialog openFile = new OpenFileDialog())
+            {
+                //openFile.DefaultExt = "bcm";
+                // The Filter property requires a search string after the pipe ( | )
+                openFile.Filter = "Supported Data (*.ccm;*.28DD8317;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504;*.csp;*.52A8DBF6)|*.ccm;*.28DD8317;*.csp;*.52A8DBF6;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504|Cmdcombo Files (*.ccm;*.28DD8317)|*.ccm;*.28DD8317|Cmdspatk Files (*.csp;*.52A8DBF6)|*.csp;*.52A8DBF6|BaseAct Files (*.cba;*.3C6EA504)|*.cba;*.3C6EA504|AtkInfo Files (*.ati;*.227A8048)|*.ati;*.227A8048|Status Files (*.chs;*.3C41466B)|*.chs;*.3C41466B|All files (*.*)|*.*";
+                openFile.ShowDialog();
+                if (openFile.FileNames.Length > 0)
+                {
+                    //TableFile newTable = TableFile.LoadFile(openFile.FileNames[0], typeof(StatusEntry));
+                    TableFile newTable = TableFile.LoadFile(openFile.FileNames[0], true, typeof(StructEntry<StatusChunk>), 848);
+                    int count = newTable.table.Count;
+                    if (newTable == null && count != 0)
+                    {
+                        AELogger.Log("load failed for some reason?");
+                        return;
+                    }
+                    tablefile = newTable;
+                    //reset index because outOfBoundsException 
+                    previousSelectedIndex = 0;
+                    isSameFile = false;
+                    ResetLayout(openFile, count);
+                    RefreshAnimBox();
+                }
+                else
+                {
+                    AELogger.Log("nothing selected!");
+                }
+            }
+        }
+
+        private void ResetLayout(OpenFileDialog openFile, int count)
+        {
+            SuspendLayout();
+            saveButton.Enabled = true;
+            importButton.Enabled = false;
+            duplicateButton.Enabled = false;
+            upButton.Enabled = false;
+            exportButton.Enabled = false;
+            addSubChunkButton.Enabled = false;
+            openButton.Enabled = false;
+            animBox.Enabled = true;
+            extendButton.Enabled = true;
+            sizeLabel.Text = count + " entries loaded";
+            FilePath = openFile.FileNames[0];
+            RefreshData();
+            Text += " :: " + openFile.FileNames[0];
+            filenameLabel.Text = openFile.FileNames[0];
+            animBox.SelectedIndex = 0;
+            structView.Focus();
+            ResumeLayout();
         }
 
         private void saveButton_Click(object sender, EventArgs ev)
@@ -291,7 +395,6 @@ namespace StatusEditor
                 }
             }
         }
-
 
         private void importButton_Click(object sender, EventArgs ev)
         {
@@ -407,7 +510,6 @@ namespace StatusEditor
             }
         }
 
-
         private void duplicateButton_Click(object sender, EventArgs e)
         {
             if (animBox.SelectedIndex < 0
@@ -437,7 +539,6 @@ namespace StatusEditor
             }
         }
 
-
         private void addSubChunkButton_Click(object sender, EventArgs e)
         {
             if (animBox.SelectedIndex < 0
@@ -457,6 +558,7 @@ namespace StatusEditor
             animBox_SelectedIndexChanged(null, null);
         }
 
+        // this data refers to the items being open
         private void RefreshData()
         {
             bDisableUpdate = true;
@@ -464,6 +566,7 @@ namespace StatusEditor
             int top = animBox.TopIndex;
             tableNames = tablefile.GetNames();
             animBox.DataSource = tableNames;
+            if (s > tableNames.Count) s = 0; //fixes outofbounds when loading new file
             animBox.SelectedIndex = s;
             animBox.TopIndex = top;
             bDisableUpdate = false;
@@ -472,7 +575,7 @@ namespace StatusEditor
         private void SaveOldData(int index)
         {
             Type entryType = tablefile.table[index].GetType();
-            
+
             if (tablefile.table[index] is StructEntryBase)
             {
                 Type generic = entryType.GetGenericArguments()[0];
@@ -481,7 +584,7 @@ namespace StatusEditor
                 {
                     SaveOldData((StructEntryBase)tablefile.table[index], entryType, 0);
                 }
-                else
+                else if (isSameFile)
                 {
                     MessageBox.Show("warning: there might be some kind error, attempted write of incorrect data, you probably should make backups and save and report this bug with the logfile");
                     AELogger.Log("warning saving attempted of non correct data");
@@ -504,7 +607,7 @@ namespace StatusEditor
         private int SaveOldData(StructEntryBase entry, Type entryType, int offset)
         {
             //if (!(tablefile.table[index] is StatusEntry))
-            
+
             //Object entrydata = ((StructEntry)tablefile.table[index]).data; // turn it into a reference so SetValue works
 
             Object entrydata = entry.GetDataObject(); // turn it into a reference so SetValue works
@@ -560,13 +663,105 @@ namespace StatusEditor
                 SaveOldData(previousSelectedIndex);
             }
             previousSelectedIndex = animBox.SelectedIndex;
+            RefreshAnimBox();
+        }
+
+        private void structView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            String tag = "";
+
+            if (((System.Windows.Forms.DataGridViewCellEventArgs)e).RowIndex >= 0 &&
+            ((System.Windows.Forms.DataGridViewCellEventArgs)e).RowIndex <= structView.Rows.Count)
+                tag = (string)structView?.Rows[((System.Windows.Forms.DataGridViewCellEventArgs)e).RowIndex]?.Cells[1]?.Value ?? "";
+
+            if (tag.Equals("AttackLevel"))
+                AddTags(typeof(AttackLevel), false);
+            else if (tag.Equals("GuardType"))
+                AddTags(typeof(GuardType), false);
+            else if (tag.Equals("atkflags3"))
+                AddTags(typeof(AtkFlagsC), true);
+            else if (tag.Equals("atkflags2"))
+                AddTags(typeof(AtkFlagsB), true);
+            else if (tag.Equals("atkflags"))
+                AddTags(typeof(AtkFlagsA), true);
+            else if (tag.Equals("statusFlags"))
+                AddTags(typeof(StatusFlags), true);
+            else if (tag.Contains("OppHitAnim"))
+                AddTags(typeof(OppHitAnim), false);
+            else if (tag.Contains("state"))
+                AddTags(typeof(BaseActState), false);
+            else if (tag.Contains("positionState"))
+                AddTags(typeof(PositionState), false);
+            else if (tag.Contains("comboState"))
+                AddTags(typeof(ComboState), false);
+            else if (tag.Contains("inputCode"))
+                AddTags(typeof(InputCode), true);
+            else
+            {
+                tagsDataGridView.DataSource = null;
+            }
+
+        }
+
+        public static String[] GetEnumListB() {
+            return Enum.GetNames(typeof(AtkFlagsB));
+        }
+        
+        public static List<String> GetEnumListA() {
+            return Enum.GetNames(typeof(AtkFlagsA)).ToList();
+        }
+
+        //TODO: check if this code works / is relevant at all
+        private void StructView_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+         {
+            dgvSender = (DataGridView)sender;
+            dgvE = e;
+
+            int column = this.structView.CurrentCell.ColumnIndex;
+            string columnName = this.structView.SelectedCells[0].ValueType.Name;
+            String[] enumList = GetEnumListB();
+
+            var txtBox = e.Control as TextBox;
+            String txtBoxTxt = txtBox.Text;
+            List<String> txtBoxList = txtBoxTxt.Split(',').ToList();
+
+
+            //contrast enumList with txtBox value => if it is there, remove everything, add again at the end
+            if (enumList.Contains(txtBoxTxt))
+            {
+                txtBox.Text = "";
+                this.structView.CurrentCell.Value = txtBoxTxt + ", ";
+            }
+                if (column.Equals(valueColumn.Index) && (columnName == "AtkFlagsB"))
+                {
+                AutoCompleteStringCollection kode = new AutoCompleteStringCollection();
+                kode.AddRange(enumList);
+                if (txtBox != null)
+                {
+
+                        txtBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+
+                        txtBox.AutoCompleteCustomSource = kode;
+
+                        txtBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
+
+                }
+
+            }
+            if (enumList.Contains(txtBoxTxt))
+            {
+                txtBox.Text = txtBoxTxt + txtBox.Text;
+            }
+        }
+
+            private void RefreshAnimBox()
+        {
             SuspendLayout();
             animBox.BeginUpdate();
             bDisableUpdate = true;
             importButton.Enabled = true;
-            
-            RefreshEditBox();
 
+            RefreshEditBox();
             bDisableUpdate = false;
             animBox.EndUpdate();
             ResumeLayout();
@@ -591,12 +786,13 @@ namespace StatusEditor
                 duplicateButton.Enabled = true;
                 upButton.Enabled = true;
                 SetTextConcurrent(tablefile.table[animBox.SelectedIndex].GetData());
-                //dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].data).Replace("-","");
+                dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].GetData()).Replace("-", "");
+                dataTextBox.WordWrap = true;
                 sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
 
                 Type entryType = tablefile.table[animBox.SelectedIndex].GetType();
 
-                
+
                 if (tablefile.table[animBox.SelectedIndex] is StructEntryBase)
                 {
                     AELogger.Log(entryType.GetGenericArguments()[0].ToString() + " is the newly selected index");
@@ -637,7 +833,7 @@ namespace StatusEditor
                     structView.Columns[0].DefaultCellStyle.ForeColor = Color.White;
                     structView.Columns[1].DefaultCellStyle.ForeColor = Color.White;
                 }
-                
+
                 //structView.DataSource = structValues;
             }
             else
@@ -651,6 +847,8 @@ namespace StatusEditor
                 dataTextBox.Text = "";
                 sizeLabel.Text = "size: N/A";
             }
+            tagsDataGridView.Enabled = true;
+
             ResumeLayout();
         }
 
@@ -706,7 +904,7 @@ namespace StatusEditor
             structView.Rows[structView.SelectedCells[0].RowIndex].DefaultCellStyle.ForeColor = Color.Red;
             sizeLabel.Text = "invalid data for " + structView.SelectedCells[0].ValueType.Name;
         }
-        
+
         private void structView_CellEndEdit(object sender, DataGridViewCellEventArgs ev)
         {
             SaveOldData(animBox.SelectedIndex);
@@ -733,6 +931,12 @@ namespace StatusEditor
         public Task TextTask;
         public byte[] newText;
         public bool bTextNeedsToBeDone;
+        private string formerValue;
+        private bool isAdded;
+        private int SelectionStart;
+        private Control kodeTxt;
+        private bool isCommaInput = false;
+
         public void SetTextConcurrent(byte[] text)
         {
             bTextNeedsToBeDone = true;
@@ -848,7 +1052,7 @@ namespace StatusEditor
             {
                 return;
             }
-            int newindex = tablefile.Move(animBox.SelectedIndex,1);
+            int newindex = tablefile.Move(animBox.SelectedIndex, 1);
             RefreshData();
             if (newindex < animBox.Items.Count && newindex >= 0)
             {
