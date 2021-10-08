@@ -111,16 +111,16 @@ namespace MarvelData
             nameSB.Append(header.data.positionState);
             nameSB.Append(" ");
 
-            if (header.data.meterrequirement > 0)
+            if (header.data.meterRequirement > 0)
             {
-                nameSB.Append(header.data.meterrequirement);
+                nameSB.Append(header.data.meterRequirement);
                 nameSB.Append("bar ");
             }
 
             SubNameLoop();
 
 
-            if (header.data.comboState > 1)
+            if ((int)header.data.comboState > 1)
             {
                 nameSB.Append(" in block/hitstun?");
             }
