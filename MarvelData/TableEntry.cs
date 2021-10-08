@@ -44,6 +44,128 @@ namespace MarvelData
             }
         }
 
+        //TODO: try and implement to use char name
+        public virtual string GuessStatusFieldName()
+        {
+            if (index >= 0)
+            {
+                return "Form #" + (index +1);
+            }
+            return "unknown";
+        }
+
+        public virtual string GuessFieldName()
+        {
+            switch (index)
+            {
+
+                case 0:
+                    name = "Tag-in";
+                    break;
+                case 1:
+                    name = "TAC partner tag-in";
+                    break;
+                /*case 2:
+                    name = "";
+                    break;*/
+                case 3:
+                    name = "Snap Back";
+                    break;
+                case 4:
+                    name = "st.S";
+                    break;
+                case 5:
+                    name = "Team Aerial Counter";
+                    break;
+                case 6:
+                    name = "TAC Up";
+                    break;
+                case 7:
+                    name = "TAC Side";
+                    break;
+                 case 8:
+                    name = "TAC Down";
+                    break; 
+                /*case 9:
+                    name = "Fall";
+                    break;
+                case 10:
+                    name = "Crouch";
+                    break;
+                case 11:
+                    name = "";
+                    break;*/
+                case 30:
+                    name = "st.L";
+                    break;
+                case 31:
+                    name = "st.M";
+                    break;
+                case 32:
+                    name = "st.H";
+                    break;
+                case 33:
+                    name = "cr.L";
+                    break;
+                case 34:
+                    name = "cr.M";
+                    break;
+                case 35:
+                    name = "cr.H";
+                    break;
+                case 36:
+                    name = "j.L";
+                    break;
+                case 37:
+                    name = "j.M";
+                    break;
+                case 38:
+                    name = "j.H";
+                    break;
+                case 39:
+                    name = "j.S";
+                    break;
+
+                /*case 0x0:
+                return "stand";
+            case 0x1:
+                return "fwd walk";
+            case 0x3:
+                return "fwd dash";
+            case 0x4:
+                return "backdash";
+            case 0x96:
+                return "5L";
+            case 0x168:
+                return "5S";*/
+                default:
+                    name = "unknown";
+                    break;
+            }
+
+            if ((index >= 40 && index <= 49) && HasAtkFlags())
+            {
+                return "Command Move " + (index - 39);
+            }
+
+            if ((index >= 50 && index <= 79) && HasAtkFlags())
+            {
+                return "Special Move " + (index - 49);
+            }
+
+            if ((index >= 80 && index <= 99) && HasAtkFlags())
+            {
+                return "Hyper Move " + (index - 79);
+            }
+
+            if (index >= 100 && HasAtkFlags())
+            {
+                return "Assist " + (index - 99);
+            }
+
+            return name;
+        }
+
         public virtual string GetFancyName()
         {
             if(nameSB == null)
@@ -56,7 +178,20 @@ namespace MarvelData
             }
             nameSB.Append(index.ToString("X3"));
             nameSB.Append("h: ");
+            //if (tabletype != null && tabletype.Contains("ATKInfo"))
+            if (this.GetType().ToString().Contains("ATKInfo"))
+            {
+                nameSB.Append(GuessFieldName());
+            }
+            //else if (tabletype != null && tabletype.Contains("Status"))
+            else if (this.GetType().ToString().Contains("Status"))
+            {
+                nameSB.Append(GuessStatusFieldName());
+            }
+            else
+            {
             nameSB.Append(name);
+            }
             return  nameSB.ToString();
         }
 
@@ -163,5 +298,15 @@ namespace MarvelData
         {
 
         }
+
+        public virtual Boolean HasAtkFlags()
+        {
+            if ((((MarvelData.StructEntry<MarvelData.ATKInfoChunk>)this).@data).atkflags != 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
     }
 }
