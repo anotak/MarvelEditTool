@@ -8,6 +8,7 @@ namespace MarvelData
     public class CmdSpAtkEntry : MultiStructEntry
     {
         public int anmChrIndexMaybe;
+        private StructEntry<SpatkHeaderChunk> header;
         public static int[] anmChrIndexOffsets = {
             0, // 0 movement
             -1, // 1 blockin
@@ -27,6 +28,15 @@ namespace MarvelData
             0x17C, // 15, flight
         };
 
+        public override StructEntry<SpatkHeaderChunk> getHeader() 
+        {
+            return header;
+        }
+
+        public void setHeader(StructEntry<SpatkHeaderChunk> header)
+        {
+            this.header = header;
+        }
 
         public override void SetData(byte[] newdata)
         {
@@ -46,10 +56,10 @@ namespace MarvelData
             {
                 throw new Exception("HEADER TOO SMALL");
             }
-            StructEntry<SpatkHeaderChunk> header = new StructEntry<SpatkHeaderChunk>();
-            header.size = 0x24;
-            header.SetData(newdata,0);
-            subEntries.Add(header);
+            setHeader(new StructEntry<SpatkHeaderChunk>());
+            getHeader().size = 0x24;
+            getHeader().SetData(newdata,0);
+            subEntries.Add(getHeader());
 
             for (int i = 0x24; i + 0x19 < size; i += 0x20)
             {
@@ -101,26 +111,26 @@ namespace MarvelData
                 nameSB.Clear();
             }
 
-            StructEntry<SpatkHeaderChunk> header = (StructEntry<SpatkHeaderChunk>)subEntries[0];
+            setHeader((StructEntry<SpatkHeaderChunk>)subEntries[0]);
 
-            if (header.data.disable > 0)
+            if (getHeader().data.disable > 0)
             {
                 nameSB.Append("DISABLED ");
             }
 
-            nameSB.Append(header.data.positionState);
+            nameSB.Append(getHeader().data.positionState);
             nameSB.Append(" ");
 
-            if (header.data.meterRequirement > 0)
+            if (getHeader().data.meterRequirement > 0)
             {
-                nameSB.Append(header.data.meterRequirement);
+                nameSB.Append(getHeader().data.meterRequirement);
                 nameSB.Append("bar ");
             }
 
             SubNameLoop();
 
 
-            if ((int)header.data.comboState > 1)
+            if ((int)getHeader().data.comboState > 1)
             {
                 nameSB.Append(" in block/hitstun?");
             }

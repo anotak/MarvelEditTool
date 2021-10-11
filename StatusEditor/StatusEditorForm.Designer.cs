@@ -46,17 +46,24 @@ namespace StatusEditor
             this.hexColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.addSubChunkTypeButton = new System.Windows.Forms.Button();
             this.importButton = new System.Windows.Forms.Button();
             this.exportButton = new System.Windows.Forms.Button();
             this.extendButton = new System.Windows.Forms.Button();
             this.duplicateButton = new System.Windows.Forms.Button();
-            this.addSubChunkButton = new System.Windows.Forms.Button();
             this.sizeLabel = new System.Windows.Forms.Label();
+            this.addSubChunkButton = new System.Windows.Forms.Button();
             this.upButton = new System.Windows.Forms.Button();
             this.dataTextBox = new System.Windows.Forms.TextBox();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.tagsDataGridView = new System.Windows.Forms.DataGridView();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
+            this.option1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -283,13 +290,14 @@ namespace StatusEditor
             // 
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.addSubChunkTypeButton, 0, 7);
             this.tableLayoutPanel1.Controls.Add(this.importButton, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.exportButton, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.extendButton, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.duplicateButton, 0, 4);
-            this.tableLayoutPanel1.Controls.Add(this.addSubChunkButton, 0, 5);
             this.tableLayoutPanel1.Controls.Add(this.sizeLabel, 0, 7);
-            this.tableLayoutPanel1.Controls.Add(this.upButton, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.addSubChunkButton, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.upButton, 0, 5);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
@@ -302,9 +310,26 @@ namespace StatusEditor
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(385, 273);
             this.tableLayoutPanel1.TabIndex = 4;
+            // 
+            // addSubChunkTypeButton
+            // 
+            this.addSubChunkTypeButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.addSubChunkTypeButton.AutoSize = true;
+            this.addSubChunkTypeButton.Enabled = false;
+            this.addSubChunkTypeButton.Location = new System.Drawing.Point(2, 164);
+            this.addSubChunkTypeButton.Margin = new System.Windows.Forms.Padding(2);
+            this.addSubChunkTypeButton.Name = "addSubChunkTypeButton";
+            this.addSubChunkTypeButton.Size = new System.Drawing.Size(381, 23);
+            this.addSubChunkTypeButton.TabIndex = 6;
+            this.addSubChunkTypeButton.Text = "Add SubChunkType";
+            this.addSubChunkTypeButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.addSubChunkTypeButton.UseVisualStyleBackColor = true;
+            this.addSubChunkTypeButton.Click += new System.EventHandler(this.addSubChunkTypeButton_Click);
             // 
             // importButton
             // 
@@ -353,7 +378,7 @@ namespace StatusEditor
             this.extendButton.Margin = new System.Windows.Forms.Padding(2);
             this.extendButton.Name = "extendButton";
             this.extendButton.Size = new System.Drawing.Size(381, 23);
-            this.extendButton.TabIndex = 3;
+            this.extendButton.TabIndex = 2;
             this.extendButton.Text = "&Ex&tend List";
             this.extendButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.toolTip.SetToolTip(this.extendButton, "Ctrl + T");
@@ -371,11 +396,21 @@ namespace StatusEditor
             this.duplicateButton.Margin = new System.Windows.Forms.Padding(2);
             this.duplicateButton.Name = "duplicateButton";
             this.duplicateButton.Size = new System.Drawing.Size(381, 23);
-            this.duplicateButton.TabIndex = 5;
+            this.duplicateButton.TabIndex = 3;
             this.duplicateButton.Text = "Duplicate";
             this.duplicateButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.duplicateButton.UseVisualStyleBackColor = true;
             this.duplicateButton.Click += new System.EventHandler(this.duplicateButton_Click);
+            // 
+            // sizeLabel
+            // 
+            this.sizeLabel.AutoSize = true;
+            this.sizeLabel.Location = new System.Drawing.Point(2, 190);
+            this.sizeLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.sizeLabel.Name = "sizeLabel";
+            this.sizeLabel.Size = new System.Drawing.Size(33, 13);
+            this.sizeLabel.TabIndex = 4;
+            this.sizeLabel.Text = "ready";
             // 
             // addSubChunkButton
             // 
@@ -383,25 +418,15 @@ namespace StatusEditor
             | System.Windows.Forms.AnchorStyles.Right)));
             this.addSubChunkButton.AutoSize = true;
             this.addSubChunkButton.Enabled = false;
-            this.addSubChunkButton.Location = new System.Drawing.Point(2, 110);
+            this.addSubChunkButton.Location = new System.Drawing.Point(2, 137);
             this.addSubChunkButton.Margin = new System.Windows.Forms.Padding(2);
             this.addSubChunkButton.Name = "addSubChunkButton";
-            this.addSubChunkButton.Size = new System.Drawing.Size(381, 29);
-            this.addSubChunkButton.TabIndex = 6;
+            this.addSubChunkButton.Size = new System.Drawing.Size(381, 23);
+            this.addSubChunkButton.TabIndex = 5;
             this.addSubChunkButton.Text = "Add SubChunk";
             this.addSubChunkButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.addSubChunkButton.UseVisualStyleBackColor = true;
             this.addSubChunkButton.Click += new System.EventHandler(this.addSubChunkButton_Click);
-            // 
-            // sizeLabel
-            // 
-            this.sizeLabel.AutoSize = true;
-            this.sizeLabel.Location = new System.Drawing.Point(2, 174);
-            this.sizeLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.sizeLabel.Name = "sizeLabel";
-            this.sizeLabel.Size = new System.Drawing.Size(33, 13);
-            this.sizeLabel.TabIndex = 4;
-            this.sizeLabel.Text = "ready";
             // 
             // upButton
             // 
@@ -409,11 +434,11 @@ namespace StatusEditor
             | System.Windows.Forms.AnchorStyles.Right)));
             this.upButton.AutoSize = true;
             this.upButton.Enabled = false;
-            this.upButton.Location = new System.Drawing.Point(2, 143);
+            this.upButton.Location = new System.Drawing.Point(2, 110);
             this.upButton.Margin = new System.Windows.Forms.Padding(2);
             this.upButton.Name = "upButton";
-            this.upButton.Size = new System.Drawing.Size(381, 29);
-            this.upButton.TabIndex = 7;
+            this.upButton.Size = new System.Drawing.Size(381, 23);
+            this.upButton.TabIndex = 4;
             this.upButton.Text = "Move Up";
             this.upButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.upButton.UseVisualStyleBackColor = true;
@@ -457,6 +482,7 @@ namespace StatusEditor
             this.tagsDataGridView.AllowUserToDeleteRows = false;
             this.tagsDataGridView.AllowUserToResizeRows = false;
             this.tagsDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.tagsDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders;
             this.tagsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.tagsDataGridView.ColumnHeadersVisible = false;
             this.tagsDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -469,7 +495,39 @@ namespace StatusEditor
             this.tagsDataGridView.RowHeadersVisible = false;
             this.tagsDataGridView.RowTemplate.Height = 24;
             this.tagsDataGridView.Size = new System.Drawing.Size(671, 47);
-            this.tagsDataGridView.TabIndex = 2;
+            this.tagsDataGridView.TabIndex = 8;
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.AutoSize = true;
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(181, 22);
+            this.toolStripMenuItem1.Text = "toolStripMenuItem1";
+            // 
+            // toolStripComboBox1
+            // 
+            this.toolStripComboBox1.Name = "toolStripComboBox1";
+            this.toolStripComboBox1.Size = new System.Drawing.Size(121, 23);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(178, 6);
+            // 
+            // toolStripTextBox1
+            // 
+            this.toolStripTextBox1.Name = "toolStripTextBox1";
+            this.toolStripTextBox1.Size = new System.Drawing.Size(100, 23);
+            // 
+            // option1ToolStripMenuItem
+            // 
+            this.option1ToolStripMenuItem.Name = "option1ToolStripMenuItem";
+            this.option1ToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.option1ToolStripMenuItem.Text = "option 1";
             // 
             // StatusEditorForm
             // 
@@ -513,25 +571,25 @@ namespace StatusEditor
 
         #endregion
 
-        private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.SplitContainer splitContainer2;
-        private System.Windows.Forms.ListBox animBox;
-        private System.Windows.Forms.Button saveButton;
-        private System.Windows.Forms.Button openButton;
-        private System.Windows.Forms.Button openNewButton;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Button extendButton;
-        private System.Windows.Forms.Button importButton;
-        private System.Windows.Forms.Button exportButton;
-        private System.Windows.Forms.SplitContainer splitContainer3;
-        private System.Windows.Forms.Label filenameLabel;
-        private System.Windows.Forms.SplitContainer splitContainer4;
-        private System.Windows.Forms.DataGridView structView;
-        private System.Windows.Forms.TextBox dataTextBox;
-        private System.Windows.Forms.Button duplicateButton;
-        private System.Windows.Forms.Button addSubChunkButton;
-        private System.Windows.Forms.Button upButton;
-        private System.Windows.Forms.ToolTip toolTip;
+        private SplitContainer splitContainer1;
+        private SplitContainer splitContainer2;
+        private ListBox animBox;
+        private Button saveButton;
+        private Button openButton;
+        private Button openNewButton;
+        private TableLayoutPanel tableLayoutPanel1;
+        private Button extendButton;
+        private Button importButton;
+        private Button exportButton;
+        private SplitContainer splitContainer3;
+        private Label filenameLabel;
+        private SplitContainer splitContainer4;
+        private DataGridView structView;
+        private TextBox dataTextBox;
+        private Button duplicateButton;
+        private Button addSubChunkButton;
+        private Button upButton;
+        private ToolTip toolTip;
         private DataGridView tagsDataGridView;
         private DataGridViewTextBoxColumn SubChunkColumn;
         private DataGridViewTextBoxColumn varColumn;
@@ -539,6 +597,13 @@ namespace StatusEditor
         private DataGridViewTextBoxColumn hexColumn;
         private ToolStripContainer toolStripContainer1;
         private Label sizeLabel;
+        private Button addSubChunkTypeButton;
+        private ContextMenuStrip contextMenuStrip1;
+        private ToolStripMenuItem toolStripMenuItem1;
+        private ToolStripComboBox toolStripComboBox1;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripTextBox toolStripTextBox1;
+        private ToolStripMenuItem option1ToolStripMenuItem;
     }
 }
 
