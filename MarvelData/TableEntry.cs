@@ -307,6 +307,44 @@ namespace MarvelData
             }
             return false;
         }
+        
+        public virtual int getSpatkHeaderSize()
+        {
+            if ((((MarvelData.StructEntry<MarvelData.SpatkHeaderChunk>)this).@data).size != 0)
+            {
+                return (((MarvelData.StructEntry<MarvelData.SpatkHeaderChunk>)this).@data).size;
+            }
+            return 0;
+        }    
+                
+        public virtual void setSpatkHeaderSize(int newSize)
+        {
+            if ((((MarvelData.StructEntry<MarvelData.SpatkHeaderChunk>)this).@data).size != 0)
+            {
+                (((MarvelData.StructEntry<MarvelData.SpatkHeaderChunk>)this).@data).size = newSize;
+            }
+        }    
 
+        public virtual int getCmdComboSpatkHeaderSize()
+        {
+            if ((((MarvelData.StructEntry<MarvelData.CmdComboHeaderChunk>)this).@data).size != 0)
+            {
+                return (((MarvelData.StructEntry<MarvelData.CmdComboHeaderChunk>)this).@data).size;
+            }
+            return 0;
+        }
+        
+        public virtual void setCmdComboSpatkHeaderSize(int newSize)
+        {
+            if ((((MarvelData.StructEntry<MarvelData.CmdComboHeaderChunk>)this).@data).size != 0)
+            {
+                (((MarvelData.StructEntry<MarvelData.CmdComboHeaderChunk>)this).@data).size = newSize;
+            }
+        }    
+
+        public virtual StructEntry<SpatkHeaderChunk> getHeader()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

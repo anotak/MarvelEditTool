@@ -100,7 +100,7 @@ namespace StatusEditor
                 {
                     structView.Rows[i + offset].DefaultCellStyle.BackColor = Color.Linen;
                 }
-                else if (fieldList[i].Name == "subChunkType")
+                if (fieldList[i].Name == "subChunkType")
                 {
                     structView.Rows[i + offset].DefaultCellStyle.BackColor = Color.LightGray;
                 }
@@ -121,19 +121,33 @@ namespace StatusEditor
 
         private void AddTags(Type type, Boolean isHex)
         {
+            IEnumerable<TypeViewModel> typeList = getEnumValuesList(type, isHex);
 
-            var typeList = Enum.GetValues(type)
+            tagsDataGridView.DataSource = typeList.ToArray();
+            tagsDataGridView.RowHeadersVisible = false;
+
+        }
+
+        private static IEnumerable<TypeViewModel> getEnumValuesList(Type type, bool isHex)
+        {
+            return Enum.GetValues(type)
                .Cast<Object>()
                .Select(t => new TypeViewModel
                {
                    hex = isHex ? ((uint)t).ToString("X8") : ((int)t).ToString(),
                    name = t.ToString()
                });
-
-            tagsDataGridView.DataSource = typeList.ToArray();
-            tagsDataGridView.RowHeadersVisible = false;
-
         }
+
+         private static IEnumerable<TypeViewModel> getEnumValuesList(Type type)
+        {
+            return Enum.GetValues(type)
+               .Cast<Object>()
+               .Select(t => new TypeViewModel
+               {
+                   name = t.ToString()
+               });
+          }
 
         private FieldInfo[] GetFieldInfo(Type structtype)
         {
@@ -274,12 +288,16 @@ namespace StatusEditor
         {
 
             // Confirm user wants to open a new instance
-            switch (MessageBox.Show(this, "Are you sure you want to open a new instance?" + Environment.NewLine + "All current data will be lost!", "Warning", MessageBoxButtons.YesNo))
+            switch (MessageBox.Show(this, "Are you sure you want to open a new instance?" + Environment.NewLine + "All unsaved data will be lost!", "Warning", MessageBoxButtons.YesNo))
             {
                 case DialogResult.No:
                     AELogger.Log("procedure canceled!");
                     return;
                 default:
+                    filenameLabel.Text = null;
+                    FilePath = String.Empty;
+                    ImportPath = String.Empty;
+                    Text = String.Empty;
                     AELogger.WriteLog();
                     break;
             }
@@ -320,6 +338,22 @@ namespace StatusEditor
             }
         }
 
+        void dropDownItemSelectEvent(object subChunkType, EventArgs e)
+        {
+            //MessageBox.Show(subChunkType.ToString() + " works!");
+
+            MultiStructEntry entry = (MultiStructEntry)tablefile.table[animBox.SelectedIndex];
+            SaveOldData(animBox.SelectedIndex);
+            entry.AddSubChunk(subChunkType.ToString());
+            animBox_SelectedIndexChanged(null, null);
+
+            // increase tag [size] by 1
+            if (structView.Rows[1].Cells[1].Value.ToString().Equals("size"))
+            {
+                structView.Rows[1].Cells[2].Value = Int32.Parse((string)structView.Rows[1].Cells[2].Value) + 1;
+            }
+        }
+
         private void ResetLayout(OpenFileDialog openFile, int count)
         {
             SuspendLayout();
@@ -329,6 +363,7 @@ namespace StatusEditor
             upButton.Enabled = false;
             exportButton.Enabled = false;
             addSubChunkButton.Enabled = false;
+            addSubChunkTypeButton.Enabled = false;
             openButton.Enabled = false;
             animBox.Enabled = true;
             extendButton.Enabled = true;
@@ -512,14 +547,9 @@ namespace StatusEditor
 
         private void duplicateButton_Click(object sender, EventArgs e)
         {
-            if (animBox.SelectedIndex < 0
-                ||
-                animBox.SelectedIndex >= tablefile.table.Count
-                ||
-                !tablefile.table[animBox.SelectedIndex].bHasData)
-            {
+            if (cantAddSubChunk())
                 return;
-            }
+            
             tablefile.Duplicate(animBox.SelectedIndex);
             RefreshData();
             if (animBox.TopIndex < animBox.Items.Count - 2)
@@ -541,21 +571,46 @@ namespace StatusEditor
 
         private void addSubChunkButton_Click(object sender, EventArgs e)
         {
-            if (animBox.SelectedIndex < 0
-                ||
-                animBox.SelectedIndex >= tablefile.table.Count
-                ||
-                !tablefile.table[animBox.SelectedIndex].bHasData
-                ||
-                !(tablefile.table[animBox.SelectedIndex] is MultiStructEntry))
-            {
+            if (cantAddSubChunk())
                 return;
-            }
 
             MultiStructEntry entry = (MultiStructEntry)tablefile.table[animBox.SelectedIndex];
             SaveOldData(animBox.SelectedIndex);
             entry.AddSubChunk();
             animBox_SelectedIndexChanged(null, null);
+        }
+
+        private void addSubChunkTypeButton_Click(object sender, EventArgs e)
+        {
+            if (cantAddSubChunk())
+                return;
+
+            Point screenPoint = addSubChunkTypeButton.PointToScreen(new Point(addSubChunkTypeButton.Left, addSubChunkTypeButton.Bottom));
+            
+            
+            //IEnumerable<TypeViewModel> enumValues = getEnumValuesList(typeof(SubChunkType));
+            //List<TypeViewModel>list = enumValues.ToList();
+            //list.ForEach(i => contextMenuStrip1.Items.Add(i.name, null, dropDownItemSelectEvent));
+
+            contextMenuStrip1.Items.Clear();
+            MVC3DataStructures.SubChunkTypeList.Sort();
+            MVC3DataStructures.SubChunkTypeList.ForEach(i => contextMenuStrip1.Items.Add(i, null, dropDownItemSelectEvent));
+
+            if (screenPoint.Y + contextMenuStrip1.Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
+            {
+                contextMenuStrip1.Show(addSubChunkTypeButton, new Point(0, -contextMenuStrip1.Size.Height));
+            }
+            else
+            {
+                contextMenuStrip1.Show(addSubChunkTypeButton, new Point(0, addSubChunkTypeButton.Height));
+            }
+        }
+
+        // checks if a subchunk can be added
+        private bool cantAddSubChunk()
+        {
+            return animBox.SelectedIndex < 0 || animBox.SelectedIndex >= tablefile.table.Count 
+                || !tablefile.table[animBox.SelectedIndex].bHasData || !(tablefile.table[animBox.SelectedIndex] is MultiStructEntry);
         }
 
         // this data refers to the items being open
@@ -696,6 +751,8 @@ namespace StatusEditor
                 AddTags(typeof(ComboState), false);
             else if (tag.Contains("inputCode"))
                 AddTags(typeof(InputCode), true);
+            else if (tag.Contains("subChunkType"))
+                AddTags(typeof(SubChunkType), true);
             else
             {
                 tagsDataGridView.DataSource = null;
@@ -783,6 +840,7 @@ namespace StatusEditor
 
                 exportButton.Enabled = true;
                 addSubChunkButton.Enabled = false;
+                addSubChunkTypeButton.Enabled = false;
                 duplicateButton.Enabled = true;
                 upButton.Enabled = true;
                 SetTextConcurrent(tablefile.table[animBox.SelectedIndex].GetData());
@@ -817,6 +875,7 @@ namespace StatusEditor
                 else if (tablefile.table[animBox.SelectedIndex] is MultiStructEntry)
                 {
                     addSubChunkButton.Enabled = true;
+                    addSubChunkTypeButton.Enabled = true;
                     ClearItems();
                     MultiStructEntry multi = (MultiStructEntry)tablefile.table[animBox.SelectedIndex];
                     int offset = 0;
