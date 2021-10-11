@@ -36,7 +36,7 @@ namespace MarvelData
                 if (subType < MVC3DataStructures.SpatkChunkTypes.Length
                     && MVC3DataStructures.SpatkChunkTypes[subType] != typeof(SpatkUnkChunk))
                 {
-                    Type entryType = typeof(StructEntry<>).MakeGenericType(MVC3DataStructures.SpatkChunkTypes[subType]);
+                    Type entryType = typeof(StructEntry<>).MakeGenericType((Type)MVC3DataStructures.SpatkChunkTypes[subType]);
                     StructEntryBase newChunk = (StructEntryBase)Activator.CreateInstance(entryType);
                     newChunk.size = 0x20;
                     newChunk.SetData(newdata, i);
@@ -72,6 +72,11 @@ namespace MarvelData
             }
             
             StructEntry<CmdComboHeaderChunk> header = (StructEntry<CmdComboHeaderChunk>)subEntries[0];
+
+            if (header.data.disable.Equals(MarvelData.CmdDisabled.disabled))
+            {
+                nameSB.Append("DISABLED ");
+            }
 
             if (header.data.meterRequirement > 0)
             {

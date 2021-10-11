@@ -385,11 +385,11 @@ namespace MarvelData
         ForceAirReset = 0x00400000,
         SoftKD = 0x00800000,
         HardKD = 0x01000000,
-        Unk0x2000000 = 0x0002000000,
-        ForceWallBounce = 0x0004000000,
-        NegatePushBlockAirUnk = 0x0008000000,
-        OTGOnly = 0x10000000,
-        NegatePushBlock = 0x20000000,
+        Unk0x02000000 = 0x01000000,
+        OTGOnly = 0x010000000,
+        NegatePushBlock = 0x020000000,
+        ForceWallBounce = 0x040000000,
+        NegatePushBlockAirUnk = 0x080000000,
     }
 
     [Flags]
@@ -421,9 +421,9 @@ namespace MarvelData
         Unk0x400000 = 0x00400000,
         Unk0x800000 = 0x00800000,
         Unk0x1000000 = 0x01000000,
-        Unk0x2000000 = 0x000200000,
-        Unk0x4000000 = 0x000400000,
-        Unk0x8000000 = 0x000800000
+        Unk0x2000000 = 0x02000000,
+        Unk0x4000000 = 0x04000000,
+        Unk0x8000000 = 0x08000000
     }
     [Flags]
     public enum AtkFlagsC : uint
@@ -453,10 +453,10 @@ namespace MarvelData
         Unk0x200000 = 0x00200000,
         Unk0x400000 = 0x00400000,
         FirstHitDmgs = 0x00800000,
-        Unk0x1000000 = 0x01000000,
-        TechTAC1 = 0x000200000,
-        HitComboGrab = 0x000400000,
-        Unk0x8000000 = 0x000800000,
+        Unk0x1000000 =  0x01000000,
+        TechTAC1 = 0x002000000,
+        HitComboGrab = 0x004000000,
+        Unk0x8000000 = 0x008000000,
         TechTAC2 = 0x010000000
     }
 
@@ -550,7 +550,7 @@ namespace MarvelData
         public int size;
         public int unk08;
         public float meterRequirement;
-        public int disable;
+        public CmdDisabled disable;
         public int windowStart;
         public int windowEnd;
         public int delay;
@@ -572,11 +572,23 @@ namespace MarvelData
         public int size;
         public int unk08;
         public float meterRequirement;
-        public int disable;
+        public SpatkDisabled disable;
         public int cancelHierarchyThresh;
         public PositionState positionState;
         public ComboState comboState;
         public int flags;
+    }
+
+    public enum CmdDisabled
+    {
+       enabled = 1769234688,
+       disabled = 1769234689
+    }
+    
+    public enum SpatkDisabled
+    {
+       enabled  = 0,
+       disabled = 1
     }
 
     public enum PositionState : int
@@ -612,7 +624,7 @@ namespace MarvelData
     [StructLayout(LayoutKind.Sequential)]
     public struct SpatkStandardChunk // 02
     {
-        public int subChunkType; // 02
+        public SubChunkType subChunkType; // 02
         public int cancelWindow;
         public int chargeTime;
         public int holdButtonUnk;
@@ -625,7 +637,7 @@ namespace MarvelData
     [StructLayout(LayoutKind.Sequential)]
     public struct SpatkDirectionalDashChunk // 03
     {
-        public int subChunkType; // 03
+        public SubChunkType subChunkType; // 03
         public int cancelWindow;
         public int unk08;
         public int unk0C;
@@ -638,7 +650,7 @@ namespace MarvelData
     [StructLayout(LayoutKind.Sequential)]
     public struct SpatkTwoButtonChunk // 04
     {
-        public int subChunkType; // 04
+        public SubChunkType subChunkType; // 04
         public int cancelWindow;
         public int unk08;
         public int unk0C;
@@ -651,7 +663,7 @@ namespace MarvelData
     [StructLayout(LayoutKind.Sequential)]
     public struct SpatkDirButtonChunk // 05
     {
-        public int subChunkType; // 05
+        public SubChunkType subChunkType; // 05
         public int cancelWindow;
         public InputCode inputCodeLeniencyUnk;
         public InputCode inputCodeDirection;
@@ -664,7 +676,7 @@ namespace MarvelData
     [StructLayout(LayoutKind.Sequential)]
     public struct SpatkTwoButtonAirdashChunk // 07
     {
-        public int subChunkType; // 07
+        public SubChunkType subChunkType; // 07
         public int cancelWindow;
         public int chargeTimeUnk;
         public InputCode inputCodeLeniency;
@@ -677,7 +689,7 @@ namespace MarvelData
     [StructLayout(LayoutKind.Sequential)]
     public struct SpatkActionChunk // 09
     {
-        public int subChunkType; // 09
+        public SubChunkType subChunkType; // 09
         public int actionClass;
         public int actionIndex;
         public int actionStorageBuffer;
@@ -690,7 +702,7 @@ namespace MarvelData
     [StructLayout(LayoutKind.Sequential)]
     public struct SpatkModeRequiredChunk // 1E
     {
-        public int subChunkType; // 1E
+        public SubChunkType subChunkType; // 1E
         public int modeNumber;
         public int unk08;
         public int unk0C;
@@ -703,7 +715,7 @@ namespace MarvelData
     [StructLayout(LayoutKind.Sequential)]
     public struct SpatkTACDHCChunk // 23
     {
-        public int subChunkType; //23
+        public SubChunkType subChunkType; //23
         public int anmChrAction;
         public int unk08;
         public int unk0C;
@@ -716,7 +728,7 @@ namespace MarvelData
     [StructLayout(LayoutKind.Sequential)]
     public struct SpatkStateChangeChunk // 2F
     {
-        public int subChunkType; //2F
+        public SubChunkType subChunkType; //2F
         public int unk04;
         public int unk08;
         public int unk0C;
@@ -729,7 +741,7 @@ namespace MarvelData
     [StructLayout(LayoutKind.Sequential)]
     public struct SpatkProhibitedChunk // 31
     {
-        public int subChunkType; //31
+        public SubChunkType subChunkType; //31
         public int prohibitedCategory;
         public int prohibitedID;
         public int unk0C;
@@ -742,7 +754,7 @@ namespace MarvelData
     [StructLayout(LayoutKind.Sequential)]
     public struct SpatkAirdashChunk // 34
     {
-        public int subChunkType; //34
+        public SubChunkType subChunkType; //34
         public int unk04;
         public int unk08;
         public int unk0C;
@@ -755,7 +767,7 @@ namespace MarvelData
     [StructLayout(LayoutKind.Sequential)]
     public struct SpatkAirSpecialLimiterChunk // 35
     {
-        public int subChunkType; //35
+        public SubChunkType subChunkType; //35
         public int limit;
         public int unk08;
         public int unk0C;
@@ -768,7 +780,7 @@ namespace MarvelData
     [StructLayout(LayoutKind.Sequential)]
     public struct SpatkGuardTACChunk // 38
     {
-        public int subChunkType; //38
+        public SubChunkType subChunkType; //38
         public int unk04;
         public int unk08;
         public int unk0C;
@@ -781,7 +793,7 @@ namespace MarvelData
     [StructLayout(LayoutKind.Sequential)]
     public struct SpatkHyperChunk // 3A
     {
-        public int subChunkType; //3A
+        public SubChunkType subChunkType; //3A
         public int unk04;
         public int unk08;
         public int unk0C;
@@ -792,9 +804,9 @@ namespace MarvelData
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct SpatkPermitChainChunk // 3F
+    public struct SpatkAllowedChainChunk // 3F
     {
-        public int subChunkType; //3F
+        public SubChunkType subChunkType; //3F
         public int validityFlags;
         public int unk08;
         public int unk0C;
@@ -807,7 +819,7 @@ namespace MarvelData
     [StructLayout(LayoutKind.Sequential)]
     public struct SpatkUnkChunk // ??
     {
-        public int subChunkType; //??
+        public SubChunkType subChunkType; //??
         public int unk04;
         public int unk08;
         public int unk0C;
@@ -817,22 +829,113 @@ namespace MarvelData
         public int unk1C;
     }
 
+    public enum SubChunkType : uint
+    {
+        none = 0,
+        unk1 = 01,
+        standardInput = 02,
+        dashDirectionInput = 03,
+        twoButtonInput1 = 04,
+        directionAndButtonInput = 05,
+        unk6 = 06,
+        twoButtonInput2 = 07,
+        executeAction = 09,
+        captureState = 10, //0A
+        stateRestriction = 11, //0B
+        simpleModeAirComboUnk = 13, //0D
+        modeRequired = 30, //1E
+        TACUnk = 33, //21
+        airActionLimit = 34, //22
+        TACDHCAction = 35, //23
+        superJumpAction = 37, //25
+        snapBackChar = 38, //26
+        stateChange = 47, //2F
+        SUnk = 48, //30
+        prohibitedFollowUpAction = 49, //31
+        heightRestriction = 50, //32
+        airDash = 52, //34
+        airSpecialActionLimit = 53, //35
+        guardTACAction = 56, //38
+        hypers = 58, //3A
+        unk3C = 60, //3C
+        unk3D = 61, //3D
+        allowedChainOnState = 63, //3F
+        advGuardUnk = 73, //49
+    }
+
+
     public class MVC3DataStructures
     {
         public static string[] NumpadDirections = { "5", "6", "4", "?", "8", "9", "7", "?", "2", "3", "1" };
+        public static List<string> SubChunkTypeList = new List<string>(new string[] { "standardInput", "dashDirectionInput", "twoButtonInput1", "directionAndButtonInput", "twoButtonInput2", "executeAction", "modeRequired", "TACDHCAction", "stateChange", "prohibitedFollowUpAction", "airDash", "airSpecialActionLimit", "guardTACAction", "hypers", "allowedChainOnState" });
 
-        public static Type[] SpatkChunkTypes =
+        //FIXME: fugly implementation :s
+        public static Type[] SpatkChunkTypes = 
         {
-            typeof(SpatkUnkChunk), // 00
-            typeof(SpatkUnkChunk), // 01
-            typeof(SpatkStandardChunk), // 02
-            typeof(SpatkDirectionalDashChunk), // 03
-            typeof(SpatkTwoButtonChunk), // 04
-            typeof(SpatkDirButtonChunk), // 05
-            typeof(SpatkUnkChunk), // 06
-            typeof(SpatkTwoButtonAirdashChunk), // 07
-            typeof(SpatkUnkChunk), // 08
-            typeof(SpatkActionChunk), // 09
+            typeof(SpatkUnkChunk), // 00                  [0] 
+            typeof(SpatkUnkChunk), // 01                  [1] 
+            typeof(SpatkStandardChunk), // 02             [2] 
+            typeof(SpatkDirectionalDashChunk), // 03      [3] 
+            typeof(SpatkTwoButtonChunk), // 04            [4] 
+            typeof(SpatkDirButtonChunk), // 05            [5] 
+            typeof(SpatkUnkChunk), // 06                  [6] 
+            typeof(SpatkTwoButtonAirdashChunk), // 07     [7] 
+            typeof(SpatkUnkChunk), // 08                  [8] 
+            typeof(SpatkActionChunk), // 09               [9]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkModeRequiredChunk), // 1E        [30]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkTACDHCChunk), // 23              [35]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkStateChangeChunk), // 2F         [47]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkProhibitedChunk), // 31          [49]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkAirdashChunk), // 34             [52]
+            typeof(SpatkAirSpecialLimiterChunk), // 35   [53]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkGuardTACChunk), // 38            [56]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkHyperChunk), // 3A               [58]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkAllowedChainChunk), // 3F        [63]
         }; // if it's past the end of this list, it'll default to SpatkUnkChunk
     }
 }

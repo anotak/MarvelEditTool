@@ -53,10 +53,21 @@ namespace MarvelData
                         {
                             AELogger.Log("nonzero byteB " + byteB);
                         }
-                        builder.Append((char)byteA);
+                        if (byteA == 30)
+                        {
+#if DEBUG
+                            Console.WriteLine(byteA);
+#endif
+                            builder.Append("\r\n");
+                        }
+                        else
+                        {
+                            builder.Append((char)byteA);
+                        }
                     }
 #if DEBUG
                     AELogger.Log(builder.ToString());
+                    Console.WriteLine(builder.ToString());
 #endif
 
                     outfile.data.Add(builder.ToString());
@@ -88,33 +99,36 @@ namespace MarvelData
             }
 
             FileStream t = new FileStream(filename + ".temp", FileMode.Create);
-            BinaryWriter b = new BinaryWriter(t);
+            BinaryWriter binaryWritter = new BinaryWriter(t);
 
             AELogger.Log("writing " + filename + ".temp");
 
             AELogger.Log("writing header ");
-            b.Write(header);
+            binaryWritter.Write(header);
             int count = data.Count;
-            b.Write(count);
+            binaryWritter.Write(count);
             AELogger.Log("writing files");
             for (int i = 0; i < count; i++)
             {
 #if DEBUG
                 AELogger.Log("writing string #" + i + ": " + data[i]);
-#endif
-                int strlen = data[i].Length;
-                char[] str = data[i].ToCharArray();
-                b.Write((short)strlen);
-                for (int j = 0; j < strlen; j++)
+#endif          
+                string entryLine = data[i];
+                string lineBreak = ((char)30).ToString();
+                entryLine = entryLine.Replace("\r\n", lineBreak);
+                int stringLength = entryLine.Length;
+                char[] arrayChar = entryLine.ToCharArray();
+                binaryWritter.Write((short)stringLength);
+                for (int j = 0; j < stringLength; j++)
                 {
-                    b.Write((byte)(str[j] - 0x20));
-                    b.Write((byte)0);
+                    binaryWritter.Write((byte)(arrayChar[j] - 0x20));
+                    binaryWritter.Write((byte)0);
                 }
-                b.Write((byte)0xFF);
-                b.Write((byte)0xFF);
+                binaryWritter.Write((byte)0xFF);
+                binaryWritter.Write((byte)0xFF);
             }
 
-            b.Close();
+            binaryWritter.Close();
             t.Close();
             File.Copy(filename + ".temp", filename, true);
             File.Delete(filename + ".temp");

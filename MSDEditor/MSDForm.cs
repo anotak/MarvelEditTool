@@ -66,6 +66,25 @@ namespace MSDEditor
 
             using (OpenFileDialog openFile = new OpenFileDialog())
             {
+
+                if (file != null)
+                {
+                    // Confirm user wants to open a new instance
+                    switch (MessageBox.Show(this, "Are you sure you want to open a new instance?" + Environment.NewLine + "All unsaved data will be lost!", "Warning", MessageBoxButtons.YesNo))
+                    {
+                        case DialogResult.No:
+                            AELogger.Log("procedure canceled!");
+                            return;
+                        default:
+                            Text = null;
+                            FilePath = null;
+                            filenameLabel.Text = null;
+                            label1.Visible = false;
+                            stringView.Rows.Clear();
+                            AELogger.WriteLog();
+                            break;
+                    }
+                }
                 //openFile.DefaultExt = "bcm";
                 // The Filter property requires a search string after the pipe ( | )
                 openFile.Filter = "MSD Files (*.msd;*.5B55F5B1)|*.msd;*.5B55F5B1|All files (*.*)|*.*";
@@ -89,7 +108,8 @@ namespace MSDEditor
                     SuspendLayout();
                     
                     saveButton.Enabled = true;
-                    openButton.Enabled = false;
+                    openButton.Enabled = true;
+                    label1.Visible = true;
                     FilePath = openFile.FileNames[0];
 
                     Text += " :: " + openFile.FileNames[0];
