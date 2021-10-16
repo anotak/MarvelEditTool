@@ -100,7 +100,7 @@ namespace StatusEditor
                 {
                     structView.Rows[i + offset].DefaultCellStyle.BackColor = Color.Linen;
                 }
-                if (fieldList[i].Name == "subChunkType")
+                if (fieldList[i].Name == "subChunkType" || fieldList[i].Name == "objectReferenceId")
                 {
                     structView.Rows[i + offset].DefaultCellStyle.BackColor = Color.LightGray;
                 }
@@ -261,12 +261,18 @@ namespace StatusEditor
             {
                 //openFile.DefaultExt = "bcm";
                 // The Filter property requires a search string after the pipe ( | )
-                openFile.Filter = "Supported Data (*.ccm;*.28DD8317;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504;*.csp;*.52A8DBF6)|*.ccm;*.28DD8317;*.csp;*.52A8DBF6;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504|Cmdcombo Files (*.ccm;*.28DD8317)|*.ccm;*.28DD8317|Cmdspatk Files (*.csp;*.52A8DBF6)|*.csp;*.52A8DBF6|BaseAct Files (*.cba;*.3C6EA504)|*.cba;*.3C6EA504|AtkInfo Files (*.ati;*.227A8048)|*.ati;*.227A8048|Status Files (*.chs;*.3C41466B)|*.chs;*.3C41466B|All files (*.*)|*.*";
+                openFile.Filter = "Supported Data (" +
+                    "*.ccm;*.28DD8317;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504;*.csp;*.52A8DBF6;*.cli;*.5B486CCE)|" +
+                    "*.ccm;*.28DD8317;*.csp;*.52A8DBF6;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504;*.cli;*.5B486CCE|" +
+                    "AtkInfo Files (*.ati;*.227A8048)|*.ati;*.227A8048|BaseAct Files (*.cba;*.3C6EA504)|*.cba;*.3C6EA504|" +
+                    "Cmdcombo Files (*.ccm;*.28DD8317)|*.ccm;*.28DD8317|Cmdspatk Files (*.csp;*.52A8DBF6)|*.csp;*.52A8DBF6|" +
+                    "Status Files (*.chs;*.3C41466B)|*.chs;*.3C41466B|*Collision Files (.cli;*.5B486CCE)|.cli;*.5B486CCE|" +
+                    "All files (*.*)|*.*";
                 openFile.ShowDialog();
                 if (openFile.FileNames.Length > 0)
                 {
                     //TableFile newTable = TableFile.LoadFile(openFile.FileNames[0], typeof(StatusEntry));
-                    TableFile newTable = TableFile.LoadFile(openFile.FileNames[0], true, typeof(StructEntry<StatusChunk>), 848);
+                    TableFile newTable = TableFile.LoadFile(openFile.FileNames[0], true, null, 848);
                     int count = newTable.table.Count;
                     if (newTable == null && count != 0)
                     {
@@ -312,7 +318,13 @@ namespace StatusEditor
             {
                 //openFile.DefaultExt = "bcm";
                 // The Filter property requires a search string after the pipe ( | )
-                openFile.Filter = "Supported Data (*.ccm;*.28DD8317;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504;*.csp;*.52A8DBF6)|*.ccm;*.28DD8317;*.csp;*.52A8DBF6;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504|Cmdcombo Files (*.ccm;*.28DD8317)|*.ccm;*.28DD8317|Cmdspatk Files (*.csp;*.52A8DBF6)|*.csp;*.52A8DBF6|BaseAct Files (*.cba;*.3C6EA504)|*.cba;*.3C6EA504|AtkInfo Files (*.ati;*.227A8048)|*.ati;*.227A8048|Status Files (*.chs;*.3C41466B)|*.chs;*.3C41466B|All files (*.*)|*.*";
+                openFile.Filter = "Supported Data (" +
+                    "*.ccm;*.28DD8317;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504;*.csp;*.52A8DBF6;*.cli;*.5B486CCE)|" +
+                    "*.ccm;*.28DD8317;*.csp;*.52A8DBF6;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504;*.cli;*.5B486CCE|" +
+                    "AtkInfo Files (*.ati;*.227A8048)|*.ati;*.227A8048|BaseAct Files (*.cba;*.3C6EA504)|*.cba;*.3C6EA504|" +
+                    "Cmdcombo Files (*.ccm;*.28DD8317)|*.ccm;*.28DD8317|Cmdspatk Files (*.csp;*.52A8DBF6)|*.csp;*.52A8DBF6|" +
+                    "Status Files (*.chs;*.3C41466B)|*.chs;*.3C41466B|*Collision Files (.cli;*.5B486CCE)|.cli;*.5B486CCE|" +
+                    "All files (*.*)|*.*";
                 openFile.ShowDialog();
                 if (openFile.FileNames.Length > 0)
                 {
@@ -721,6 +733,7 @@ namespace StatusEditor
             RefreshAnimBox();
         }
 
+        //translates the numeric values as known readable entries
         private void structView_SelectedIndexChanged(object sender, EventArgs e)
         {
             String tag = "";
@@ -743,6 +756,8 @@ namespace StatusEditor
                 AddTags(typeof(StatusFlags), true);
             else if (tag.Contains("OppHitAnim"))
                 AddTags(typeof(OppHitAnim), false);
+            else if (tag.Contains("OnHitEffectOnEnemy") || tag.Contains("OnBlockEffectOnEnemy"))
+                AddTags(typeof(HitEffectOnEnemy), false);
             else if (tag.Contains("state"))
                 AddTags(typeof(BaseActState), false);
             else if (tag.Contains("positionState"))
@@ -753,6 +768,8 @@ namespace StatusEditor
                 AddTags(typeof(InputCode), true);
             else if (tag.Contains("subChunkType"))
                 AddTags(typeof(SubChunkType), true);
+            else if (tag.Contains("bodySectionId"))
+                AddTags(typeof(BoneReferenceId), true);
             else
             {
                 tagsDataGridView.DataSource = null;
@@ -875,7 +892,10 @@ namespace StatusEditor
                 else if (tablefile.table[animBox.SelectedIndex] is MultiStructEntry)
                 {
                     addSubChunkButton.Enabled = true;
-                    addSubChunkTypeButton.Enabled = true;
+                    if (!(tablefile.table[animBox.SelectedIndex] is CollisionEntry))
+                    {
+                        addSubChunkTypeButton.Enabled = true;
+                    }
                     ClearItems();
                     MultiStructEntry multi = (MultiStructEntry)tablefile.table[animBox.SelectedIndex];
                     int offset = 0;
