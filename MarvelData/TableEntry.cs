@@ -342,7 +342,12 @@ namespace MarvelData
             }
         }    
 
-        public virtual StructEntry<SpatkHeaderChunk> getHeader()
+        public virtual StructEntry<SpatkHeaderChunk> getSpatkHeader()
+        {
+            throw new NotImplementedException();
+        }
+        
+        public virtual StructEntry<CollisionHeaderChunk> getCollisionHeader()
         {
             throw new NotImplementedException();
         }

@@ -327,8 +327,8 @@ namespace MarvelData
         public int throwUnk2;
         public int Hitspark1;
         public int unk11C;
-        public int OnHitEffectOnEnemy;
-        public int OnBlockEffectOnEnemy;
+        public HitEffectOnEnemy OnHitEffectOnEnemy;
+        public HitEffectOnEnemy OnBlockEffectOnEnemy;
         public int tacCounterUnk;
         public int unk12C;
         public int unk130;
@@ -460,6 +460,66 @@ namespace MarvelData
         TechTAC2     = 0x10000000
     }
 
+    public enum HitEffectOnEnemy : int
+    {
+        YellowLSparks = 0,
+        YellowMSparks = 1,
+        YellowHSparks = 2,
+        BladeSlash01 = 3,
+        BladeSlash02 = 4,
+        GuardBlue01 = 5,
+        GuardRed01 = 6,
+        PurpleRings = 7,
+        RedImpactSpreadingSpark = 9,
+        RisingGroundSpark = 10,
+        YellowFire = 11,
+        YellowElectricity = 12,
+        IceAndScreenShake = 13,
+        HiddienMissileExplosion = 14,
+        GroundImpactFlyingShards = 15,
+        GuardBlue02 = 17,
+        GuardRed03 = 18,
+        TripleSlash01 = 19,
+        DoubleSlash01 = 20,
+        RisingYellowCircle = 21,
+        ScreenShake00 = 22,
+        ScreenShake01 = 23,
+        ScreenShake02 = 24,
+        ScreenShake03 = 25,
+        ScreenShake04 = 26,
+        BlueFire = 27,
+        PurpleFire = 28,
+        BlueElectricity = 30,
+        PurpleElectricity = 31,
+        ElectricSound = 32,
+        IceSound = 33,
+        IceSoundCrunch = 34,
+        Magnetic = 35,
+        //Don't use - Game Crashes = 37     ,
+        FullScreenFlair01 = 38,
+        FullScreenFlair02 = 39,
+        FallingBlueLightBeams = 40,
+        AlphaCounter01 = 41,
+        ComicBookScreenTear = 43,
+        YellowJaggedOverlay = 44,
+        GunShot = 46,
+        ComicBookScreenRedBurn = 47,
+        ComicBookScreenBlueBurn = 48,
+        ComicBookScreenPurpleBurn = 49,
+        GreyScreenShake01 = 50,
+        GreyScreenShake02 = 51,
+        GreyScreenShake03 = 52,
+        GroundImpactSplash = 54,
+        TripleSlash02 = 55,
+        DoubleSlash03 = 56,
+        AlphaCounter02 = 57,
+        TACUp = 59,
+        TACHorizontal = 60,
+        TACDown = 61,
+        AlphaCounter03 = 64,
+        FilmStrip = 1005,
+    }
+
     public enum GuardType : int
     {
         mid = 0,
@@ -577,6 +637,58 @@ namespace MarvelData
         public PositionState positionState;
         public ComboState comboState;
         public int flags;
+    }
+    [StructLayout(LayoutKind.Sequential)]
+    public struct CollisionHeaderChunk
+    {
+        public int index;
+        public int size;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct CollisionStandardChunk // hitbox / hurtbox ??
+    {
+        public int objectReferenceId; //ffff = default/char body, 01/02 etc are props
+        public int unk04;
+        public BoneReferenceId boneReferenceId;
+        public float zAxis;
+        public float yAxis;
+        public float xAxis;
+        public float HitHurtBoxRadius;
+        public int specialProperties;
+    }
+
+    public enum BoneReferenceId : uint
+    {
+      Unk01 = 01,
+      Unk02 = 02,
+      Stomach = 03,
+      Unk04 = 04,
+      Chest = 05,
+      Unk06 = 06,
+      Head = 07,
+      Unk08 = 08,
+      LeftShoulder = 09,
+      LeftElbow = 10,
+      LeftWrist = 11,
+      Unk12 = 12,
+      RightShoulder = 13,
+      RightElbow = 14,
+      RightWrist = 15,
+      RighHand = 16,
+      LeftKnee = 17,
+      LeftFoot = 18,
+      Unk19 = 19,
+      Unk20 = 20,
+      RightKnee = 21,
+      RightFoot = 22,
+      Detached = 4294967295
+    }
+
+    public enum SpecialProperties
+    {
+       normal = 1769234688,
+       disabled = 1769234689
     }
 
     public enum CmdDisabled
@@ -859,8 +971,9 @@ namespace MarvelData
         hypers = 58, //3A
         unk3C = 60, //3C
         unk3D = 61, //3D
-        allowedChainOnState = 63, //3F
+        allowedChainCancelingState = 63, //3F
         advGuardUnk = 73, //49
+        whiffCancelUnk = 90,
     }
 
 

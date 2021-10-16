@@ -50,6 +50,7 @@
     <Compile Include="AnmChrEntry.cs" />
     <Compile Include="AnmChrSubEntry.cs" />
     <Compile Include="CmdComboEntry.cs" />
+    <Compile Include="CollisionEntry.cs" />
     <Compile Include="CmdSpAtkEntry.cs" />
     <Compile Include="MSDFile.cs" />
     <Compile Include="MultiStructEntry.cs" />

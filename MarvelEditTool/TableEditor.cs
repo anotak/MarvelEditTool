@@ -307,7 +307,8 @@ namespace MarvelEditTool
                 textBox1.Enabled = true;
                 exportButton.Enabled = true;
                 SetTextConcurrent(tablefile.table[animBox.SelectedIndex].GetData());
-                //dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].data).Replace("-","");
+                dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].GetData()).Replace("-", "");
+                dataTextBox.WordWrap = true;
                 sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
             }
             else

@@ -28,7 +28,7 @@ namespace MarvelData
             0x17C, // 15, flight
         };
 
-        public override StructEntry<SpatkHeaderChunk> getHeader() 
+        public override StructEntry<SpatkHeaderChunk> getSpatkHeader() 
         {
             return header;
         }
@@ -57,9 +57,9 @@ namespace MarvelData
                 throw new Exception("HEADER TOO SMALL");
             }
             setHeader(new StructEntry<SpatkHeaderChunk>());
-            getHeader().size = 0x24;
-            getHeader().SetData(newdata,0);
-            subEntries.Add(getHeader());
+            getSpatkHeader().size = 0x24;
+            getSpatkHeader().SetData(newdata,0);
+            subEntries.Add(getSpatkHeader());
 
             for (int i = 0x24; i + 0x19 < size; i += 0x20)
             {
@@ -113,24 +113,24 @@ namespace MarvelData
 
             setHeader((StructEntry<SpatkHeaderChunk>)subEntries[0]);
 
-            if (getHeader().data.disable > 0)
+            if (getSpatkHeader().data.disable > 0)
             {
                 nameSB.Append("DISABLED ");
             }
 
-            nameSB.Append(getHeader().data.positionState);
+            nameSB.Append(getSpatkHeader().data.positionState);
             nameSB.Append(" ");
 
-            if (getHeader().data.meterRequirement > 0)
+            if (getSpatkHeader().data.meterRequirement > 0)
             {
-                nameSB.Append(getHeader().data.meterRequirement);
+                nameSB.Append(getSpatkHeader().data.meterRequirement);
                 nameSB.Append("bar ");
             }
 
             SubNameLoop();
 
 
-            if ((int)getHeader().data.comboState > 1)
+            if ((int)getSpatkHeader().data.comboState > 1)
             {
                 nameSB.Append(" in block/hitstun?");
             }
