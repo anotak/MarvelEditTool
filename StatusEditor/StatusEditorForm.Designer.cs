@@ -446,15 +446,15 @@ namespace StatusEditor
             // 
             // dataTextBox
             // 
-            this.dataTextBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.dataTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataTextBox.Font = new System.Drawing.Font("Consolas", 10.2F);
-            this.dataTextBox.Location = new System.Drawing.Point(0, -17);
+            this.dataTextBox.Location = new System.Drawing.Point(0, 0);
             this.dataTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.dataTextBox.Multiline = true;
             this.dataTextBox.Name = "dataTextBox";
             this.dataTextBox.ReadOnly = true;
             this.dataTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.dataTextBox.Size = new System.Drawing.Size(296, 180);
+            this.dataTextBox.Size = new System.Drawing.Size(296, 163);
             this.dataTextBox.TabIndex = 0;
             this.dataTextBox.WordWrap = false;
             // 
