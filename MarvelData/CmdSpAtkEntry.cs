@@ -28,6 +28,8 @@ namespace MarvelData
             0x17C, // 15, flight
         };
 
+        public override bool isAnmChrEdit { get; internal set; }
+
         public override StructEntry<SpatkHeaderChunk> getSpatkHeader() 
         {
             return header;
@@ -112,12 +114,11 @@ namespace MarvelData
             }
 
             setHeader((StructEntry<SpatkHeaderChunk>)subEntries[0]);
-
             if (getSpatkHeader().data.disable > 0)
             {
-                nameSB.Append("DISABLED ");
+                nameSB.Append((getSpatkHeader().data.disable).ToString().ToUpperInvariant());
+                nameSB.Append(" ");
             }
-
             nameSB.Append(getSpatkHeader().data.positionState);
             nameSB.Append(" ");
 
@@ -130,16 +131,33 @@ namespace MarvelData
             SubNameLoop();
 
 
-            if ((int)getSpatkHeader().data.comboState > 1)
+            if (!getSpatkHeader().data.comboState.Equals(null) && !getSpatkHeader().data.comboState.Equals("Ukn3"))
             {
-                nameSB.Append(" in block/hitstun?");
+                nameSB.Append(" in " + getSpatkHeader().data.comboState);
             }
 
-            if (anmChrIndexMaybe > 0)
+            if (anmChrIndexMaybe > 0 && !isAnmChrEdit)
             {
-                nameSB.Append(" ... anmchr ?= ");
+                nameSB.Append("...anmchr => ");
                 nameSB.Append(anmChrIndexMaybe.ToString("X"));
                 nameSB.Append("?");
+            }
+
+            if (anmChrIndexMaybe == 0 && !isAnmChrEdit)
+            {
+                if (nameSB.ToString().Contains("Ground S "))
+                {
+                    nameSB.Append("...anmchr => 168?");
+                } else if (nameSB.ToString().Contains("Air S? "))
+                {
+                    nameSB.Append("...anmchr => 16A?");
+                } else if (nameSB.ToString().Contains("Air 8S "))
+                {
+                    nameSB.Append("...anmchr => 16B?");
+                } else if (nameSB.ToString().Contains("Air 2S "))
+                {
+                    nameSB.Append("...anmchr => 16C?");
+                }
             }
 
             // finish up
