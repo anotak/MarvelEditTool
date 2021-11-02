@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using MarvelData;
 
@@ -15,7 +12,7 @@ namespace AnmChrEdit
     public partial class AnmChrForm : Form
     {
         public static bool bError = false;
-        public string FilePath;
+        public string filePath;
         public string ImportPath;
         public TableFile tablefile;
         public List<string> tableNames;
@@ -23,6 +20,7 @@ namespace AnmChrEdit
         public bool bDisableSubUpdate;
         public bool bDisableSubSubUpdate;
         public AnmChrSubEntry subCopyInstance;
+        public CmdSpAtkEntry spatkCopyInstance = new CmdSpAtkEntry();
         public byte[] subsubCopyInstance;
         
         public List<List<int>> selectedSubSubIndices;
@@ -30,13 +28,16 @@ namespace AnmChrEdit
 
         public BindingList<string> subDataSource;
         public BindingList<string> subsubDataSource;
+        private int subEntryHoveredIndex = -1;
+        private int dataTexBoxFormat;
+        private ImageForm imageForm;
 
         public AnmChrForm()
         {
             InitializeComponent();
             Text += ", build " + GetCompileDate();
-            AELogger.Log(Text);
-            FilePath = String.Empty;
+            //AELogger.Log(Text);
+            filePath = String.Empty;
             ImportPath = String.Empty;
 
             selectedSubIndices = new List<int>();
@@ -47,7 +48,7 @@ namespace AnmChrEdit
         public static string GetCompileDate()
         {
             System.Version MyVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            return new DateTime(2000, 1, 1).AddDays(MyVersion.Build).AddSeconds(MyVersion.Revision * 2).ToString();
+            return new DateTime(2000, 1, 1).AddDays(MyVersion.Build).AddSeconds(MyVersion.Revision * 2).ToString("dd:MM:yyyy");
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -73,7 +74,7 @@ namespace AnmChrEdit
         {
             if (keyData == (Keys.Control | Keys.S))
             {
-                if (saveButton.Enabled)
+                if (saveAsToolStripMenuItem.Enabled || saveToolStripMenuItem.Enabled)
                 {
                     saveButton_Click(null, null);
                 }
@@ -81,7 +82,7 @@ namespace AnmChrEdit
             }
             else if (keyData == (Keys.Control | Keys.O))
             {
-                if (openButton.Enabled)
+                if (openToolStripMenuItem.Enabled)
                 {
                     openButton_Click(null, null);
                 }
@@ -111,6 +112,30 @@ namespace AnmChrEdit
                 }
                 return true;
             }
+            else if (keyData == (Keys.Control | Keys.NumPad0) || keyData == (Keys.Control | Keys.D0))
+            {
+                if (formatUnsetButton.Enabled)
+                {
+                    formatUnsetButton_Click(null, null);
+                }
+                return true;
+            }
+            else if (keyData == (Keys.Control | Keys.NumPad1) || keyData == (Keys.Control | Keys.D1))
+            {
+                if (format8HexButton.Enabled)
+                {
+                    format8HexButton_Click(null, null);
+                }
+                return true;
+            }
+            else if (keyData == (Keys.Control | Keys.NumPad2) || keyData == (Keys.Control | Keys.D2))
+            {
+                if (format16HexButton.Enabled)
+                {
+                    format16HexButton_Click(null, null);
+                }
+                return true;
+            }
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
@@ -121,6 +146,10 @@ namespace AnmChrEdit
             int top = animBox.TopIndex;
             tableNames = tablefile.GetNames();
             animBox.DataSource = tableNames;
+            if (s >= animBox.Items.Count)
+            {
+                s = animBox.Items.Count -1;
+            }
             animBox.SelectedIndex = s;
             animBox.TopIndex = top;
             bDisableUpdate = false;
@@ -197,14 +226,32 @@ namespace AnmChrEdit
 
             using (OpenFileDialog openFile = new OpenFileDialog())
             {
+                if (tablefile != null)
+                {
+                    // Confirm user wants to open a new instance
+                    switch (MessageBox.Show(this, "Are you sure you want to open a new instance?" 
+                        + Environment.NewLine + "All unsaved data will be lost!", "Warning", MessageBoxButtons.YesNo))
+                    {
+                        case DialogResult.No:
+                            AELogger.Log("procedure canceled!");
+                            return;
+                        default:
+                            Text = null;
+                            filePath = null;
+                            filenameLabel.Text = null;
+                            SetDataTexBoxFormat(0);
+                            AELogger.WriteLog();
+                            break;
+                    }
+                }
                 //openFile.DefaultExt = "bcm";
                 // The Filter property requires a search string after the pipe ( | )
                 openFile.Filter = "AnmChr Files (*.cac;*.5A7E5D8A; *.anm)|*.cac;*.5A7E5D8A;*.anm|All files (*.*)|*.*";
                 openFile.ShowDialog();
                 if (openFile.FileNames.Length > 0)
                 {
-                    //TableFile newTable = TableFile.LoadFile(openFile.FileNames[0], typeof(StatusEntry));
-                    TableFile newTable = TableFile.LoadFile(openFile.FileNames[0], false, typeof(AnmChrEntry));
+                    //TableFile newTable = TableFile.LoadFile(openFile.FileNames[0], true, typeof(StructEntry<ATKInfoChunk>), 848, true);
+                    TableFile newTable = TableFile.LoadFile(openFile.FileNames[0], false, typeof(AnmChrEntry), -1, true);
                     int count = newTable.table.Count;
                     if (newTable == null && count != 0)
                     {
@@ -213,19 +260,30 @@ namespace AnmChrEdit
                     }
 
                     tablefile = newTable;
+                    filePath = openFile.FileNames[0];
 #if DEBUG
                     tablefile.AnalyzeAnmChr();
 #endif
+                    // start naming missing labels
+                    List<AnmChrSubEntry> subEntries = new List<AnmChrSubEntry>();
+                    tablefile.getSubSubEntryInfo(ref subEntries);
+                    tablefile.matchAtiNames(filePath);
+                    // end naming missing labels
+
 
                     SuspendLayout();
-                    saveButton.Enabled = true;
+                    saveToolStripMenuItem.Enabled = true;
+                    saveAsToolStripMenuItem.Enabled = true;
                     importButton.Enabled = false;
                     exportButton.Enabled = false;
-                    openButton.Enabled = false;
                     animBox.Enabled = true;
                     extendButton.Enabled = true;
+                    formatUnsetButton.Enabled = false;
+                    format8HexButton.Enabled = true;
+                    format16HexButton.Enabled = true;
+
+
                     sizeLabel.Text = count + " entries loaded";
-                    FilePath = openFile.FileNames[0];
                     RefreshData();
 
                     for (int i = 0; i < animBox.Items.Count; i++)
@@ -233,7 +291,8 @@ namespace AnmChrEdit
                         selectedSubSubIndices.Add(new List<int>());
                     }
 
-                    Text += " :: " + openFile.FileNames[0];
+                    //Text += " :: " + openFile.FileNames[0];
+                    
                     filenameLabel.Text = openFile.FileNames[0];
                     animBox.SelectedIndex = 0;
                     ResumeLayout();
@@ -244,6 +303,7 @@ namespace AnmChrEdit
                 }
             }
         }
+
 
         private void saveButton_Click(object sender, EventArgs ev)
         {
@@ -256,16 +316,16 @@ namespace AnmChrEdit
             {
                 //saveFileDialog1.Filter = "BCM files (*.bcm)|*.bcm|All files (*.*)|*.*";
                 //saveFileDialog1.FilterIndex = 2;
-                if (FilePath != String.Empty)
+                if (filePath != String.Empty)
                 {
                     try
                     {
-                        saveFileDialog1.InitialDirectory = Path.GetDirectoryName(FilePath);
-                        saveFileDialog1.FileName = Path.GetFileName(FilePath);
+                        saveFileDialog1.InitialDirectory = Path.GetDirectoryName(filePath);
+                        saveFileDialog1.FileName = Path.GetFileName(filePath);
                     }
                     catch (Exception e)
                     {
-                        AELogger.Log("some kind of exception setting save path from " + FilePath);
+                        AELogger.Log("some kind of exception setting save path from " + filePath);
                         AELogger.Log("Exception: " + e.Message);
 
                         AELogger.Log("Exception: " + e.StackTrace);
@@ -287,12 +347,17 @@ namespace AnmChrEdit
                 {
                     if (saveFileDialog1.FileNames.Length > 0)
                     {
-                        FilePath = saveFileDialog1.FileNames[0];
+                        filePath = saveFileDialog1.FileNames[0];
                         tablefile.WriteFile(saveFileDialog1.FileNames[0]);
                     }
                 }
             }
 
+        }
+
+        private void closeButton_Click(object sender, EventArgs ev)
+        {
+            Application.Exit();
         }
 
         private void importButton_Click(object sender, EventArgs ev)
@@ -311,12 +376,12 @@ namespace AnmChrEdit
                 {
                     try
                     {
-                        openFile.InitialDirectory = Path.GetDirectoryName(FilePath);
-                        openFile.FileName = Path.GetFileName(FilePath);
+                        openFile.InitialDirectory = Path.GetDirectoryName(filePath);
+                        openFile.FileName = Path.GetFileName(filePath);
                     }
                     catch (Exception e)
                     {
-                        AELogger.Log("some kind of exception setting save path from " + FilePath);
+                        AELogger.Log("some kind of exception setting save path from " + filePath);
                         AELogger.Log("Exception: " + e.Message);
 
                         AELogger.Log("Exception: " + e.StackTrace);
@@ -354,7 +419,6 @@ namespace AnmChrEdit
             }
         }
 
-
         private void exportButton_Click(object sender, EventArgs ev)
         {
             if (animBox.SelectedIndex < 0
@@ -368,7 +432,7 @@ namespace AnmChrEdit
             {
                 saveFileDialog1.Title = "Export " + tablefile.table[animBox.SelectedIndex].GetFancyName();
                 saveFileDialog1.Filter = "mvc3 table data files (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
-                if (FilePath != String.Empty)
+                if (filePath != String.Empty)
                 {
                     try
                     {
@@ -408,7 +472,6 @@ namespace AnmChrEdit
             }
         }
 
-
         private void extendButton_Click(object sender, EventArgs e)
         {
             tablefile.Extend();
@@ -417,6 +480,42 @@ namespace AnmChrEdit
             {
                 animBox.TopIndex++;
             }
+        }
+
+        private void formatUnsetButton_Click(object sender, EventArgs e)
+        {
+            SetDataTexBoxFormat(0);
+            formatUnsetButton.Enabled = false;
+            format8HexButton.Enabled = true;
+            format16HexButton.Enabled = true;
+            RefreshText();
+            RefreshData();
+        }
+
+        private void format8HexButton_Click(object sender, EventArgs e)
+        {
+            SetDataTexBoxFormat(8);
+            formatUnsetButton.Enabled = true;
+            format8HexButton.Enabled = false;
+            format16HexButton.Enabled = true;
+            RefreshText();
+            RefreshData();
+        }
+
+        private void format16HexButton_Click(object sender, EventArgs e)
+        {
+            SetDataTexBoxFormat(16);
+            formatUnsetButton.Enabled = true;
+            format8HexButton.Enabled = true;
+            format16HexButton.Enabled = false;
+            RefreshText();
+            RefreshData();
+        }
+
+        private void testImgButton_Click(object sender, EventArgs e)
+        {
+            imageForm = new ImageForm();
+            imageForm.Show();
         }
 
         private void animBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -433,7 +532,7 @@ namespace AnmChrEdit
             RefreshEditBox();
             RefreshSelectedIndices();
             //sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
-
+            subEntryHoveredIndex = -1;
             bDisableUpdate = false;
             animBox.EndUpdate();
             //ResumeLayout();
@@ -606,6 +705,7 @@ namespace AnmChrEdit
                 byte[] data = entry.subEntries[subEntryBox.SelectedIndex].subsubEntries[subsubEntryBox.SelectedIndex];
                 dataTextBox.Enabled = true;
                 dataTextBox.Text = BitConverter.ToString(data).Replace("-", "");
+                dataTextBox.Text = splitAndBreakEveryNChars(dataTextBox.Text, GetDataTexBoxFormat());
                 dataTextBox.ForeColor = Color.White;
             }
             else
@@ -613,6 +713,16 @@ namespace AnmChrEdit
                 dataTextBox.Enabled = false;
                 dataTextBox.Clear();
             }
+        }
+
+        private string splitAndBreakEveryNChars(string text2Break, int breakAfterNChars)
+        {
+            if (breakAfterNChars <= 0)
+            {
+                return (text2Break);
+            }
+
+            return (String.Join("\r\n", text2Break.SplitInParts(breakAfterNChars)));
         }
 
         public static byte[] StringToByteArray(string input)
@@ -628,6 +738,7 @@ namespace AnmChrEdit
             return outBytes;
         }
 
+        // Validates the contents of the hex in data text box
         private void dataTextBox_TextChanged(object sender, EventArgs ev)
         {
             if (bDisableUpdate || bDisableSubUpdate || bDisableSubSubUpdate)
@@ -645,12 +756,15 @@ namespace AnmChrEdit
                 {
                     if (tablefile.table[s] is AnmChrEntry && tablefile.table[s].bHasData)
                     {
+                        
                         AnmChrEntry entry = (AnmChrEntry)tablefile.table[s];
 
-                        entry.subEntries[subEntryBox.SelectedIndex].subsubEntries[subsubEntryBox.SelectedIndex] = StringToByteArray(dataTextBox.Text);
+                        entry.subEntries[subEntryBox.SelectedIndex].subsubEntries[subsubEntryBox.SelectedIndex] 
+                            = StringToByteArray(dataTextBox.Text.Replace("\r\n", ""));
 
                         bDisableSubSubUpdate = true;
-                        subsubDataSource[subsubEntryBox.SelectedIndex] = entry.subEntries[subEntryBox.SelectedIndex].GetSubSubName(subsubEntryBox.SelectedIndex);
+                        subsubDataSource[subsubEntryBox.SelectedIndex] = entry.subEntries[subEntryBox.SelectedIndex]
+                            .GetSubSubName(subsubEntryBox.SelectedIndex);
                         bDisableSubSubUpdate = false;
                     }
                     dataTextBox.ForeColor = Color.White;
@@ -673,6 +787,57 @@ namespace AnmChrEdit
                     dataTextBox.ForeColor = Color.Red;
                 }
             }
+        }
+
+        // Creates labels for the sub entries box
+        private void OnsubEntryBoxMouseMove(object sender, MouseEventArgs e)
+        {
+            // if still on the same row, do nothing
+            if (!subEntryBox.IndexFromPoint(e.Location).Equals(subEntryHoveredIndex))
+            {
+                string strTip = "";
+                int nIdx = subEntryBox.IndexFromPoint(e.Location);
+                if ((nIdx >= 0) && (nIdx < subEntryBox.Items.Count))
+                {
+                    subEntryHoveredIndex = nIdx;
+                    strTip = subEntryBox.Items[nIdx].ToString();
+                    if (tablefile != null && tablefile.table[animBox.SelectedIndex] is AnmChrEntry)
+                    {
+                        AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
+                        if (entry.subEntries.Count > 0)
+                        {
+                        entry.subEntries[nIdx].GetCommandList().ToList().ForEach(n => strTip += " \r\n  " + n.ToString());
+                        }
+                    }
+                }
+                toolTip1.SetToolTip(subEntryBox, strTip);
+            }
+        }
+
+        // Creates labels for the sub sub entries box
+        private void OnsubsubEntryBoxMouseMove(object sender, MouseEventArgs e)
+        {
+            string strTip = "";
+
+            //Get the item
+            int nIdx = subsubEntryBox.IndexFromPoint(e.Location);
+            if ((nIdx >= 0) && (nIdx < subsubEntryBox.Items.Count))
+                strTip = subsubEntryBox.Items[nIdx].ToString();
+
+            toolTip2.SetToolTip(subsubEntryBox, strTip);
+        }
+
+        // Creates labels for the entries (anim) box
+        private void OnAnimBoxMouseMove(object sender, MouseEventArgs e)
+        {
+            string strTip = "";
+
+            //Get the item
+            int nIdx = animBox.IndexFromPoint(e.Location);
+            if ((nIdx >= 0) && (nIdx < animBox.Items.Count))
+                strTip = animBox.Items[nIdx].ToString();
+
+            toolTip3.SetToolTip(animBox, strTip);
         }
 
         private void timeTextBox_TextChanged(object sender, EventArgs e)
@@ -922,6 +1087,28 @@ namespace AnmChrEdit
                 subDeleteButton.Enabled = entry.subEntries.Count > 1;
             }
         }
+        public int GetDataTexBoxFormat()
+        {
+            return dataTexBoxFormat;
+        }
 
+        public void SetDataTexBoxFormat(int value = 0)
+        {
+            dataTexBoxFormat = value;
+        }
     } // class
+
+    static class StringExtensions
+    {
+        public static IEnumerable<String> SplitInParts(this String s, Int32 partLength)
+        {
+            if (s == null)
+                throw new ArgumentNullException(nameof(s));
+            if (partLength <= 0)
+                throw new ArgumentException("Part length has to be positive.", nameof(partLength));
+
+            for (var i = 0; i < s.Length; i += partLength)
+                yield return s.Substring(i, Math.Min(partLength, s.Length - i));
+        }
+    }
 } // ns

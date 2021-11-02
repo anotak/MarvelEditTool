@@ -39,6 +39,7 @@ namespace MarvelData
             }
         }
 
+        //called in GuessName() to add input info 
         public void SubNameLoop()
         {
             int subCount = subEntries.Count;
@@ -66,6 +67,18 @@ namespace MarvelData
                     else
                     {
                         nameSB.Append(chunk.inputCode);
+                    }
+                }
+                else if (subEntries[i] is StructEntry<BaseActChunk>)
+                {
+                    BaseActChunk chunk = ((StructEntry<BaseActChunk>)subEntries[i]).data;
+                    if ((int)chunk.inputCodeDirection <= 10)
+                    {
+                        nameSB.Append(MVC3DataStructures.NumpadDirections[(int)chunk.inputCodeDirection]);
+                    }
+                    else
+                    {
+                        nameSB.Append(chunk.inputCodeButton);
                     }
                 }
                 else if (subEntries[i] is StructEntry<SpatkDirButtonChunk>)

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.ComponentModel;
 
 namespace MarvelData
 {
@@ -14,13 +15,14 @@ namespace MarvelData
         public byte[] headerB;
         public byte[] footer;
         public Type fileType;
+        public TableFile atiFile;
         public int defaultChunkSize;
         
         public static Type[] structTypes = { typeof(StructEntry<StatusChunk>), typeof(StructEntry<ATKInfoChunk>), typeof(StructEntry<BaseActChunk>), typeof(CmdSpAtkEntry), typeof(CmdComboEntry), typeof(AnmChrEntry), typeof(CollisionEntry) };
         public static int[] structSizes = { 0x350, 0x18C, 0x20, 0x00, 0x00, 0x00, 0x00 };
         public static string[] structExtensions = { "CHS", "ATI", "CBA", "CSP", "CCM", "CAC", "CLI" };
 
-        public static TableFile LoadFile(string filename, bool bAutoIdentify = false, Type entryType = null, int structsize = -1)
+        public static TableFile LoadFile(string filename, bool bAutoIdentify = false, Type entryType = null, int structsize = -1, Boolean isAnmChrEdit = false)
         {
             AELogger.Log("attempting to open table " + filename);
             if (entryType == null)
@@ -36,6 +38,7 @@ namespace MarvelData
             }
 
             tablefile.table = new List<TableEntry>();
+            string filenamelower = filename.ToLowerInvariant();
 
             using (BinaryReader reader = new BinaryReader(File.OpenRead(filename)))
             {
@@ -136,8 +139,8 @@ namespace MarvelData
                 {
                     if(tablefile.table[i].bHasData)
                     {
-                        AELogger.Log("reading actual data for " + tablefile.table[i].name + " w original pointer " + tablefile.table[i].originalPointer.ToString("X") + "h while actual position was " + position.ToString("X") +"h");
-
+                        AELogger.Log("reading actual data for " + tablefile.table[i].name + " w original pointer " 
+                            + tablefile.table[i].originalPointer.ToString("X") + "h while actual position was " + position.ToString("X") +"h");
                         /*
                         uint entryindex = reader.ReadUInt32();
                         if(entryindex != tablefile.table[i].index)
@@ -178,6 +181,9 @@ namespace MarvelData
                             }
                             tablefile.table[i].size = structsize;
                         }
+                        //if (tablefile.fileType == typeof(CmdSpAtkEntry)) {
+                        tablefile.table[i].isAnmChrEdit = isAnmChrEdit;
+                        //}
                         tablefile.table[i].SetData(reader.ReadBytes((int)entrysize));
                         tablefile.table[i].GuessName();
                         position += entrysize;
@@ -186,11 +192,11 @@ namespace MarvelData
                 tablefile.footer = reader.ReadBytes(16);
             } // using(reader)
 
-            string filenamelower = filename.ToLowerInvariant();
             if (tablefile.fileType == typeof(AnmChrEntry)
                 && !filenamelower.Contains("anmtdown")
-                && !filenamelower.Contains("anmcmn") )
+                && !filenamelower.Contains("anmcmn"))
             {
+                // find names by merging cmdspatk
                 string spatkpath = Path.Combine(Path.GetDirectoryName(filename), "cmdspatk.52A8DBF6");
 
                 if (!File.Exists(spatkpath))
@@ -200,7 +206,7 @@ namespace MarvelData
 
                 if (File.Exists(spatkpath))
                 {
-                    TableFile spatkfile = LoadFile(spatkpath, true);
+                    TableFile spatkfile = LoadFile(spatkpath, true, null, -1, true);
 
                     int spatkcount = spatkfile.table.Count;
                     for (int i = 0; i < spatkcount; i++)
@@ -613,6 +619,114 @@ namespace MarvelData
                     AELogger.Log(same + " - byte " + streakStart + " - " + (i - 1) + "\t\t\tlength " + (i - streakStart) + "\t\t value: " + a[streakStart] + " " + b[streakStart]);
                     bStreak = bCurrent;
                     streakStart = i;
+                }
+            }
+        }
+
+        // goes over all entries on the table and adds 0_0C and 1_99 CLI and ATI info to the entry label
+        public void getSubSubEntryInfo(ref List<AnmChrSubEntry> subEntries)
+        {
+            int infoRef = 0;
+            for (int i = 0; i < table.Count(); i++)
+            {
+                infoRef = i;
+                if (!table[i].name.Contains("EMPTY DATA"))
+                {
+                    //for (int l = 0; l < ((AnmChrEntry)tablefile.table[i]).subEntries.Count(); l++)
+                    subEntries = ((AnmChrEntry)table[i]).subEntries;
+
+                    subEntries.Sort(delegate (AnmChrSubEntry x, AnmChrSubEntry y)
+                    {
+                        if (y == null)
+                        {
+                            if (x == null)
+                            {
+                                return 0;
+                            }
+                            return 1;
+                        }
+                        if (x == null)
+                        {
+                            return -1;
+                        }
+                        if (x.localindex > y.localindex)
+                        {
+                            return 1;
+                        }
+                        else if (x.localindex == y.localindex)
+                        {
+                            return 0;
+                        }
+                        return -1;
+                    });
+
+                    BindingList<string> output = new BindingList<string>();
+                    for (int l = 0; l < subEntries.Count; l++)
+                    {
+                        //output.Add(subEntries[l].GetName());
+                        for (int m = 0; m < subEntries[l].GetCommandList().ToArray().Length; m++)
+                        {
+                            if (subEntries[l].GetCommandList().ToArray()[m].Contains("1_99"))
+                            {
+                                byte[] data = subEntries[l].subsubEntries[m];
+                                string dataString = BitConverter.ToString(data).Replace("-", "");
+                                string ati = dataString.Substring(dataString.Count() - 16, 2);
+                                string cli = dataString.Substring(dataString.Count() - 8, 2);
+
+                                table[infoRef].name += " ATI=>" + ati + "? CLI=>" + cli + "?";
+                            }
+                        if (subEntries[l].GetCommandList().ToArray()[m].Contains("0_0C"))
+                            {
+                                table[infoRef].name = "Charge " + table[infoRef].name;
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+
+        public void matchAtiNames(string filePath)
+        {
+
+            // find names by merging cmdspatk
+            string atiPath = Path.Combine(Path.GetDirectoryName(filePath), "atkinfo.227A8048");
+
+            if (!File.Exists(atiPath))
+            {
+                atiPath = Path.Combine(Path.GetDirectoryName(filePath), "atkinfo.ATI");
+            }
+
+            if (File.Exists(atiPath))
+            {
+                TableFile _atiFile = TableFile.LoadFile(atiPath, true, null, -1, true);
+                _atiFile.GetNames();
+                atiFile = _atiFile;
+            }
+
+            //tablefile.table.ForEach(x => );
+            string referenceType = "ATI";
+            for (int i = 0; i < table.Count(); i++)
+            {
+                if (table[i].name.Contains("unknown") &&
+                    table[i].name.Contains(referenceType) &&
+                    atiFile.fileType == typeof(StructEntry<ATKInfoChunk>))
+                {
+                    string originalName = table[i].name;
+
+                    string test = originalName.Substring(originalName.IndexOf(referenceType) + referenceType.Length + 2, 2);
+                    int hexIndex = Convert.ToInt32(originalName.Substring(originalName.IndexOf(referenceType) + referenceType.Length + 2, 2), 16);
+                    int hexLastIndex = Convert.ToInt32(originalName.Substring(originalName.LastIndexOf(referenceType) + referenceType.Length + 2, 2), 16);
+
+                    if (hexIndex != hexLastIndex &&
+                        (atiFile.table[hexIndex].name == "unknown" || atiFile.table[hexLastIndex].name == "unknown"))
+                    {
+                        table[i].name = table[i].name.Replace("unknown", atiFile.table[hexIndex].name + " " + atiFile.table[hexLastIndex].name);
+                    }
+                    else
+                    {
+                        table[i].name = table[i].name.Replace("unknown", atiFile.table[hexIndex].name);
+                    }
                 }
             }
         }
