@@ -551,7 +551,7 @@ namespace MarvelData
         A2 = 0x00000200,
         Unk0x400 = 0x00000400,
         Unk0x800 = 0x00000800,
-        Taunt = 0x00001000,
+        Unk0x1000 = 0x00001000,
         Unk0x2000 = 0x00002000,
         Unk0x4000 = 0x00004000,
         Unk0x8000 = 0x00008000,
@@ -559,7 +559,7 @@ namespace MarvelData
         Unk0x20000 = 0x00020000,
         Unk0x40000 = 0x00040000,
         Unk0x80000 = 0x00080000,
-        Unk0x100000 = 0x00100000,
+        Taunt = 0x00100000,
         Unk0x200000 = 0x00200000,
         Unk0x400000 = 0x00400000,
         Unk0x800000 = 0x00800000,
@@ -720,18 +720,16 @@ namespace MarvelData
         GuardAndDamageCancel = 5
     }
 
-        public enum ComboType : int
+    public enum ComboType : int
     {
         Restrictive = 1,
         Lenient = 2
     }
-        public enum BaseActState : int
+    public enum BaseActState : int
     {
         Ground = 00,
         Air = 20
     }
-
-
 
     [StructLayout(LayoutKind.Sequential)]
     public struct SpatkStandardChunk // 02

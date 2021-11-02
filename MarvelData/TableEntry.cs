@@ -17,6 +17,8 @@ namespace MarvelData
 
         public static StringBuilder nameSB;
 
+        public virtual bool isAnmChrEdit { get; internal set; }
+
         public TableEntry()
         {
             name = "";
@@ -26,10 +28,16 @@ namespace MarvelData
         {
             switch(index)
             {
-                /*case 0x0:
-                    return "stand";
+                case 0x0:
+                    name = "Idle Stance";
+                    break;
                 case 0x1:
-                    return "fwd walk";
+                    name = "Walk Forward";
+                    break;
+                case 0x2:
+                    name = "Walk Backward";
+                    break;
+                /*
                 case 0x3:
                     return "fwd dash";
                 case 0x4:
@@ -52,6 +60,15 @@ namespace MarvelData
                 return "Form #" + (index +1);
             }
             return "unknown";
+        }
+
+        public virtual string GuessAnmChrEntry(string currentEntry)
+        {
+            //if (currentEntry.Contains())
+            //{
+
+            //}
+            return currentEntry;
         }
 
         public virtual string GuessFieldName()
@@ -191,6 +208,10 @@ namespace MarvelData
             else
             {
             nameSB.Append(name);
+            }
+            if (this.GetType().ToString().Contains("cmdspatk"))
+            {
+                return GuessAnmChrEntry(nameSB.ToString());
             }
             return  nameSB.ToString();
         }

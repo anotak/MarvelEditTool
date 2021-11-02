@@ -29,6 +29,7 @@ namespace MarvelData
     public class StructEntry<T> : StructEntryBase where T : struct
     {
         public T data;
+        public int anmChrIndexMaybe;
 
         public override byte[] GetData()
         {
@@ -184,6 +185,19 @@ namespace MarvelData
             else
             {
                 base.GuessName();
+            }
+        }
+
+        internal void TryToLabelAnmChr(TableFile tablefile)
+        {
+            if (anmChrIndexMaybe > 0)
+            {
+                if (tablefile.table.Count > anmChrIndexMaybe
+                    &&
+                    tablefile.table[anmChrIndexMaybe].bHasData && tablefile.table[anmChrIndexMaybe].name == "unknown")
+                {
+                    tablefile.table[anmChrIndexMaybe].name = name;
+                }
             }
         }
     }
