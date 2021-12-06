@@ -1,4 +1,8 @@
-﻿namespace AnmChrEdit
+﻿using System.Drawing;
+using System.Windows.Forms;
+using MarvelData;
+
+namespace AnmChrEdit
 {
     partial class AnmChrForm
     {
@@ -21,6 +25,27 @@
         }
 
 
+        // Custom text color for ListBox items
+        private void commandBlocksBox_DrawItem(object sender, System.Windows.Forms.DrawItemEventArgs e)
+        {
+            //this.commandBlocksBox.DrawItem += commandBlocksBox_DrawItem;
+            if (e.Index >= 0)
+            {
+                e.DrawBackground();
+                Brush myBrush = Brushes.White;
+                e.Graphics.DrawString(commandBlocksBox.Items[e.Index].ToString(),
+                    e.Font, myBrush, e.Bounds, StringFormat.GenericDefault);
+                e.DrawFocusRectangle();
+                if (commandBlocksBox.Items[e.Index].ToString().Contains("Disabled"))
+                {
+                    myBrush = Brushes.Gray;
+                    e.Graphics.DrawString(commandBlocksBox.Items[e.Index].ToString(),
+                        e.Font, myBrush, e.Bounds, StringFormat.GenericDefault);
+                    e.DrawFocusRectangle();
+                }
+            }
+        }
+
         #region Windows Form Designer generated code
 
         /// <summary>
@@ -30,6 +55,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AnmChrForm));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.filenameLabel = new System.Windows.Forms.Label();
             this.lblCurrentFile = new System.Windows.Forms.Label();
@@ -40,26 +66,36 @@
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.commandBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyCommandBlockToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteCommandBlockToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.disableCommandBlockToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteCommandBlockToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.commandsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyCommandsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteCommandsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteCommandsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.formatDisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unsetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.hexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.hexToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.hex8ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hex16ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tutorialFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.animBox = new System.Windows.Forms.ListBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
-            this.subsubEntryBox = new System.Windows.Forms.ListBox();
-            this.subEntryBox = new System.Windows.Forms.ListBox();
+            this.commandsBox = new System.Windows.Forms.ListBox();
+            this.commandBlocksBox = new System.Windows.Forms.ListBox();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-            this.subsubDeleteButton = new System.Windows.Forms.Button();
-            this.subsubPasteButton = new System.Windows.Forms.Button();
-            this.subsubCopyButton = new System.Windows.Forms.Button();
+            this.commandsDeleteButton = new System.Windows.Forms.Button();
+            this.commandsPasteButton = new System.Windows.Forms.Button();
+            this.commandsCopyButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.subDeleteButton = new System.Windows.Forms.Button();
-            this.subPasteButton = new System.Windows.Forms.Button();
+            this.commandBlockDisableButton = new System.Windows.Forms.Button();
+            this.commandBlockDeleteButton = new System.Windows.Forms.Button();
+            this.commandBlockPasteButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.subCopyButton = new System.Windows.Forms.Button();
+            this.commandBlockCopyButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.timeTextBox = new System.Windows.Forms.TextBox();
             this.lengthTextBox = new System.Windows.Forms.TextBox();
@@ -76,6 +112,15 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.toolTip2 = new System.Windows.Forms.ToolTip(this.components);
             this.toolTip3 = new System.Windows.Forms.ToolTip(this.components);
+            this.commandBlockContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.copyCommandBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteCommandBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.disableCommandBlookToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteCommandBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.commandContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.copyCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -93,6 +138,8 @@
             this.tableLayoutPanel4.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
+            this.commandBlockContextMenuStrip.SuspendLayout();
+            this.commandContextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -166,7 +213,7 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openButton_Click);
             // 
@@ -174,7 +221,7 @@
             // 
             this.saveToolStripMenuItem.Enabled = false;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveButton_Click);
             // 
@@ -182,56 +229,138 @@
             // 
             this.saveAsToolStripMenuItem.Enabled = false;
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.saveAsToolStripMenuItem.Text = "Save As";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveButton_Click);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeButton_Click);
             // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.commandBlockToolStripMenuItem,
+            this.commandsToolStripMenuItem,
             this.formatDisplayToolStripMenuItem,
             this.tutorialFilesToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 22);
             this.optionsToolStripMenuItem.Text = "Options";
             // 
+            // commandBlockToolStripMenuItem
+            // 
+            this.commandBlockToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyCommandBlockToolStripMenuItem1,
+            this.deleteCommandBlockToolStripMenuItem1,
+            this.disableCommandBlockToolStripMenuItem1,
+            this.pasteCommandBlockToolStripMenuItem1});
+            this.commandBlockToolStripMenuItem.Name = "commandBlockToolStripMenuItem";
+            this.commandBlockToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.commandBlockToolStripMenuItem.Text = "Command Block";
+            // 
+            // copyCommandBlockToolStripMenuItem1
+            // 
+            this.copyCommandBlockToolStripMenuItem1.Enabled = false;
+            this.copyCommandBlockToolStripMenuItem1.Name = "copyCommandBlockToolStripMenuItem1";
+            this.copyCommandBlockToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.copyCommandBlockToolStripMenuItem1.Text = "Copy";
+            this.copyCommandBlockToolStripMenuItem1.Click += new System.EventHandler(this.commandBlockCopyButton_Click);
+            // 
+            // deleteCommandBlockToolStripMenuItem1
+            // 
+            this.deleteCommandBlockToolStripMenuItem1.Enabled = false;
+            this.deleteCommandBlockToolStripMenuItem1.Name = "deleteCommandBlockToolStripMenuItem1";
+            this.deleteCommandBlockToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.deleteCommandBlockToolStripMenuItem1.Text = "Delete";
+            this.deleteCommandBlockToolStripMenuItem1.Click += new System.EventHandler(this.commandBlockDeleteButton_Click);
+            // 
+            // disableCommandBlockToolStripMenuItem1
+            // 
+            this.disableCommandBlockToolStripMenuItem1.Enabled = false;
+            this.disableCommandBlockToolStripMenuItem1.Name = "disableCommandBlockToolStripMenuItem1";
+            this.disableCommandBlockToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.disableCommandBlockToolStripMenuItem1.Text = "Disable";
+            this.disableCommandBlockToolStripMenuItem1.Click += new System.EventHandler(this.disableCommandBlockToolStripMenuItem_Click);
+            // 
+            // pasteCommandBlockToolStripMenuItem1
+            // 
+            this.pasteCommandBlockToolStripMenuItem1.Enabled = false;
+            this.pasteCommandBlockToolStripMenuItem1.Name = "pasteCommandBlockToolStripMenuItem1";
+            this.pasteCommandBlockToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.pasteCommandBlockToolStripMenuItem1.Text = "Paste";
+            this.pasteCommandBlockToolStripMenuItem1.Click += new System.EventHandler(this.commandBlockPasteButton_Click);
+            // 
+            // commandsToolStripMenuItem
+            // 
+            this.commandsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyCommandsToolStripMenuItem,
+            this.deleteCommandsToolStripMenuItem,
+            this.pasteCommandsToolStripMenuItem});
+            this.commandsToolStripMenuItem.Name = "commandsToolStripMenuItem";
+            this.commandsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.commandsToolStripMenuItem.Text = "Command";
+            // 
+            // copyCommandsToolStripMenuItem
+            // 
+            this.copyCommandsToolStripMenuItem.Enabled = false;
+            this.copyCommandsToolStripMenuItem.Name = "copyCommandsToolStripMenuItem";
+            this.copyCommandsToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.copyCommandsToolStripMenuItem.Text = "Copy";
+            this.copyCommandsToolStripMenuItem.Click += new System.EventHandler(this.commandsCopyButton_Click);
+            // 
+            // deleteCommandsToolStripMenuItem
+            // 
+            this.deleteCommandsToolStripMenuItem.Enabled = false;
+            this.deleteCommandsToolStripMenuItem.Name = "deleteCommandsToolStripMenuItem";
+            this.deleteCommandsToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.deleteCommandsToolStripMenuItem.Text = "Delete";
+            this.deleteCommandsToolStripMenuItem.Click += new System.EventHandler(this.commandsDeleteButton_Click);
+            // 
+            // pasteCommandsToolStripMenuItem
+            // 
+            this.pasteCommandsToolStripMenuItem.Enabled = false;
+            this.pasteCommandsToolStripMenuItem.Name = "pasteCommandsToolStripMenuItem";
+            this.pasteCommandsToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.pasteCommandsToolStripMenuItem.Text = "Paste";
+            this.pasteCommandsToolStripMenuItem.Click += new System.EventHandler(this.commandsPasteButton_Click);
+            // 
             // formatDisplayToolStripMenuItem
             // 
             this.formatDisplayToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.unsetToolStripMenuItem,
-            this.hexToolStripMenuItem,
-            this.hexToolStripMenuItem1});
+            this.hex8ToolStripMenuItem,
+            this.hex16ToolStripMenuItem});
             this.formatDisplayToolStripMenuItem.Name = "formatDisplayToolStripMenuItem";
             this.formatDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.formatDisplayToolStripMenuItem.Text = "Format Display";
             // 
             // unsetToolStripMenuItem
             // 
+            this.unsetToolStripMenuItem.Enabled = false;
             this.unsetToolStripMenuItem.Name = "unsetToolStripMenuItem";
-            this.unsetToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.unsetToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.unsetToolStripMenuItem.Text = "Unset";
             this.unsetToolStripMenuItem.Click += new System.EventHandler(this.formatUnsetButton_Click);
             // 
-            // hexToolStripMenuItem
+            // hex8ToolStripMenuItem
             // 
-            this.hexToolStripMenuItem.Name = "hexToolStripMenuItem";
-            this.hexToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.hexToolStripMenuItem.Text = "8 Hex";
-            this.hexToolStripMenuItem.Click += new System.EventHandler(this.format8HexButton_Click);
+            this.hex8ToolStripMenuItem.Enabled = false;
+            this.hex8ToolStripMenuItem.Name = "hex8ToolStripMenuItem";
+            this.hex8ToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.hex8ToolStripMenuItem.Text = "8 Hex";
+            this.hex8ToolStripMenuItem.Click += new System.EventHandler(this.format8HexButton_Click);
             // 
-            // hexToolStripMenuItem1
+            // hex16ToolStripMenuItem
             // 
-            this.hexToolStripMenuItem1.Name = "hexToolStripMenuItem1";
-            this.hexToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
-            this.hexToolStripMenuItem1.Text = "16 Hex";
-            this.hexToolStripMenuItem1.Click += new System.EventHandler(this.format16HexButton_Click);
+            this.hex16ToolStripMenuItem.Enabled = false;
+            this.hex16ToolStripMenuItem.Name = "hex16ToolStripMenuItem";
+            this.hex16ToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.hex16ToolStripMenuItem.Text = "16 Hex";
+            this.hex16ToolStripMenuItem.Click += new System.EventHandler(this.format16HexButton_Click);
             // 
             // tutorialFilesToolStripMenuItem
             // 
@@ -305,8 +434,8 @@
             this.tableLayoutPanel3.ColumnCount = 2;
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 64.92374F));
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35.07625F));
-            this.tableLayoutPanel3.Controls.Add(this.subsubEntryBox, 0, 1);
-            this.tableLayoutPanel3.Controls.Add(this.subEntryBox, 0, 0);
+            this.tableLayoutPanel3.Controls.Add(this.commandsBox, 0, 1);
+            this.tableLayoutPanel3.Controls.Add(this.commandBlocksBox, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.tableLayoutPanel4, 1, 1);
             this.tableLayoutPanel3.Controls.Add(this.tableLayoutPanel2, 1, 0);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -319,45 +448,47 @@
             this.tableLayoutPanel3.Size = new System.Drawing.Size(622, 381);
             this.tableLayoutPanel3.TabIndex = 0;
             // 
-            // subsubEntryBox
+            // commandsBox
             // 
-            this.subsubEntryBox.BackColor = System.Drawing.Color.Black;
-            this.subsubEntryBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.subsubEntryBox.ForeColor = System.Drawing.Color.White;
-            this.subsubEntryBox.FormattingEnabled = true;
-            this.subsubEntryBox.ItemHeight = 19;
-            this.subsubEntryBox.Location = new System.Drawing.Point(3, 251);
-            this.subsubEntryBox.Margin = new System.Windows.Forms.Padding(2);
-            this.subsubEntryBox.Name = "subsubEntryBox";
-            this.subsubEntryBox.ScrollAlwaysVisible = true;
-            this.subsubEntryBox.Size = new System.Drawing.Size(397, 127);
-            this.subsubEntryBox.TabIndex = 0;
-            this.subsubEntryBox.SelectedIndexChanged += new System.EventHandler(this.subsubEntryBox_SelectedIndexChanged);
-            this.subsubEntryBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnsubsubEntryBoxMouseMove);
+            this.commandsBox.BackColor = System.Drawing.Color.Black;
+            this.commandsBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.commandsBox.ForeColor = System.Drawing.Color.White;
+            this.commandsBox.FormattingEnabled = true;
+            this.commandsBox.ItemHeight = 19;
+            this.commandsBox.Location = new System.Drawing.Point(3, 251);
+            this.commandsBox.Margin = new System.Windows.Forms.Padding(2);
+            this.commandsBox.Name = "commandsBox";
+            this.commandsBox.ScrollAlwaysVisible = true;
+            this.commandsBox.Size = new System.Drawing.Size(397, 127);
+            this.commandsBox.TabIndex = 0;
+            this.commandsBox.SelectedIndexChanged += new System.EventHandler(this.commandsBox_SelectedIndexChanged);
+            this.commandsBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnCommandsBoxMouseMove);
+            this.commandsBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.commandsBox_RightMouseClick);
             // 
-            // subEntryBox
+            // commandBlocksBox
             // 
-            this.subEntryBox.BackColor = System.Drawing.Color.Black;
-            this.subEntryBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.subEntryBox.ForeColor = System.Drawing.Color.White;
-            this.subEntryBox.FormattingEnabled = true;
-            this.subEntryBox.ItemHeight = 19;
-            this.subEntryBox.Location = new System.Drawing.Point(3, 3);
-            this.subEntryBox.Margin = new System.Windows.Forms.Padding(2);
-            this.subEntryBox.Name = "subEntryBox";
-            this.subEntryBox.ScrollAlwaysVisible = true;
-            this.subEntryBox.Size = new System.Drawing.Size(397, 243);
-            this.subEntryBox.TabIndex = 0;
-            this.subEntryBox.SelectedIndexChanged += new System.EventHandler(this.subEntryBox_SelectedIndexChanged);
-            this.subEntryBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnsubEntryBoxMouseMove);
+            this.commandBlocksBox.BackColor = System.Drawing.Color.Black;
+            this.commandBlocksBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.commandBlocksBox.ForeColor = System.Drawing.Color.White;
+            this.commandBlocksBox.FormattingEnabled = true;
+            this.commandBlocksBox.ItemHeight = 19;
+            this.commandBlocksBox.Location = new System.Drawing.Point(3, 3);
+            this.commandBlocksBox.Margin = new System.Windows.Forms.Padding(2);
+            this.commandBlocksBox.Name = "commandBlocksBox";
+            this.commandBlocksBox.ScrollAlwaysVisible = true;
+            this.commandBlocksBox.Size = new System.Drawing.Size(397, 243);
+            this.commandBlocksBox.TabIndex = 0;
+            this.commandBlocksBox.SelectedIndexChanged += new System.EventHandler(this.commandBlocksBox_SelectedIndexChanged);
+            this.commandBlocksBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.commandBlocksBoxMouseMove);
+            this.commandBlocksBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.commandBlocksBox_RightMouseClick);
             // 
             // tableLayoutPanel4
             // 
             this.tableLayoutPanel4.ColumnCount = 1;
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4.Controls.Add(this.subsubDeleteButton, 0, 2);
-            this.tableLayoutPanel4.Controls.Add(this.subsubPasteButton, 0, 1);
-            this.tableLayoutPanel4.Controls.Add(this.subsubCopyButton, 0, 0);
+            this.tableLayoutPanel4.Controls.Add(this.commandsDeleteButton, 0, 2);
+            this.tableLayoutPanel4.Controls.Add(this.commandsPasteButton, 0, 1);
+            this.tableLayoutPanel4.Controls.Add(this.commandsCopyButton, 0, 0);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel4.Location = new System.Drawing.Point(405, 251);
             this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(2);
@@ -369,58 +500,63 @@
             this.tableLayoutPanel4.Size = new System.Drawing.Size(214, 127);
             this.tableLayoutPanel4.TabIndex = 3;
             // 
-            // subsubDeleteButton
+            // commandsDeleteButton
             // 
-            this.subsubDeleteButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.subsubDeleteButton.Enabled = false;
-            this.subsubDeleteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
-            this.subsubDeleteButton.Location = new System.Drawing.Point(2, 86);
-            this.subsubDeleteButton.Margin = new System.Windows.Forms.Padding(2);
-            this.subsubDeleteButton.Name = "subsubDeleteButton";
-            this.subsubDeleteButton.Size = new System.Drawing.Size(210, 39);
-            this.subsubDeleteButton.TabIndex = 2;
-            this.subsubDeleteButton.Text = "delete";
-            this.subsubDeleteButton.UseVisualStyleBackColor = true;
-            this.subsubDeleteButton.Click += new System.EventHandler(this.subsubDeleteButton_Click);
+            this.tableLayoutPanel4.SetColumnSpan(this.commandsDeleteButton, 2);
+            this.commandsDeleteButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.commandsDeleteButton.Enabled = false;
+            this.commandsDeleteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
+            this.commandsDeleteButton.Location = new System.Drawing.Point(2, 86);
+            this.commandsDeleteButton.Margin = new System.Windows.Forms.Padding(2);
+            this.commandsDeleteButton.Name = "commandsDeleteButton";
+            this.commandsDeleteButton.Size = new System.Drawing.Size(210, 39);
+            this.commandsDeleteButton.TabIndex = 2;
+            this.commandsDeleteButton.Text = "delete";
+            this.commandsDeleteButton.UseVisualStyleBackColor = true;
+            this.commandsDeleteButton.Click += new System.EventHandler(this.commandsDeleteButton_Click);
             // 
-            // subsubPasteButton
+            // commandsPasteButton
             // 
-            this.subsubPasteButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.subsubPasteButton.Enabled = false;
-            this.subsubPasteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
-            this.subsubPasteButton.Location = new System.Drawing.Point(2, 44);
-            this.subsubPasteButton.Margin = new System.Windows.Forms.Padding(2);
-            this.subsubPasteButton.Name = "subsubPasteButton";
-            this.subsubPasteButton.Size = new System.Drawing.Size(210, 38);
-            this.subsubPasteButton.TabIndex = 1;
-            this.subsubPasteButton.Text = "paste";
-            this.subsubPasteButton.UseVisualStyleBackColor = true;
-            this.subsubPasteButton.Click += new System.EventHandler(this.subsubPasteButton_Click);
+            this.tableLayoutPanel4.SetColumnSpan(this.commandsPasteButton, 2);
+            this.commandsPasteButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.commandsPasteButton.Enabled = false;
+            this.commandsPasteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
+            this.commandsPasteButton.Location = new System.Drawing.Point(2, 44);
+            this.commandsPasteButton.Margin = new System.Windows.Forms.Padding(2);
+            this.commandsPasteButton.Name = "commandsPasteButton";
+            this.commandsPasteButton.Size = new System.Drawing.Size(210, 38);
+            this.commandsPasteButton.TabIndex = 1;
+            this.commandsPasteButton.Text = "paste";
+            this.commandsPasteButton.UseVisualStyleBackColor = true;
+            this.commandsPasteButton.Click += new System.EventHandler(this.commandsPasteButton_Click);
             // 
-            // subsubCopyButton
+            // commandsCopyButton
             // 
-            this.subsubCopyButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.subsubCopyButton.Enabled = false;
-            this.subsubCopyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
-            this.subsubCopyButton.Location = new System.Drawing.Point(2, 2);
-            this.subsubCopyButton.Margin = new System.Windows.Forms.Padding(2);
-            this.subsubCopyButton.Name = "subsubCopyButton";
-            this.subsubCopyButton.Size = new System.Drawing.Size(210, 38);
-            this.subsubCopyButton.TabIndex = 0;
-            this.subsubCopyButton.Text = "copy";
-            this.subsubCopyButton.UseVisualStyleBackColor = true;
-            this.subsubCopyButton.Click += new System.EventHandler(this.subsubCopyButton_Click);
+            this.tableLayoutPanel4.SetColumnSpan(this.commandsCopyButton, 2);
+            this.commandsCopyButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.commandsCopyButton.Enabled = false;
+            this.commandsCopyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
+            this.commandsCopyButton.Location = new System.Drawing.Point(2, 2);
+            this.commandsCopyButton.Margin = new System.Windows.Forms.Padding(2);
+            this.commandsCopyButton.Name = "commandsCopyButton";
+            this.commandsCopyButton.Size = new System.Drawing.Size(210, 38);
+            this.commandsCopyButton.TabIndex = 0;
+            this.commandsCopyButton.Text = "copy";
+            this.commandsCopyButton.UseVisualStyleBackColor = true;
+            this.commandsCopyButton.Click += new System.EventHandler(this.commandsCopyButton_Click);
             // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.AutoSize = true;
             this.tableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel2.ColumnCount = 1;
+            this.tableLayoutPanel2.ColumnCount = 2;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Controls.Add(this.subDeleteButton, 0, 6);
-            this.tableLayoutPanel2.Controls.Add(this.subPasteButton, 0, 5);
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 109F));
+            this.tableLayoutPanel2.Controls.Add(this.commandBlockDisableButton, 0, 5);
+            this.tableLayoutPanel2.Controls.Add(this.commandBlockDeleteButton, 0, 5);
+            this.tableLayoutPanel2.Controls.Add(this.commandBlockPasteButton, 1, 4);
             this.tableLayoutPanel2.Controls.Add(this.label2, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.subCopyButton, 0, 4);
+            this.tableLayoutPanel2.Controls.Add(this.commandBlockCopyButton, 0, 4);
             this.tableLayoutPanel2.Controls.Add(this.label1, 0, 2);
             this.tableLayoutPanel2.Controls.Add(this.timeTextBox, 0, 3);
             this.tableLayoutPanel2.Controls.Add(this.lengthTextBox, 0, 1);
@@ -428,85 +564,98 @@
             this.tableLayoutPanel2.Location = new System.Drawing.Point(405, 3);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 7;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.93416F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.04938F));
+            this.tableLayoutPanel2.RowCount = 6;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.40329F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.641975F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.46091F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.46091F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15.22634F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.2857F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.34568F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 28.80659F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 26.33745F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(214, 243);
             this.tableLayoutPanel2.TabIndex = 2;
             // 
-            // subDeleteButton
+            // commandBlockDisableButton
             // 
-            this.subDeleteButton.AutoSize = true;
-            this.subDeleteButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.subDeleteButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.subDeleteButton.Enabled = false;
-            this.subDeleteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
-            this.subDeleteButton.Location = new System.Drawing.Point(2, 208);
-            this.subDeleteButton.Margin = new System.Windows.Forms.Padding(2);
-            this.subDeleteButton.Name = "subDeleteButton";
-            this.subDeleteButton.Size = new System.Drawing.Size(210, 33);
-            this.subDeleteButton.TabIndex = 4;
-            this.subDeleteButton.Text = "Delete";
-            this.subDeleteButton.UseVisualStyleBackColor = true;
-            this.subDeleteButton.Click += new System.EventHandler(this.subDeleteButton_Click);
+            this.commandBlockDisableButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.commandBlockDisableButton.Enabled = false;
+            this.commandBlockDisableButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
+            this.commandBlockDisableButton.Location = new System.Drawing.Point(3, 180);
+            this.commandBlockDisableButton.Name = "commandBlockDisableButton";
+            this.commandBlockDisableButton.Size = new System.Drawing.Size(99, 60);
+            this.commandBlockDisableButton.TabIndex = 0;
+            this.commandBlockDisableButton.Text = "Disable";
+            this.commandBlockDisableButton.Click += new System.EventHandler(this.disableCommandBlockToolStripMenuItem_Click);
             // 
-            // subPasteButton
+            // commandBlockDeleteButton
             // 
-            this.subPasteButton.AutoSize = true;
-            this.subPasteButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.subPasteButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.subPasteButton.Enabled = false;
-            this.subPasteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
-            this.subPasteButton.Location = new System.Drawing.Point(2, 171);
-            this.subPasteButton.Margin = new System.Windows.Forms.Padding(2);
-            this.subPasteButton.Name = "subPasteButton";
-            this.subPasteButton.Size = new System.Drawing.Size(210, 33);
-            this.subPasteButton.TabIndex = 3;
-            this.subPasteButton.Text = "Paste";
-            this.subPasteButton.UseVisualStyleBackColor = true;
-            this.subPasteButton.Click += new System.EventHandler(this.subPasteButton_Click);
+            this.commandBlockDeleteButton.AutoSize = true;
+            this.commandBlockDeleteButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.commandBlockDeleteButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.commandBlockDeleteButton.Enabled = false;
+            this.commandBlockDeleteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
+            this.commandBlockDeleteButton.Location = new System.Drawing.Point(107, 179);
+            this.commandBlockDeleteButton.Margin = new System.Windows.Forms.Padding(2);
+            this.commandBlockDeleteButton.Name = "commandBlockDeleteButton";
+            this.commandBlockDeleteButton.Size = new System.Drawing.Size(105, 62);
+            this.commandBlockDeleteButton.TabIndex = 4;
+            this.commandBlockDeleteButton.Text = "Delete";
+            this.commandBlockDeleteButton.UseVisualStyleBackColor = true;
+            this.commandBlockDeleteButton.Click += new System.EventHandler(this.commandBlockDeleteButton_Click);
+            // 
+            // commandBlockPasteButton
+            // 
+            this.commandBlockPasteButton.AutoSize = true;
+            this.commandBlockPasteButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.commandBlockPasteButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.commandBlockPasteButton.Enabled = false;
+            this.commandBlockPasteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
+            this.commandBlockPasteButton.Location = new System.Drawing.Point(107, 111);
+            this.commandBlockPasteButton.Margin = new System.Windows.Forms.Padding(2);
+            this.commandBlockPasteButton.Name = "commandBlockPasteButton";
+            this.commandBlockPasteButton.Size = new System.Drawing.Size(105, 64);
+            this.commandBlockPasteButton.TabIndex = 3;
+            this.commandBlockPasteButton.Text = "Paste";
+            this.commandBlockPasteButton.UseVisualStyleBackColor = true;
+            this.commandBlockPasteButton.Click += new System.EventHandler(this.commandBlockPasteButton_Click);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
+            this.tableLayoutPanel2.SetColumnSpan(this.label2, 2);
             this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label2.Location = new System.Drawing.Point(2, 0);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(210, 29);
+            this.label2.Size = new System.Drawing.Size(210, 26);
             this.label2.TabIndex = 7;
             this.label2.Text = "↑ total time:";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // subCopyButton
+            // commandBlockCopyButton
             // 
-            this.subCopyButton.AutoSize = true;
-            this.subCopyButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.subCopyButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.subCopyButton.Enabled = false;
-            this.subCopyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
-            this.subCopyButton.Location = new System.Drawing.Point(2, 131);
-            this.subCopyButton.Margin = new System.Windows.Forms.Padding(2);
-            this.subCopyButton.Name = "subCopyButton";
-            this.subCopyButton.Size = new System.Drawing.Size(210, 36);
-            this.subCopyButton.TabIndex = 2;
-            this.subCopyButton.Text = "Copy";
-            this.subCopyButton.UseVisualStyleBackColor = true;
-            this.subCopyButton.Click += new System.EventHandler(this.subCopyButton_Click);
+            this.commandBlockCopyButton.AutoSize = true;
+            this.commandBlockCopyButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.commandBlockCopyButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.commandBlockCopyButton.Enabled = false;
+            this.commandBlockCopyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
+            this.commandBlockCopyButton.Location = new System.Drawing.Point(2, 111);
+            this.commandBlockCopyButton.Margin = new System.Windows.Forms.Padding(2);
+            this.commandBlockCopyButton.Name = "commandBlockCopyButton";
+            this.commandBlockCopyButton.Size = new System.Drawing.Size(101, 64);
+            this.commandBlockCopyButton.TabIndex = 2;
+            this.commandBlockCopyButton.Text = "Copy";
+            this.commandBlockCopyButton.UseVisualStyleBackColor = true;
+            this.commandBlockCopyButton.Click += new System.EventHandler(this.commandBlockCopyButton_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
+            this.tableLayoutPanel2.SetColumnSpan(this.label1, 2);
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label1.Location = new System.Drawing.Point(2, 68);
+            this.label1.Location = new System.Drawing.Point(2, 60);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(210, 21);
+            this.label1.Size = new System.Drawing.Size(210, 20);
             this.label1.TabIndex = 0;
             this.label1.Text = "← subchunk time:";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -514,10 +663,11 @@
             // timeTextBox
             // 
             this.timeTextBox.BackColor = System.Drawing.Color.Black;
+            this.tableLayoutPanel2.SetColumnSpan(this.timeTextBox, 2);
             this.timeTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.timeTextBox.Enabled = false;
             this.timeTextBox.ForeColor = System.Drawing.Color.White;
-            this.timeTextBox.Location = new System.Drawing.Point(2, 91);
+            this.timeTextBox.Location = new System.Drawing.Point(2, 82);
             this.timeTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.timeTextBox.Name = "timeTextBox";
             this.timeTextBox.Size = new System.Drawing.Size(210, 26);
@@ -527,10 +677,11 @@
             // lengthTextBox
             // 
             this.lengthTextBox.BackColor = System.Drawing.Color.Black;
+            this.tableLayoutPanel2.SetColumnSpan(this.lengthTextBox, 2);
             this.lengthTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lengthTextBox.Enabled = false;
             this.lengthTextBox.ForeColor = System.Drawing.Color.White;
-            this.lengthTextBox.Location = new System.Drawing.Point(2, 31);
+            this.lengthTextBox.Location = new System.Drawing.Point(2, 28);
             this.lengthTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.lengthTextBox.Name = "lengthTextBox";
             this.lengthTextBox.Size = new System.Drawing.Size(210, 26);
@@ -708,12 +859,81 @@
             this.sizeLabel.TabIndex = 4;
             this.sizeLabel.Text = "ready";
             // 
+            // commandBlockContextMenuStrip
+            // 
+            this.commandBlockContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyCommandBlockToolStripMenuItem,
+            this.deleteCommandBlockToolStripMenuItem,
+            this.disableCommandBlookToolStripMenuItem,
+            this.pasteCommandBlockToolStripMenuItem});
+            this.commandBlockContextMenuStrip.Name = "contextMenuStrip1";
+            this.commandBlockContextMenuStrip.Size = new System.Drawing.Size(205, 92);
+            // 
+            // copyCommandBlockToolStripMenuItem
+            // 
+            this.copyCommandBlockToolStripMenuItem.Name = "copyCommandBlockToolStripMenuItem";
+            this.copyCommandBlockToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.copyCommandBlockToolStripMenuItem.Text = "Copy Command Block";
+            this.copyCommandBlockToolStripMenuItem.Click += new System.EventHandler(this.commandBlockCopyButton_Click);
+            // 
+            // deleteCommandBlockToolStripMenuItem
+            // 
+            this.deleteCommandBlockToolStripMenuItem.Name = "deleteCommandBlockToolStripMenuItem";
+            this.deleteCommandBlockToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.deleteCommandBlockToolStripMenuItem.Text = "Delete Command Block";
+            this.deleteCommandBlockToolStripMenuItem.Click += new System.EventHandler(this.commandBlockDeleteButton_Click);
+            // 
+            // disableCommandBlookToolStripMenuItem
+            // 
+            this.disableCommandBlookToolStripMenuItem.Name = "disableCommandBlookToolStripMenuItem";
+            this.disableCommandBlookToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.disableCommandBlookToolStripMenuItem.Text = "Disable Command Block";
+            this.disableCommandBlookToolStripMenuItem.Click += new System.EventHandler(this.disableCommandBlockToolStripMenuItem_Click);
+            // 
+            // pasteCommandBlockToolStripMenuItem
+            // 
+            this.pasteCommandBlockToolStripMenuItem.Name = "pasteCommandBlockToolStripMenuItem";
+            this.pasteCommandBlockToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.pasteCommandBlockToolStripMenuItem.Text = "Paste Command Block";
+            this.pasteCommandBlockToolStripMenuItem.Click += new System.EventHandler(this.commandBlockPasteButton_Click);
+            // 
+            // commandContextMenuStrip1
+            // 
+            this.commandContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyCommandToolStripMenuItem,
+            this.deleteCommandToolStripMenuItem,
+            this.pasteCommandToolStripMenuItem});
+            this.commandContextMenuStrip1.Name = "commandContextMenuStrip1";
+            this.commandContextMenuStrip1.Size = new System.Drawing.Size(168, 70);
+            // 
+            // copyCommandToolStripMenuItem
+            // 
+            this.copyCommandToolStripMenuItem.Name = "copyCommandToolStripMenuItem";
+            this.copyCommandToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.copyCommandToolStripMenuItem.Text = "Copy Command";
+            this.copyCommandToolStripMenuItem.Click += new System.EventHandler(this.commandsCopyButton_Click);
+            // 
+            // deleteCommandToolStripMenuItem
+            // 
+            this.deleteCommandToolStripMenuItem.Name = "deleteCommandToolStripMenuItem";
+            this.deleteCommandToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.deleteCommandToolStripMenuItem.Text = "Delete Command";
+            this.deleteCommandToolStripMenuItem.Click += new System.EventHandler(this.commandsDeleteButton_Click);
+            // 
+            // pasteCommandToolStripMenuItem
+            // 
+            this.pasteCommandToolStripMenuItem.Name = "pasteCommandToolStripMenuItem";
+            this.pasteCommandToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.pasteCommandToolStripMenuItem.Text = "Paste Command";
+            this.pasteCommandToolStripMenuItem.Click += new System.EventHandler(this.commandsPasteButton_Click);
+            // 
             // AnmChrForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(918, 559);
             this.Controls.Add(this.splitContainer1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "AnmChrForm";
@@ -741,6 +961,8 @@
             this.tableLayoutPanel2.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            this.commandBlockContextMenuStrip.ResumeLayout(false);
+            this.commandContextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -765,17 +987,17 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox timeTextBox;
-        private System.Windows.Forms.ListBox subsubEntryBox;
-        private System.Windows.Forms.ListBox subEntryBox;
-        private System.Windows.Forms.Button subCopyButton;
-        private System.Windows.Forms.Button subPasteButton;
-        private System.Windows.Forms.Button subDeleteButton;
+        private System.Windows.Forms.ListBox commandsBox;
+        private System.Windows.Forms.ListBox commandBlocksBox;
+        private System.Windows.Forms.Button commandBlockCopyButton;
+        private System.Windows.Forms.Button commandBlockPasteButton;
+        private System.Windows.Forms.Button commandBlockDeleteButton;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
-        private System.Windows.Forms.Button subsubPasteButton;
-        private System.Windows.Forms.Button subsubCopyButton;
+        private System.Windows.Forms.Button commandsPasteButton;
+        private System.Windows.Forms.Button commandsCopyButton;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox lengthTextBox;
-        private System.Windows.Forms.Button subsubDeleteButton;
+        private System.Windows.Forms.Button commandsDeleteButton;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.ToolTip toolTip2;
@@ -789,10 +1011,30 @@
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem formatDisplayToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem unsetToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem hexToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem hexToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem hex8ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem hex16ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tutorialFilesToolStripMenuItem;
         private System.Windows.Forms.Label lblCurrentFile;
+        private ContextMenuStrip commandBlockContextMenuStrip;
+        private ToolStripMenuItem disableCommandBlookToolStripMenuItem;
+        private ToolStripMenuItem copyCommandBlockToolStripMenuItem;
+        private ToolStripMenuItem deleteCommandBlockToolStripMenuItem;
+        private ToolStripMenuItem pasteCommandBlockToolStripMenuItem;
+        private ContextMenuStrip commandContextMenuStrip1;
+        private ToolStripMenuItem copyCommandToolStripMenuItem;
+        private ToolStripMenuItem deleteCommandToolStripMenuItem;
+        private ToolStripMenuItem pasteCommandToolStripMenuItem;
+        private Button commandBlockDisableButton;
+        private ToolStripMenuItem commandBlockToolStripMenuItem;
+        private ToolStripMenuItem copyCommandBlockToolStripMenuItem1;
+        private ToolStripMenuItem deleteCommandBlockToolStripMenuItem1;
+        private ToolStripMenuItem disableCommandBlockToolStripMenuItem1;
+        private ToolStripMenuItem pasteCommandBlockToolStripMenuItem1;
+        private ToolStripMenuItem commandsToolStripMenuItem;
+        private ToolStripMenuItem copyCommandsToolStripMenuItem;
+        private ToolStripMenuItem deleteCommandsToolStripMenuItem;
+        private ToolStripMenuItem pasteCommandsToolStripMenuItem;
     }
+
 }
 

@@ -13,6 +13,7 @@ namespace MarvelData
         public uint originalPointer; // DONT SAVE THIS
         public bool bHasData;  // DONT SAVE THIS
         public string name; // DONT SAVE THIS (??)
+        public string filePath; // DONT SAVE THIS (??)
         public int size;
 
         public static StringBuilder nameSB;
@@ -53,13 +54,18 @@ namespace MarvelData
         }
 
         //TODO: try and implement to use char name
-        public virtual string GuessStatusFieldName()
+        public virtual string GuessStatusFieldName(string filePath)
         {
+            string name = "unknown";
             if (index >= 0)
             {
-                return "Form #" + (index +1);
+                string nameAfterChr = Tools.getBetween(filePath, "chr\\","\\");
+                string nameAfterMod = Tools.getBetween(filePath, "mod\\","\\");
+                name = !String.IsNullOrWhiteSpace(nameAfterChr) ? nameAfterChr : !String.IsNullOrWhiteSpace(nameAfterMod) ? 
+                    new string(nameAfterMod.Where(c => char.IsLetter(c)).ToArray()) : "Form #" + (index + 1);
+                return index > 0 ? name.GuessSecondForm(index).FirstCharToUpper() : name.FirstCharToUpper();
             }
-            return "unknown";
+            return name;
         }
 
         public virtual string GuessAnmChrEntry(string currentEntry)
@@ -175,7 +181,7 @@ namespace MarvelData
                 return "Hyper Move " + (index - 79);
             }
 
-            if (index >= 100 && HasAtkFlags())
+            if (index >= 100 && index <=102 && HasAtkFlags())
             {
                 return "Assist " + (index - 99);
             }
@@ -185,16 +191,16 @@ namespace MarvelData
 
         public virtual string GetFancyName()
         {
-            if(nameSB == null)
-            {
-                nameSB = new StringBuilder();
-            }
-            else
-            {
-                nameSB.Clear();
-            }
+            nameSB = nameSB == null ? new StringBuilder() : nameSB.Clear();
             nameSB.Append(index.ToString("X3"));
             nameSB.Append("h: ");
+
+            if (this.GetType().ToString().Contains("Shot"))
+            {
+                nameSB.Clear();
+                nameSB.Append(this.index == 0 ? "SHT: " : "SHTref: ");
+            }
+
             //if (tabletype != null && tabletype.Contains("ATKInfo"))
             if (this.GetType().ToString().Contains("ATKInfo"))
             {
@@ -203,7 +209,7 @@ namespace MarvelData
             //else if (tabletype != null && tabletype.Contains("Status"))
             else if (this.GetType().ToString().Contains("Status"))
             {
-                nameSB.Append(GuessStatusFieldName());
+                nameSB.Append(GuessStatusFieldName(filePath));
             }
             else
             {

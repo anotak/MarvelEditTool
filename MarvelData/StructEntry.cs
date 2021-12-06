@@ -64,8 +64,8 @@ namespace MarvelData
         public override void SetData(byte[] bytes)
         {
             if (bytes.Length != size)
-            {
-                throw new Exception("WRONG SIZE IMPORT, IMPLODING " + bytes.Length + " is real, vs expected " + size); // FIXME THIS SUCKS
+            { 
+                throw new Exception("WRONG SIZE IMPORT, IMPLODING " + bytes.Length + " is real, vs expected " + size + Environment.NewLine); // FIXME THIS SUCKS
             }
             bHasData = true;
             GCHandle handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);

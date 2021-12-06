@@ -24,6 +24,8 @@ namespace StatusEditor
         public int previousSelectedIndex;
         public Type structViewType;
         public Type structViewEntryType;
+
+        private int dataTextBoxFormat;
         private bool isSameFile;
         private System.Windows.Forms.DataGridViewEditingControlShowingEventArgs dgvE;
         private System.Windows.Forms.DataGridView dgvSender;
@@ -37,8 +39,9 @@ namespace StatusEditor
             FilePath = String.Empty;
             ImportPath = String.Empty;
             bDisableUpdate = true;
+            textBox1.Visible = false;
             previousSelectedIndex = 0;
-            tagsDataGridView.Rows.Clear();            
+            tagsDataGridView.Rows.Clear();
             structView.Rows.Clear();
             AddItems(typeof(StatusChunk));
 
@@ -49,7 +52,7 @@ namespace StatusEditor
         public static string GetCompileDate()
         {
             System.Version MyVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            return new DateTime(2000, 1, 1).AddDays(MyVersion.Build).AddSeconds(MyVersion.Revision * 2).ToString();
+            return new DateTime(2000, 1, 1).AddDays(MyVersion.Build).AddSeconds(MyVersion.Revision * 2).ToString("dd.MM.yyyy");
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -60,7 +63,8 @@ namespace StatusEditor
             if (bError) return;
 
             // Confirm user wants to close
-            switch (MessageBox.Show(this, "Are you sure you want to close?", "Closing", MessageBoxButtons.YesNo))
+            switch (MessageBox.Show(this, "Are you sure you want to close?" + Environment.NewLine +
+                    "All unsaved data will be lost!", "Closing", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
             {
                 case DialogResult.No:
                     e.Cancel = true;
@@ -84,6 +88,7 @@ namespace StatusEditor
                 structFieldInfo = new Dictionary<Type, FieldInfo[]>();
             }
 
+            //string temp = Tools.GetDescription(structtype);
 
             FieldInfo[] fieldList = GetFieldInfo(structtype);
             int offset = structView.Rows.Count;
@@ -116,16 +121,27 @@ namespace StatusEditor
         public class TypeViewModel
         {
             public string hex { get; set; }
+            public string dec { get; set; }
             public string name { get; set; }
         }
 
         private void AddTags(Type type, Boolean isHex)
         {
             IEnumerable<TypeViewModel> typeList = getEnumValuesList(type, isHex);
-
-            tagsDataGridView.DataSource = typeList.ToArray();
+            TypeViewModel[] tempList = typeList.ToArray();
+            tagsDataGridView.DataSource = null;
+            if (isHex) {
+                for (int i=0; i < tempList.Length; i++)
+                {
+                    tempList[i].dec = (int.Parse(tempList[i].hex, System.Globalization.NumberStyles.HexNumber)).ToString();
+                }
+            }
+            tagsDataGridView.DataSource = tempList;
+            if (!isHex)
+            {
+                tagsDataGridView.Columns.RemoveAt(1);
+            }
             tagsDataGridView.RowHeadersVisible = false;
-
         }
 
         private static IEnumerable<TypeViewModel> getEnumValuesList(Type type, bool isHex)
@@ -139,7 +155,7 @@ namespace StatusEditor
                });
         }
 
-         private static IEnumerable<TypeViewModel> getEnumValuesList(Type type)
+        private static IEnumerable<TypeViewModel> getEnumValuesList(Type type)
         {
             return Enum.GetValues(type)
                .Cast<Object>()
@@ -147,7 +163,7 @@ namespace StatusEditor
                {
                    name = t.ToString()
                });
-          }
+        }
 
         private FieldInfo[] GetFieldInfo(Type structtype)
         {
@@ -169,7 +185,7 @@ namespace StatusEditor
         {
             if (keyData == (Keys.Control | Keys.S))
             {
-                if (saveButton.Enabled)
+                if (saveAsToolStripMenuItem.Enabled)
                 {
                     saveButton_Click(null, null);
                 }
@@ -177,17 +193,9 @@ namespace StatusEditor
             }
             else if (keyData == (Keys.Control | Keys.O))
             {
-                if (openButton.Enabled)
+                if (openToolStripMenuItem.Enabled)
                 {
                     openButton_Click(null, null);
-                }
-                return true;
-            }
-            else if (keyData == (Keys.Control | Keys.N))
-            {
-                if (openNewButton.Enabled)
-                {
-                    openNewButton_Click(null, null);
                 }
                 return true;
             }
@@ -207,7 +215,7 @@ namespace StatusEditor
                 }
                 return true;
             }
-            else if (keyData == (Keys.Control | Keys.A))
+            else if (keyData == (Keys.Control | Keys.B))
             {
                 if (addSubChunkButton.Enabled)
                 {
@@ -228,6 +236,33 @@ namespace StatusEditor
                 if (duplicateButton.Enabled)
                 {
                     duplicateButton_Click(null, null);
+                }
+                return true;
+            }
+            else if (keyData == (Keys.Control | Keys.NumPad0) || keyData == (Keys.Control | Keys.D0))
+            {
+                {
+                    ToolStripMenuItem dummyButton = new ToolStripMenuItem();
+                    dummyButton.Tag = "0";
+                    formatButton_Click(dummyButton, null);
+                }
+                return true;
+            }
+            else if (keyData == (Keys.Control | Keys.NumPad1) || keyData == (Keys.Control | Keys.D1))
+            {
+                {
+                    ToolStripMenuItem dummyButton = new ToolStripMenuItem();
+                    dummyButton.Tag = "8";
+                    formatButton_Click(dummyButton, null);
+                }
+                return true;
+            }
+            else if (keyData == (Keys.Control | Keys.NumPad2) || keyData == (Keys.Control | Keys.D2))
+            {
+                {
+                    ToolStripMenuItem dummyButton = new ToolStripMenuItem();
+                    dummyButton.Tag = "16";
+                    formatButton_Click(dummyButton, null);
                 }
                 return true;
             }
@@ -259,15 +294,28 @@ namespace StatusEditor
 
             using (OpenFileDialog openFile = new OpenFileDialog())
             {
+                if (tablefile != null)
+                    // Confirm user wants to open a new instance
+                    switch (MessageBox.Show(this, "Are you sure you want to open a new instance?" + Environment.NewLine +
+                        "All unsaved data will be lost!", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                    {
+                        case DialogResult.No:
+                            AELogger.Log("procedure canceled!");
+                            return;
+                        default:
+                            Text = "StatusEditor, build " + GetCompileDate();
+                            isOpeningNewFile = true;
+                            filenameLabel.Text = String.Empty;
+                            FilePath = String.Empty;
+                            ImportPath = String.Empty;
+                            tablefile = null;
+                            SetDataTexBoxFormat(0);
+                            AELogger.WriteLog();
+                            break;
+                    }
                 //openFile.DefaultExt = "bcm";
                 // The Filter property requires a search string after the pipe ( | )
-                openFile.Filter = "Supported Data (" +
-                    "*.ccm;*.28DD8317;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504;*.csp;*.52A8DBF6;*.cli;*.5B486CCE)|" +
-                    "*.ccm;*.28DD8317;*.csp;*.52A8DBF6;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504;*.cli;*.5B486CCE|" +
-                    "AtkInfo Files (*.ati;*.227A8048)|*.ati;*.227A8048|BaseAct Files (*.cba;*.3C6EA504)|*.cba;*.3C6EA504|" +
-                    "Cmdcombo Files (*.ccm;*.28DD8317)|*.ccm;*.28DD8317|Cmdspatk Files (*.csp;*.52A8DBF6)|*.csp;*.52A8DBF6|" +
-                    "Status Files (*.chs;*.3C41466B)|*.chs;*.3C41466B|*Collision Files (.cli;*.5B486CCE)|.cli;*.5B486CCE|" +
-                    "All files (*.*)|*.*";
+                setFilter(openFile, (string)((ToolStripMenuItem)sender).Text);
                 openFile.ShowDialog();
                 if (openFile.FileNames.Length > 0)
                 {
@@ -280,80 +328,65 @@ namespace StatusEditor
                         return;
                     }
                     tablefile = newTable;
-
                     ResetLayout(openFile, count);
+                    animBox_SelectedIndexChanged(null, null);
                 }
                 else
                 {
                     AELogger.Log("nothing selected!");
                 }
+                isOpeningNewFile = false;
             }
         }
 
-        private void openNewButton_Click(object sender, EventArgs e)
+        private static void setFilter(OpenFileDialog openFile, string chosenFileType)
         {
-
-            // Confirm user wants to open a new instance
-            switch (MessageBox.Show(this, "Are you sure you want to open a new instance?" + Environment.NewLine + "All unsaved data will be lost!", "Warning", MessageBoxButtons.YesNo))
+            if (chosenFileType.Contains("ATI"))
             {
-                case DialogResult.No:
-                    AELogger.Log("procedure canceled!");
-                    return;
-                default:
-                    filenameLabel.Text = null;
-                    FilePath = String.Empty;
-                    ImportPath = String.Empty;
-                    Text = String.Empty;
-                    AELogger.WriteLog();
-                    break;
+                openFile.Filter = "AtkInfo Files (*.ati;*.227A8048)|*.ati;*.227A8048";
             }
-
-            if (bError)
+            else if (chosenFileType.Contains("CBA"))
             {
-                return;
+                openFile.Filter = "BaseAct Files (*.cba;*.3C6EA504)|*.cba;*.3C6EA504";
             }
-
-            new StatusEditorForm();
-            using (OpenFileDialog openFile = new OpenFileDialog())
+            else if (chosenFileType.Contains("CCM"))
             {
-                //openFile.DefaultExt = "bcm";
-                // The Filter property requires a search string after the pipe ( | )
+                openFile.Filter = "Cmdcombo Files (*.ccm;*.28DD8317)|*.ccm;*.28DD8317";
+            }
+            else if (chosenFileType.Contains("CSP"))
+            {
+                openFile.Filter = "Cmdspatk Files (*.csp;*.52A8DBF6)|*.csp;*.52A8DBF6";
+            }
+            else if (chosenFileType.Contains("CHS"))
+            {
+                openFile.Filter = "Status Files (*.chs;*.3C41466B)|*.chs;*.3C41466B";
+            }
+            else if (chosenFileType.Contains("CLI"))
+            {
+                openFile.Filter = "Collision Files (*.cli;*.5B486CCE)|*.cli;*.5B486CCE";
+            }
+            else if (chosenFileType.Contains("SHT"))
+            {
+                openFile.Filter = "Shot Files (*.sht;*.10BE43D4)|*.sht;*.10BE43D4";
+            }
+            else
                 openFile.Filter = "Supported Data (" +
-                    "*.ccm;*.28DD8317;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504;*.csp;*.52A8DBF6;*.cli;*.5B486CCE)|" +
-                    "*.ccm;*.28DD8317;*.csp;*.52A8DBF6;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504;*.cli;*.5B486CCE|" +
+                    "*.ccm;*.28DD8317;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504;*.csp;*.52A8DBF6;*.cli;*.5B486CCE;*.sht;*.10BE43D4)|" +
+                    "*.ccm;*.28DD8317;*.csp;*.52A8DBF6;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504;*.cli;*.5B486CCE;*.sht;*.10BE43D4|" +
                     "AtkInfo Files (*.ati;*.227A8048)|*.ati;*.227A8048|BaseAct Files (*.cba;*.3C6EA504)|*.cba;*.3C6EA504|" +
                     "Cmdcombo Files (*.ccm;*.28DD8317)|*.ccm;*.28DD8317|Cmdspatk Files (*.csp;*.52A8DBF6)|*.csp;*.52A8DBF6|" +
-                    "Status Files (*.chs;*.3C41466B)|*.chs;*.3C41466B|*Collision Files (.cli;*.5B486CCE)|.cli;*.5B486CCE|" +
+                    "Status Files (*.chs;*.3C41466B)|*.chs;*.3C41466B|Collision Files (*.cli;*.5B486CCE)|.cli;*.5B486CCE|" +
+                    "Shot Files (*.sht;*.10BE43D4)|*.sht;*.10BE43D4|" +
                     "All files (*.*)|*.*";
-                openFile.ShowDialog();
-                if (openFile.FileNames.Length > 0)
-                {
-                    //TableFile newTable = TableFile.LoadFile(openFile.FileNames[0], typeof(StatusEntry));
-                    TableFile newTable = TableFile.LoadFile(openFile.FileNames[0], true, typeof(StructEntry<StatusChunk>), 848);
-                    int count = newTable.table.Count;
-                    if (newTable == null && count != 0)
-                    {
-                        AELogger.Log("load failed for some reason?");
-                        return;
-                    }
-                    tablefile = newTable;
-                    //reset index because outOfBoundsException 
-                    previousSelectedIndex = 0;
-                    isSameFile = false;
-                    ResetLayout(openFile, count);
-                    RefreshAnimBox();
-                }
-                else
-                {
-                    AELogger.Log("nothing selected!");
-                }
-            }
+        }
+
+        private void closeButton_Click(object sender, EventArgs ev)
+        {
+            Application.Exit();
         }
 
         void dropDownItemSelectEvent(object subChunkType, EventArgs e)
         {
-            //MessageBox.Show(subChunkType.ToString() + " works!");
-
             MultiStructEntry entry = (MultiStructEntry)tablefile.table[animBox.SelectedIndex];
             SaveOldData(animBox.SelectedIndex);
             entry.AddSubChunk(subChunkType.ToString());
@@ -369,16 +402,24 @@ namespace StatusEditor
         private void ResetLayout(OpenFileDialog openFile, int count)
         {
             SuspendLayout();
-            saveButton.Enabled = true;
+            bool isShtFile = tablefile.fileExtension.Contains("SHT");
+            textBox1.Visible = isShtFile;
+            extendButton.Visible = !isShtFile;
+            duplicateButton.Visible = !isShtFile;
+            upButton.Visible = !isShtFile;
+            addSubChunkButton.Visible = !isShtFile;
+            addSubChunkTypeButton.Visible = !isShtFile;
+
+            saveToolStripMenuItem.Enabled = true;
+            saveAsToolStripMenuItem.Enabled = true;
             importButton.Enabled = false;
             duplicateButton.Enabled = false;
             upButton.Enabled = false;
             exportButton.Enabled = false;
             addSubChunkButton.Enabled = false;
             addSubChunkTypeButton.Enabled = false;
-            openButton.Enabled = false;
             animBox.Enabled = true;
-            extendButton.Enabled = true;
+            extendButton.Enabled = extendButton.Visible;
             sizeLabel.Text = count + " entries loaded";
             FilePath = openFile.FileNames[0];
             RefreshData();
@@ -391,7 +432,7 @@ namespace StatusEditor
 
         private void saveButton_Click(object sender, EventArgs ev)
         {
-            if (bError)
+            if (bError || tablefile.fileExtension.Contains("SHT") ? !ValidateName() : false)
             {
                 return;
             }
@@ -561,9 +602,9 @@ namespace StatusEditor
         {
             if (cantAddSubChunk())
                 return;
-            
+
             tablefile.Duplicate(animBox.SelectedIndex);
-            RefreshData();
+            RefreshDataAlt();
             if (animBox.TopIndex < animBox.Items.Count - 2)
             {
                 animBox.TopIndex++;
@@ -598,8 +639,8 @@ namespace StatusEditor
                 return;
 
             Point screenPoint = addSubChunkTypeButton.PointToScreen(new Point(addSubChunkTypeButton.Left, addSubChunkTypeButton.Bottom));
-            
-            
+
+
             //IEnumerable<TypeViewModel> enumValues = getEnumValuesList(typeof(SubChunkType));
             //List<TypeViewModel>list = enumValues.ToList();
             //list.ForEach(i => contextMenuStrip1.Items.Add(i.name, null, dropDownItemSelectEvent));
@@ -621,8 +662,25 @@ namespace StatusEditor
         // checks if a subchunk can be added
         private bool cantAddSubChunk()
         {
-            return animBox.SelectedIndex < 0 || animBox.SelectedIndex >= tablefile.table.Count 
-                || !tablefile.table[animBox.SelectedIndex].bHasData || !(tablefile.table[animBox.SelectedIndex] is MultiStructEntry);
+            if (!(animBox.SelectedIndex < 0 || animBox.SelectedIndex >= tablefile.table.Count
+                || !tablefile.table[animBox.SelectedIndex].bHasData))
+            {
+                if ((tablefile.table[animBox.SelectedIndex] is StructEntry<ATKInfoChunk>))
+                {
+                    return !(tablefile.table[animBox.SelectedIndex] is StructEntry<ATKInfoChunk>);
+                }
+                else
+                {
+                    return !(tablefile.table[animBox.SelectedIndex] is MultiStructEntry);
+                }
+            }
+            return true;
+        }
+
+        private void formatButton_Click(object sender, EventArgs e)
+        {
+            SetDataTexBoxFormat(Int32.Parse(((ToolStripMenuItem)sender).Tag.ToString()));
+            RefreshEditBox();
         }
 
         // this data refers to the items being open
@@ -639,34 +697,53 @@ namespace StatusEditor
             bDisableUpdate = false;
         }
 
+        // Ugly solution... every second duplicate clears the first copied entry
+        private void RefreshDataAlt()
+        {
+            bDisableUpdate = true;
+            int s = animBox.SelectedIndex;
+            int top = animBox.TopIndex;
+            string copiedName = "0" + (tablefile.table.Count - 1).ToString("x") + "h: " + tablefile.table[tablefile.table.Count - 1].name;
+            tableNames = tablefile.GetNames();
+            tableNames[tableNames.Count - 1] = copiedName;
+            animBox.DataSource = tableNames;
+            if (s > tableNames.Count) s = 0; //fixes outofbounds when loading new file
+            animBox.SelectedIndex = s;
+            animBox.TopIndex = top;
+            bDisableUpdate = false;
+        }
+
         private void SaveOldData(int index)
         {
-            Type entryType = tablefile.table[index].GetType();
-
-            if (tablefile.table[index] is StructEntryBase)
+            if (!isOpeningNewFile)
             {
-                Type generic = entryType.GetGenericArguments()[0];
-                AELogger.Log(generic.ToString() + " is the saveolddata");
-                if (generic.Equals(structViewType))
+                Type entryType = tablefile.table[index].GetType();
+                if (tablefile.table[index] is StructEntryBase)
                 {
-                    SaveOldData((StructEntryBase)tablefile.table[index], entryType, 0);
+                    Type generic = entryType.GetGenericArguments()[0];
+                    AELogger.Log(generic.ToString() + " is the saveolddata");
+                    if (generic.Equals(structViewType))
+                    {
+                        SaveOldData((StructEntryBase)tablefile.table[index], entryType, 0);
+                    }
+                    else if (isSameFile)
+                    {
+                        MessageBox.Show("Warning: the temporary saving process aborted due to having a different file.",
+                            "Non-critical error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        AELogger.Log("warning saving attempted of non correct data");
+                        return;
+                    }
                 }
-                else if (isSameFile)
+                else if (tablefile.table[index] is MultiStructEntry)
                 {
-                    MessageBox.Show("warning: there might be some kind error, attempted write of incorrect data, you probably should make backups and save and report this bug with the logfile");
-                    AELogger.Log("warning saving attempted of non correct data");
-                    return;
-                }
-            }
-            else if (tablefile.table[index] is MultiStructEntry)
-            {
-                MultiStructEntry multientry = (MultiStructEntry)tablefile.table[index];
-                int offset = 0;
-                for (int i = 0; i < multientry.subEntries.Count; i++)
-                {
-                    entryType = multientry.subEntries[i].GetType();
+                    MultiStructEntry multientry = (MultiStructEntry)tablefile.table[index];
+                    int offset = 0;
+                    for (int i = 0; i < multientry.subEntries.Count; i++)
+                    {
+                        entryType = multientry.subEntries[i].GetType();
 
-                    offset += SaveOldData((StructEntryBase)multientry.subEntries[i], entryType, offset);
+                        offset += SaveOldData((StructEntryBase)multientry.subEntries[i], entryType, offset);
+                    }
                 }
             }
         }
@@ -768,26 +845,37 @@ namespace StatusEditor
                 AddTags(typeof(InputCode), true);
             else if (tag.Contains("subChunkType"))
                 AddTags(typeof(SubChunkType), true);
-            else if (tag.Contains("bodySectionId"))
+            else if (tag.Contains("boneReferenceId"))
                 AddTags(typeof(BoneReferenceId), true);
             else
             {
                 tagsDataGridView.DataSource = null;
             }
-
         }
 
-        public static String[] GetEnumListB() {
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            if (bDisableUpdate)
+            {
+                return;
+            }
+            tablefile.table[animBox.SelectedIndex].name = textBox1.Text;
+            RefreshData();
+        }
+
+        public static String[] GetEnumListB()
+        {
             return Enum.GetNames(typeof(AtkFlagsB));
         }
-        
-        public static List<String> GetEnumListA() {
+
+        public static List<String> GetEnumListA()
+        {
             return Enum.GetNames(typeof(AtkFlagsA)).ToList();
         }
 
         //TODO: check if this code works / is relevant at all
         private void StructView_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
-         {
+        {
             dgvSender = (DataGridView)sender;
             dgvE = e;
 
@@ -806,18 +894,18 @@ namespace StatusEditor
                 txtBox.Text = "";
                 this.structView.CurrentCell.Value = txtBoxTxt + ", ";
             }
-                if (column.Equals(valueColumn.Index) && (columnName == "AtkFlagsB"))
-                {
+            if (column.Equals(valueColumn.Index) && (columnName == "AtkFlagsB"))
+            {
                 AutoCompleteStringCollection kode = new AutoCompleteStringCollection();
                 kode.AddRange(enumList);
                 if (txtBox != null)
                 {
 
-                        txtBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+                    txtBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
 
-                        txtBox.AutoCompleteCustomSource = kode;
+                    txtBox.AutoCompleteCustomSource = kode;
 
-                        txtBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
+                    txtBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
 
                 }
 
@@ -828,7 +916,7 @@ namespace StatusEditor
             }
         }
 
-            private void RefreshAnimBox()
+        private void RefreshAnimBox()
         {
             SuspendLayout();
             animBox.BeginUpdate();
@@ -858,10 +946,13 @@ namespace StatusEditor
                 exportButton.Enabled = true;
                 addSubChunkButton.Enabled = false;
                 addSubChunkTypeButton.Enabled = false;
-                duplicateButton.Enabled = true;
-                upButton.Enabled = true;
+                duplicateButton.Enabled = duplicateButton.Visible;
+                upButton.Enabled = upButton.Visible;
+                textBox1.Text = tablefile.table[animBox.SelectedIndex].name;
+                textBox1.Enabled = true;
                 SetTextConcurrent(tablefile.table[animBox.SelectedIndex].GetData());
                 dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].GetData()).Replace("-", "");
+                dataTextBox.Text = splitAndBreakEveryNChars(dataTextBox.Text, GetDataTextBoxFormat());
                 dataTextBox.WordWrap = true;
                 sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
 
@@ -923,12 +1014,24 @@ namespace StatusEditor
                 exportButton.Enabled = false;
                 duplicateButton.Enabled = false;
                 upButton.Enabled = false;
+                textBox1.Text = "";
+                textBox1.Enabled = false;
                 dataTextBox.Text = "";
                 sizeLabel.Text = "size: N/A";
             }
-            tagsDataGridView.Enabled = true;
+            tagsDataGridView.Enabled = tagsDataGridView.Visible;
 
             ResumeLayout();
+        }
+
+        private string splitAndBreakEveryNChars(string text2Break, int breakAfterNChars)
+        {
+            if (breakAfterNChars <= 0)
+            {
+                return (text2Break);
+            }
+
+            return (String.Join("\r\n", text2Break.SplitInParts(breakAfterNChars)));
         }
 
         private int UpdateStructEntry(Type entryType, StructEntryBase entry, int offset, int structIndex = 0)
@@ -938,9 +1041,16 @@ namespace StatusEditor
             object entrydataobject = entry.GetDataObject();
             FieldInfo[] fieldList = GetFieldInfo(entryType.GetGenericArguments()[0]);
             int numFields = fieldList.Length;
+            string temp = null;
             for (int i = 0; i < numFields; i++)
             {
+                
                 object value = fieldList[i].GetValue(entrydataobject);
+                //if (i == 0)
+                //{
+                //    temp = Tools.GetDescription(Tools.GetEnumValue<SubChunkType>(value.ToString())); //attempt at reading enums descriptions //too slow
+                //}
+                //structView.Rows[i + offset].Cells[2].Value = ((temp == null) ? temp : value.ToString());
                 structView.Rows[i + offset].Cells[2].Value = value.ToString();
                 DoHex(fieldList[i].FieldType, i + offset, value);
                 //structValues[i] = structFieldInfo[i].GetValue(entry.data).ToString();
@@ -1015,6 +1125,7 @@ namespace StatusEditor
         private int SelectionStart;
         private Control kodeTxt;
         private bool isCommaInput = false;
+        private bool isOpeningNewFile;
 
         public void SetTextConcurrent(byte[] text)
         {
@@ -1138,5 +1249,51 @@ namespace StatusEditor
                 animBox.SelectedIndex = newindex;
             }
         }
+
+        private void textBox1_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ValidateName();
+        }
+
+        private bool ValidateName()
+        {
+            bool bStatus = true;
+            if (textBox1.Text.Contains(" "))
+            {
+                string errorText = "text cannot contain empty spaces";
+                MessageBox.Show(this, errorText, "SHT Text Format Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                textBox1.BackColor = Color.PaleVioletRed;
+                textBox1.Focus();
+                bStatus = false;
+            } else
+            {
+                textBox1.BackColor = Color.White;
+            }
+            return bStatus;
+        }
+
+        public int GetDataTextBoxFormat()
+        {
+            return dataTextBoxFormat;
+        }
+
+        public void SetDataTexBoxFormat(int value = 0)
+        {
+            dataTextBoxFormat = value;
+        }
+    } // class
+
+    static class StringExtensions
+    {
+        public static IEnumerable<String> SplitInParts(this String s, Int32 partLength)
+        {
+            if (s == null)
+                throw new ArgumentNullException(nameof(s));
+            if (partLength <= 0)
+                throw new ArgumentException("Part length has to be positive.", nameof(partLength));
+
+            for (var i = 0; i < s.Length; i += partLength)
+                yield return s.Substring(i, Math.Min(partLength, s.Length - i));
+        }
     }
-}
+} // ns

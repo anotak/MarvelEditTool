@@ -70,7 +70,8 @@ namespace MSDEditor
                 if (file != null)
                 {
                     // Confirm user wants to open a new instance
-                    switch (MessageBox.Show(this, "Are you sure you want to open a new instance?" + Environment.NewLine + "All unsaved data will be lost!", "Warning", MessageBoxButtons.YesNo))
+                    switch (MessageBox.Show(this, "Are you sure you want to open a new instance?" 
+                        + Environment.NewLine + "All unsaved data will be lost!", "Warning", MessageBoxButtons.YesNo))
                     {
                         case DialogResult.No:
                             AELogger.Log("procedure canceled!");

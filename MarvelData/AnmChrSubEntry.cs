@@ -18,7 +18,8 @@ namespace MarvelData
         public List<uint> subsubPointers; // DONT SAVE THIS
         public List<byte[]> subsubEntries;
         public List<int> subsubIndices;
-        public bool bEdited;
+        public bool isEdited;
+        public bool isDisabled;
 
         #region STATIC
         public static StringBuilder sb = new StringBuilder();
@@ -127,7 +128,8 @@ namespace MarvelData
             subsubEntries = new List<byte[]>();
             subsubIndices = new List<int>();
             subsubPointers = new List<uint>();
-            bEdited = false;
+            isEdited = false;
+            isDisabled = (localindex == 21012);
         }
 
         public void SetData(BinaryReader reader, uint nextPointer)
@@ -227,7 +229,8 @@ namespace MarvelData
                     }
                 }
             }
-            output.bEdited = true;
+            output.isEdited = true;
+            output.isDisabled = isDisabled;
             return output;
         }
 
@@ -246,13 +249,18 @@ namespace MarvelData
         public string GetName()
         {
             sb.Clear();
-
-            sb.Append("time ");
-            sb.Append(localindex.ToString("000;-00"));
-
+            if (isDisabled || localindex == 21012)
+            {
+                sb.Append("Disabled");
+                isDisabled = localindex == 21012;
+            } else
+            {
+                sb.Append("Time ");
+                sb.Append(localindex.ToString("000;-00"));
+            }
             sb.Append(": ");
             sb.Append(subsubEntries.Count);
-            sb.Append(" cmds");
+            sb.Append(" commands");
 
             return sb.ToString();
         }
