@@ -8,7 +8,8 @@ namespace MarvelData
     public class MultiStructEntry : TableEntry
     {
         public List<StructEntryBase> subEntries;
-        
+        private string chunkName;
+
         public MultiStructEntry() : base()
         {
             subEntries = new List<StructEntryBase>();
@@ -123,6 +124,8 @@ namespace MarvelData
             size += 0x20;
             chunk.size = 0x20;
             chunk.bHasData = true;
+            chunkName = Tools.GetDescription(chunk.data.subChunkType);
+            chunk.name = chunkName;
             subEntries.Add(chunk);
         }
 
@@ -137,6 +140,7 @@ namespace MarvelData
                 size += 0x20;
                 chunk.size = 0x20;
                 chunk.bHasData = true;
+                chunk.name = Tools.GetDescription(chunk.data.subChunkType);
                 subEntries.Add(chunk);
             }
             else if (subChunkType.Equals("dashDirectionInput"))
@@ -147,6 +151,7 @@ namespace MarvelData
                 size += 0x20;
                 chunk.size = 0x20;
                 chunk.bHasData = true;
+                chunk.name = Tools.GetDescription(chunk.data.subChunkType);
                 subEntries.Add(chunk);
             }
             else if (subChunkType.Equals("twoButtonInput1"))
@@ -157,6 +162,7 @@ namespace MarvelData
                 size += 0x20;
                 chunk.size = 0x20;
                 chunk.bHasData = true;
+                chunk.name = Tools.GetDescription(chunk.data.subChunkType);
                 subEntries.Add(chunk);
             }
             else if (subChunkType.Equals("directionAndButtonInput"))
@@ -167,6 +173,7 @@ namespace MarvelData
                 size += 0x20;
                 chunk.size = 0x20;
                 chunk.bHasData = true;
+                chunk.name = Tools.GetDescription(chunk.data.subChunkType);
                 subEntries.Add(chunk);
             }
             else if (subChunkType.Equals("twoButtonInput2"))
@@ -177,6 +184,7 @@ namespace MarvelData
                 size += 0x20;
                 chunk.size = 0x20;
                 chunk.bHasData = true;
+                chunk.name = Tools.GetDescription(chunk.data.subChunkType);
                 subEntries.Add(chunk);
             }
             else if (subChunkType.Equals("executeAction"))
@@ -187,6 +195,7 @@ namespace MarvelData
                 size += 0x20;
                 chunk.size = 0x20;
                 chunk.bHasData = true;
+                chunk.name = Tools.GetDescription(chunk.data.subChunkType);
                 subEntries.Add(chunk);
             }
             //else if (subChunkType.Equals("captureState"))
@@ -206,6 +215,7 @@ namespace MarvelData
                 size += 0x20;
                 chunk.size = 0x20;
                 chunk.bHasData = true;
+                chunk.name = Tools.GetDescription(chunk.data.subChunkType);
                 subEntries.Add(chunk);
             }
             //else if (subChunkType.Equals("TACUnk"))
@@ -222,6 +232,7 @@ namespace MarvelData
                 size += 0x20;
                 chunk.size = 0x20;
                 chunk.bHasData = true;
+                chunk.name = Tools.GetDescription(chunk.data.subChunkType);
                 subEntries.Add(chunk);
             }
             //else if (subChunkType.Equals("superJumpAction"))
@@ -238,6 +249,7 @@ namespace MarvelData
                 size += 0x20;
                 chunk.size = 0x20;
                 chunk.bHasData = true;
+                chunk.name = Tools.GetDescription(chunk.data.subChunkType);
                 subEntries.Add(chunk);
             }
             //else if (subChunkType.Equals("SUnk"))
@@ -251,6 +263,7 @@ namespace MarvelData
                 size += 0x20;
                 chunk.size = 0x20;
                 chunk.bHasData = true;
+                chunk.name = Tools.GetDescription(chunk.data.subChunkType);
                 subEntries.Add(chunk);
             }
             //else if (subChunkType.Equals("heightRestriction"))
@@ -264,6 +277,7 @@ namespace MarvelData
                 size += 0x20;
                 chunk.size = 0x20;
                 chunk.bHasData = true;
+                chunk.name = Tools.GetDescription(chunk.data.subChunkType);
                 subEntries.Add(chunk);
             }
             else if (subChunkType.Equals("airSpecialActionLimit"))
@@ -274,6 +288,7 @@ namespace MarvelData
                 size += 0x20;
                 chunk.size = 0x20;
                 chunk.bHasData = true;
+                chunk.name = Tools.GetDescription(chunk.data.subChunkType);
                 subEntries.Add(chunk);
             }
             else if (subChunkType.Equals("guardTACAction"))
@@ -284,6 +299,7 @@ namespace MarvelData
                 size += 0x20;
                 chunk.size = 0x20;
                 chunk.bHasData = true;
+                chunk.name = Tools.GetDescription(chunk.data.subChunkType);
                 subEntries.Add(chunk);
             }
             else if (subChunkType.Equals("hypers"))
@@ -294,6 +310,7 @@ namespace MarvelData
                 size += 0x20;
                 chunk.size = 0x20;
                 chunk.bHasData = true;
+                chunk.name = Tools.GetDescription(chunk.data.subChunkType);
                 subEntries.Add(chunk);
             }
             else if (subChunkType.Equals("allowedChainOnState"))
@@ -304,6 +321,7 @@ namespace MarvelData
                 size += 0x20;
                 chunk.size = 0x20;
                 chunk.bHasData = true;
+                chunk.name = Tools.GetDescription(chunk.data.subChunkType);
                 subEntries.Add(chunk);
             }
             //else if (subChunkType.Equals("advGuardUnk"))
