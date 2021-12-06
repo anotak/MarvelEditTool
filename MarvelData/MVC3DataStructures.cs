@@ -3,9 +3,286 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.ComponentModel;
 
 namespace MarvelData
 {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct ShotChunk
+    {
+        public int unk64;
+        public int unk68;
+        public int unk6c;
+        public int projectileSpawn;
+        public int ShtFlagsA;
+        public int ShtFlagsB;
+        public int ShtFlagsC;
+        public int unk80;
+        public float projectileDuration;
+        public int unk88;
+        public int unk8c;
+        public float projectileSpeed;
+        public float projectileAccel;
+        public int unk98;
+        public float beamDuration;
+        public int unkA0;
+        public int unkA4;
+        public int unkA8;
+        public int unkAC;
+        public int unkB0;
+        public int unkB4;
+        public int unkB8;
+        public int unkBC;
+        public int unkC0;
+        public int unkC4;
+        public int unkC8;
+        public int unkCC;
+        public int unkD0;
+        public int unkD4;
+        public int unkD8;
+        public int unkDC;
+        public int unkE0;
+        public int unkE4;
+        public int unkE8;
+        public float SpawnVerticalPosition;
+        public float SpawnHorizontalPosition;
+        public int unkF4;
+        public int unkF8;
+        public int unkFC;
+        public int unk100;
+        public float SpawnPositionAngle;
+        public float ProjectileAngle;
+        public int unk10C;
+        public int unk110;
+        public int unk114;
+        public int unk118;
+        public int unk11C;
+        public int unk120;
+        public int unk124;
+        public int unk128;
+        public int unk12C;
+        public int trapTransition; //bitwise flags
+        public int unk134;
+        public int unk138;
+        public int indexProjectileReference00;
+        public int indexProjectileReference01;
+        public int indexProjectileReference02;
+        public int indexProjectileReference03;
+        public int indexProjectileReference04;
+        public int indexProjectileReference05;
+        public int indexProjectileReference06;
+        public int indexProjectileReference07;
+        public int indexProjectileReference08;
+        public int indexProjectileReference09;
+        public int unk164;
+        public int unk168;
+        public int unk16C;
+        public int unk170;
+        public int unk174;
+        public int unk178;
+        public int unk17C;
+        public int unk180;
+        public int unk184;
+        public int unk188;
+        public int unk18C;
+        public int unk190;
+        public int unk194;
+        public int unk198;
+        public int unk19C;
+        public int unk1A0;
+        public int unk1A4;
+        public int unk1A8;
+        public int unk1AC;
+        public int unk1B0;
+        public int unk1B4;
+        public int unk1B8;
+        public int unk1BC;
+        public int unk1C0;
+        public int unk1C4;
+        public int unk1C8;
+        public int unk1CC;
+        public int unk1D0;
+        public int unk1D4;
+        public int unk1D8;
+        public int unk1DC;
+        public int unk1E0;
+        public int unk1E4;
+        public int unk1E8;
+        public int unk1EC;
+        public int unk1F0;
+        public int unk1F4;
+        public int unk1F8;
+        public int unk1FC;
+        public int unk200;
+        public int unk204;
+        public int unk208;
+        public int unk20C;
+        public int unk210;
+        public int unk214;
+        public int unk218;
+        public int unk21C;
+        public int unk220;
+        public int unk224;
+        public int unk228;
+        public int unk22C;
+        public int unk230;
+        public int unk234;
+        public int unk238;
+        public int unk23C;
+        public int unk240;
+        public int unk244;
+        public int unk248;
+        public int unk24C;
+        public int unk250;
+        public int unk254;
+        public int unk258;
+        public int unk25C;
+        public int unk260;
+        public int unk264;
+        public int unk268;
+        public int unk26C;
+        public int unk270;
+        public int unk274;
+        public int unk278;
+        public int unk27C;
+        public int soundBankIndexUnk;
+        public int unk284;
+        public int unk288;
+        public int soundPlay;
+        public int unk290;
+        public int unk294;
+        public float unk298;
+        public float unk29C;
+        public float unk2A0;
+        public int unk2A4;
+        public float unk2A8;
+        public float unk2AC;
+        public float unk2B0;
+        public int unk2B4;
+        public int effectPlayed;
+        public int unk2BC;
+        public int unk2C0;
+        public int unk2C4;
+        public int unk2C8;
+        public int unk2CC;
+        public int unk2D0;
+        public int unk2D4;
+        public int unk2D8;
+        public int unk2DC;
+        public int friendlyFire;
+        public int unk2E4;
+        public int unk2E8;
+        public int unk2EC;
+        public int canBeNullified;
+        public int unk2F4;
+        public int unk2F8;
+        public int unk2FC;
+        //public int unk3C8;
+        //public int unk3CC;
+    }                  
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct ShotSChunk
+    {
+        public float numberOfHits;
+        public float NumberOfHitsUnk;
+        public float durability;
+        public float durabilityUnk;
+        public int durabilityType;
+        public int unk354;
+        public int unk358;
+        public int unk35C;
+        public int unk360;
+        public int unk364;
+        public int unk368;
+        public int unk36C;
+        public int unk370;
+        public int unk374;
+        public int unk378;
+        public int unk37C;
+        public int unk380;
+        public int unk384;
+        public int unk388;
+        public int unk38C;
+        public int unk390;
+        public int unk394;
+        public int unk398;
+        public int unk39C;
+        public int unk3A0;
+        public int unk3A4;
+        public int unk3A8;
+        public int unk3AC;
+        public float unk3B0;
+        public int unk3B4;
+        public float unk3B8;
+        public int unk3BC;
+        public int unk3C0;
+        public int unk3C4;
+    }
+    
+    [StructLayout(LayoutKind.Sequential)]
+    public struct ShotLChunk
+    {
+        public float numberOfHits;
+        public float NumberOfHitsUnk;
+        public float durability;
+        public float durabilityUnk;
+        public int durabilityType;
+        public int unk354;
+        public int unk358;
+        public int unk35C;
+        public int unk360;
+        public int unk364;
+        public int unk368;
+        public int unk36C;
+        public int unk370;
+        public int unk374;
+        public int unk378;
+        public int unk37C;
+        public int unk380;
+        public int unk384;
+        public int unk388;
+        public int unk38C;
+        public int unk390;
+        public int unk394;
+        public int unk398;
+        public int unk39C;
+        public int unk3A0;
+        public int unk3A4;
+        public int unk3A8;
+        public int unk3AC;
+        public float unk3B0;
+        public int unk3B4;
+        public float unk3B8;
+        public int unk3BC;
+        public int unk3C0;
+        public int unk3C4;
+        public int unk3C8;
+        public int unk3CC; 
+        public int unk3D0;
+        public int unk3D4;
+        public int unk3D8;
+        public int unk3DC;
+        public int unk3E0;
+        public int unk3E4;
+        public int unk3E8;
+        public int unk3EC;
+        public int unk3F0;
+        public int unk3F4;
+        public int unk3F8;
+        public int unk3FC;
+        public int unk400;
+        public int unk404;
+        public int unk408;
+        public int unk40C;
+        public float unk410;
+        public int unk414;
+        public float unk418;
+        public int unk41C;
+        public int unk420;
+        public int unk424;
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct StatusChunk
     {
@@ -232,14 +509,14 @@ namespace MarvelData
         MagStormModokUnk = 0x00000008,
         NoHurtbox = 0x00000010,
         AirBlockBounce = 0x00000020,
-        NoHyperDrain = 0x00000040,
+        NoHyperDrainGain = 0x00000040,
         NoHitstop = 0x00000080,
         IMSentShumaUnk = 0x00000100,
         AirUnk = 0x00000200,
         ShumaUnk = 0x00000400,
         AmmyShumaUnk = 0x00000800,
         LockCharacter = 0x00001000,
-        NoSnapoutNoTAC = 0x00002000,
+        NoSnapBackNoTAC = 0x00002000,
         Unk0x4000 = 0x00004000,
         Unk0x8000 = 0x00008000,
         FriendlyFire = 0x00010000,
@@ -409,14 +686,14 @@ namespace MarvelData
         NoHyperMeterBuild = 0x00000400,
         NoComboCounter = 0x00000800,
         Unk0x1000 = 0x00001000,
-        Unk0x2000 = 0x00002000,
+        ProjectileReflection = 0x00002000,
         NoPushbackAttacker = 0x00004000,
         PartnerTargeting = 0x00008000,
         Unk0x10000 = 0x00010000,
         Unk0x20000 = 0x00020000,
         Unk0x40000 = 0x00040000,
         TACGlow      = 0x00080000,
-        Unk0x100000  = 0x00100000,
+        Mashable  = 0x00100000,
         Unk0x200000  = 0x00200000,
         Unk0x400000  = 0x00400000,
         Unk0x800000  = 0x00800000,
@@ -941,37 +1218,70 @@ namespace MarvelData
 
     public enum SubChunkType : uint
     {
-        none = 0,
-        unk1 = 01,
-        standardInput = 02,
-        dashDirectionInput = 03,
-        twoButtonInput1 = 04,
+        [Description("0 None")]
+        none_0 = 0,
+        [Description("1 unk1")]
+        unk1_1 = 01,
+        [Description("2 Standard Input")]
+        standardInput_2 = 02,
+        [Description("3 Dash Direction Input")]
+        dashDirectionInput_3 = 03,
+        [Description("4 Two Button Input")]
+        twoButtonInput1_4 = 04,
+        [Description("5 Direction and Button Input")]
         directionAndButtonInput = 05,
-        unk6 = 06,
-        twoButtonInput2 = 07,
-        executeAction = 09,
-        captureState = 10, //0A
-        stateRestriction = 11, //0B
-        simpleModeAirComboUnk = 13, //0D
-        modeRequired = 30, //1E
-        TACUnk = 33, //21
-        airActionLimit = 34, //22
-        TACDHCAction = 35, //23
-        superJumpAction = 37, //25
-        snapBackChar = 38, //26
-        stateChange = 47, //2F
-        SUnk = 48, //30
-        prohibitedFollowUpAction = 49, //31
-        heightRestriction = 50, //32
-        airDash = 52, //34
-        airSpecialActionLimit = 53, //35
-        guardTACAction = 56, //38
-        hypers = 58, //3A
-        unk3C = 60, //3C
-        unk3D = 61, //3D
-        allowedChainCancelingState = 63, //3F
-        advGuardUnk = 73, //49
-        whiffCancelUnk = 90,
+        [Description("6 unk6")]
+        unk6_6 = 06,
+        [Description("7 Two Button Input")]
+        twoButtonInput2_7 = 07,
+        [Description("9 Execute Action")]
+        executeAction_9 = 09,
+        [Description("10 Capture State")]
+        captureState_10 = 10, //0A
+        [Description("11 State Restriction")]
+        stateRestriction_11 = 11, //0B
+        [Description("13 Simple Mode Air Combo Unk")]
+        simpleModeAirComboUnk_13 = 13, //0D
+        [Description("30 Mode Required")]
+        modeRequired_30 = 30, //1E
+        [Description("33 TAC Unk")]
+        TACUnk_33 = 33, //21
+        [Description("34 Air Action Limit")]
+        airActionLimit_34 = 34, //22
+        [Description("35 TAC/DHC Action")]
+        TACDHCAction_35 = 35, //23
+        [Description("37 Super Jump Action")]
+        superJumpAction_37 = 37, //25
+        [Description("38 Snap Back Character")]
+        snapBackChar_38 = 38, //26
+        [Description("47 State Change")]
+        stateChange_47 = 47, //2F
+        [Description("48 S Unk")]
+        SUnk_48 = 48, //30
+        [Description("49 Prohibited Follow Up Action")]
+        prohibitedFollowUpAction_49 = 49, //31
+        [Description("50 Height Restriction")]
+        heightRestriction_50 = 50, //32
+        [Description("52 Air Dash")]
+        airDash_52 = 52, //34
+        [Description("53 Air Special Action Limit")]
+        airSpecialActionLimit_53 = 53, //35
+        [Description("56 Guard TAC Action")]
+        guardTACAction_56 = 56, //38
+        [Description("58 Hypers")]
+        hypers_58 = 58, //3A
+        [Description("60 Unk3C")]
+        unk3C_60 = 60, //3C
+        [Description("61 Unk3D")]
+        unk3D_61 = 61, //3D
+        [Description("63 Allowed Chain Canceling State")]
+        allowedChainCancelingState_63 = 63, //3F
+        [Description("73 Advancing Guard Unk")]
+        advGuardUnk_73 = 73, //49
+        [Description("90 Whiff Cancel Unk")]
+        whiffCancelUnk_90 = 90,
+        [Description("91 Is Prop Active")]
+        hasPropActive_91 = 91,
     }
 
 

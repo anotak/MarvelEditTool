@@ -5,7 +5,9 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Threading;
 using MarvelData;
+using static System.Windows.Forms.LinkLabel;
 
 namespace AnmChrEdit
 {
@@ -19,9 +21,9 @@ namespace AnmChrEdit
         public bool bDisableUpdate;
         public bool bDisableSubUpdate;
         public bool bDisableSubSubUpdate;
-        public AnmChrSubEntry subCopyInstance;
+        public AnmChrSubEntry commandBlockCopyInstance;
         public CmdSpAtkEntry spatkCopyInstance = new CmdSpAtkEntry();
-        public byte[] subsubCopyInstance;
+        public byte[] commandCopyInstance;
         
         public List<List<int>> selectedSubSubIndices;
         public List<int> selectedSubIndices;
@@ -29,8 +31,9 @@ namespace AnmChrEdit
         public BindingList<string> subDataSource;
         public BindingList<string> subsubDataSource;
         private int subEntryHoveredIndex = -1;
-        private int dataTexBoxFormat;
+        private int dataTextBoxFormat;
         private ImageForm imageForm;
+
 
         public AnmChrForm()
         {
@@ -39,16 +42,17 @@ namespace AnmChrEdit
             //AELogger.Log(Text);
             filePath = String.Empty;
             ImportPath = String.Empty;
-
             selectedSubIndices = new List<int>();
             selectedSubSubIndices = new List<List<int>>();
             AnmChrSubEntry.InitCmdNames();
+            commandBlocksBox.DrawItem += commandBlocksBox_DrawItem;
+            commandBlocksBox.DrawMode = DrawMode.OwnerDrawFixed;
         }
 
         public static string GetCompileDate()
         {
             System.Version MyVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            return new DateTime(2000, 1, 1).AddDays(MyVersion.Build).AddSeconds(MyVersion.Revision * 2).ToString("dd:MM:yyyy");
+            return new DateTime(2000, 1, 1).AddDays(MyVersion.Build).AddSeconds(MyVersion.Revision * 2).ToString("dd.MM.yyyy");
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -59,7 +63,7 @@ namespace AnmChrEdit
             if (bError) return;
 
             // Confirm user wants to close
-            switch (MessageBox.Show(this, "Are you sure you want to close?", "Closing", MessageBoxButtons.YesNo))
+            switch (MessageBox.Show(this, "Are you sure you want to close?" + Environment.NewLine + "All unsaved data will be lost!", "Closing", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
             {
                 case DialogResult.No:
                     e.Cancel = true;
@@ -165,7 +169,7 @@ namespace AnmChrEdit
                 selectedSubIndices.Add(-1);
             }
 
-            int subS = subEntryBox.SelectedIndex;
+            int subS = commandBlocksBox.SelectedIndex;
             selectedSubIndices[s] = subS;
             
             for (int i = selectedSubSubIndices.Count; i <= s; i++)
@@ -180,38 +184,39 @@ namespace AnmChrEdit
                 selectedSubSubIndices[s].Add(-1);
             }
 
-            selectedSubSubIndices[s][subS] = subsubEntryBox.SelectedIndex;
+            selectedSubSubIndices[s][subS] = commandsBox.SelectedIndex;
         }
 
         public void RefreshSelectedIndices()
         {
             int s = animBox.SelectedIndex;
 
-            if (!tablefile.table[s].bHasData)
+            if (!tablefile.table[s].bHasData || commandBlocksBox.Items.Count == 0)
             {
+                emptyCommandsTextBox();
                 return;
             }
 
             if (!bDisableSubUpdate && selectedSubIndices.Count > s)
             {
                 int selectedSub = selectedSubIndices[s];
-                if (selectedSub >= 0 && selectedSub < subEntryBox.Items.Count)
+                if (selectedSub >= 0 && selectedSub < commandBlocksBox.Items.Count)
                 {
-                    subEntryBox.SelectedIndex = selectedSub;
+                    commandBlocksBox.SelectedIndex = selectedSub;
                 }
             }
 
             if (selectedSubSubIndices.Count > s)
             {
-                int subS = subEntryBox.SelectedIndex;
+                int subS = commandBlocksBox.SelectedIndex;
                 List<int> selectedList = selectedSubSubIndices[s];
-                if (selectedList.Count > subS)
+                if (selectedList.Count > subS && subS >= 0)
                 {
                     int selectedSub = selectedList[subS];
 
-                    if (selectedSub >= 0 && selectedSub < subsubEntryBox.Items.Count)
+                    if (selectedSub >= 0 && selectedSub < commandsBox.Items.Count)
                     {
-                        subsubEntryBox.SelectedIndex = selectedSub;
+                        commandsBox.SelectedIndex = selectedSub;
                     }
                 }
             }
@@ -230,15 +235,16 @@ namespace AnmChrEdit
                 {
                     // Confirm user wants to open a new instance
                     switch (MessageBox.Show(this, "Are you sure you want to open a new instance?" 
-                        + Environment.NewLine + "All unsaved data will be lost!", "Warning", MessageBoxButtons.YesNo))
+                        + Environment.NewLine + "All unsaved data will be lost!", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                     {
                         case DialogResult.No:
                             AELogger.Log("procedure canceled!");
                             return;
                         default:
-                            Text = null;
-                            filePath = null;
-                            filenameLabel.Text = null;
+                            Text = "AnmChrEditor, build " + GetCompileDate();
+                            filenameLabel.Text = String.Empty;
+                            dataTextBox.Clear();
+                            filePath = String.Empty;
                             SetDataTexBoxFormat(0);
                             AELogger.WriteLog();
                             break;
@@ -266,8 +272,8 @@ namespace AnmChrEdit
 #endif
                     // start naming missing labels
                     List<AnmChrSubEntry> subEntries = new List<AnmChrSubEntry>();
-                    tablefile.getSubSubEntryInfo(ref subEntries);
-                    tablefile.matchAtiNames(filePath);
+                    tablefile.GetSubSubEntryInfo(ref subEntries);
+                    tablefile.MatchAtiNames(filePath);
                     // end naming missing labels
 
 
@@ -281,6 +287,9 @@ namespace AnmChrEdit
                     formatUnsetButton.Enabled = false;
                     format8HexButton.Enabled = true;
                     format16HexButton.Enabled = true;
+                    unsetToolStripMenuItem.Enabled = true;
+                    hex8ToolStripMenuItem.Enabled = true;
+                    hex16ToolStripMenuItem.Enabled = true;
 
 
                     sizeLabel.Text = count + " entries loaded";
@@ -296,6 +305,7 @@ namespace AnmChrEdit
                     filenameLabel.Text = openFile.FileNames[0];
                     animBox.SelectedIndex = 0;
                     ResumeLayout();
+                    animBox_SelectedIndexChanged(null, null);
                 }
                 else
                 {
@@ -553,72 +563,105 @@ namespace AnmChrEdit
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[s];
                 dataTextBox.Enabled = true;
                 subDataSource = entry.getSubEntryList();
-                subEntryBox.DataSource = subDataSource;
-                exportButton.Enabled = true;
-                subCopyButton.Enabled = true;
-                subDeleteButton.Enabled = entry.subEntries.Count > 1;
-                subsubCopyButton.Enabled = true;
-                subsubDeleteButton.Enabled = true;
+                commandBlocksBox.DataSource = subDataSource;
+                // total time elements
                 lengthTextBox.Enabled = true;
                 lengthTextBox.Text = entry.animTime.ToString();
-                subPasteButton.Enabled = subCopyInstance != null;
-                subsubPasteButton.Enabled = subsubCopyInstance != null;
+                exportButton.Enabled = true;
+                // commandBlocks button>menuOptions>contextMenu
+                commandBlockCopyButton.Enabled = true;
+                copyCommandBlockToolStripMenuItem1.Enabled = true;
+                copyCommandBlockToolStripMenuItem.Enabled = true;
+                commandBlockPasteButton.Enabled = commandBlockCopyInstance != null;
+                pasteCommandBlockToolStripMenuItem1.Enabled = commandBlockCopyInstance != null;
+                pasteCommandBlockToolStripMenuItem.Enabled = commandBlockCopyInstance != null;
+                // commands button>menuOptions>contextMenu
+                commandsCopyButton.Enabled = true;
+                copyCommandsToolStripMenuItem.Enabled = true;
+                copyCommandToolStripMenuItem.Enabled = true;
+                commandsPasteButton.Enabled = commandCopyInstance != null;
+                pasteCommandsToolStripMenuItem.Enabled = commandCopyInstance != null;
+                pasteCommandToolStripMenuItem.Enabled = commandCopyInstance != null;
+                validateDeleteButtons(entry);
             }
             else
             {
                 //subsubEntryBox.BeginUpdate();
                 dataTextBox.Enabled = false;
                 dataTextBox.Clear();
+                exportButton.Enabled = false;
+                // total time elements
                 lengthTextBox.Enabled = false;
                 lengthTextBox.Clear();
-                exportButton.Enabled = false;
-                subEntryBox.DataSource = null;
-                subDeleteButton.Enabled = false;
-                subsubEntryBox.DataSource = null;
-                subEntryBox.Items.Clear();
-                subsubEntryBox.Items.Clear();
-                subCopyButton.Enabled = false;
-                subsubCopyButton.Enabled = false;
-                subsubDeleteButton.Enabled = false;
-                subsubPasteButton.Enabled = true;
-                subPasteButton.Enabled = false;
+                // commandBlocks button>menuOptions>contextMenu
+                commandBlocksBox.Items.Clear();
+                commandBlocksBox.DataSource = null;
+                commandBlockDeleteButton.Enabled = false;
+                commandBlockDisableButton.Enabled = false;
+                commandBlockCopyButton.Enabled = false;
+                copyCommandBlockToolStripMenuItem1.Enabled = false;
+                copyCommandBlockToolStripMenuItem.Enabled = false;
+                commandBlockPasteButton.Enabled = commandBlockCopyInstance != null;
+                pasteCommandBlockToolStripMenuItem1.Enabled = commandBlockCopyInstance != null;
+                pasteCommandBlockToolStripMenuItem.Enabled = commandBlockCopyInstance != null;
+                // commands button>menuOptions>contextMenu
+                commandsBox.Items.Clear();
+                commandsBox.DataSource = null;
+                commandsDeleteButton.Enabled = false;
+                commandsCopyButton.Enabled = false;
+                copyCommandsToolStripMenuItem.Enabled = false;
+                copyCommandToolStripMenuItem.Enabled = false;
+                commandsPasteButton.Enabled = commandCopyInstance != null;
+                pasteCommandsToolStripMenuItem.Enabled = commandCopyInstance != null;
+                pasteCommandToolStripMenuItem.Enabled = commandCopyInstance != null;
                 //subsubEntryBox.EndUpdate();
             }
             //subEntryBox.EndUpdate();
         }
 
-        private void subEntryBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void commandBlocksBox_RightMouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                var commandBlockIndex = commandBlocksBox.IndexFromPoint(e.Location);
+                if (commandBlockIndex >= 0)
+                {
+                    commandBlocksBox.SelectedIndex = commandBlockIndex;
+                    //subEntryBox.Controls.;
+                    this.Cursor = new Cursor(Cursor.Current.Handle);
+                    commandBlockContextMenuStrip.Show(Cursor.Position);
+                }
+            }
+        }
+
+        private void commandBlocksBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (bDisableSubUpdate)
             {
                 return;
             }
-            AELogger.Log("selected subox " + subEntryBox.SelectedIndex);
-            //SuspendLayout();
-            //subsubEntryBox.BeginUpdate();
             bDisableSubUpdate = true;
-
             int s = animBox.SelectedIndex;
             int top = animBox.TopIndex;
-            if (tablefile.table[s] is AnmChrEntry && tablefile.table[s].bHasData)
+            if (tablefile.table[s] is AnmChrEntry && (tablefile.table[s].bHasData && tablefile.table[s].size > 0))
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[s];
 
-                if (subEntryBox.SelectedIndex >= entry.subEntries.Count)
+                if (commandBlocksBox.SelectedIndex >= entry.subEntries.Count)
                 {
-                    subsubEntryBox.SelectedIndex = entry.subEntries.Count - 1;
+                    commandsBox.SelectedIndex = entry.subEntries.Count - 1;
                 }
 
                 if (bDisableSubSubUpdate)
                 {
-                    subsubDataSource = entry.subEntries[subEntryBox.SelectedIndex].GetCommandList();
-                    subsubEntryBox.DataSource = subsubDataSource;
+                    subsubDataSource = entry.subEntries[commandBlocksBox.SelectedIndex].GetCommandList();
+                    commandsBox.DataSource = subsubDataSource;
                 }
                 else
                 {
                     bDisableSubSubUpdate = true;
-                    subsubDataSource = entry.subEntries[subEntryBox.SelectedIndex].GetCommandList();
-                    subsubEntryBox.DataSource = subsubDataSource;
+                    subsubDataSource = entry.subEntries[commandBlocksBox.SelectedIndex].GetCommandList();
+                    commandsBox.DataSource = subsubDataSource;
                     bDisableSubSubUpdate = false;
                 }
                 if (bDisableUpdate)
@@ -630,14 +673,13 @@ namespace AnmChrEdit
                     SaveSelectedIndices();
                 }
                 RefreshText();
-                timeTextBox.Text = entry.subEntries[subEntryBox.SelectedIndex].tableindex.ToString();
+                timeTextBox.Text = entry.subEntries[commandBlocksBox.SelectedIndex].isDisabled ? "" : entry.subEntries[commandBlocksBox.SelectedIndex].tableindex.ToString();
                 timeTextBox.Enabled = true;
+                validateDeleteButtons(entry);
             }
             else
             {
-                timeTextBox.Enabled = false;
-                subsubEntryBox.DataSource = null;
-                subsubEntryBox.Items.Clear();
+                emptyCommandsTextBox();
             }
 
             bDisableSubUpdate = false;
@@ -645,14 +687,36 @@ namespace AnmChrEdit
             //ResumeLayout();
         }
 
-        private void subsubEntryBox_SelectedIndexChanged(object sender, EventArgs ev)
+        private void emptyCommandsTextBox()
+        {
+            timeTextBox.Enabled = false;
+            commandsBox.DataSource = null;
+            commandsBox.Items.Clear();
+        }
+
+        private void commandsBox_RightMouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                var commandIndex = commandsBox.IndexFromPoint(e.Location);
+                if (commandIndex >= 0)
+                {
+                    commandsBox.SelectedIndex = commandIndex;
+                    //subEntryBox.Controls.;
+                    this.Cursor = new Cursor(Cursor.Current.Handle);
+                    commandContextMenuStrip1.Show(Cursor.Position);
+                }
+            }
+        }
+
+        private void commandsBox_SelectedIndexChanged(object sender, EventArgs ev)
         {
             if (bDisableSubSubUpdate)
             {
                 return;
             }
 
-            AELogger.Log("selected subsubox " + subsubEntryBox.SelectedIndex);
+            AELogger.Log("selected subsubox " + commandsBox.SelectedIndex);
 
             bDisableSubSubUpdate = true;
             int s = animBox.SelectedIndex;
@@ -660,22 +724,26 @@ namespace AnmChrEdit
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[s];
 
-                if (subEntryBox.SelectedIndex >= entry.subEntries.Count && subEntryBox.SelectedIndex >= 0)
+                if (commandBlocksBox.SelectedIndex >= entry.subEntries.Count && commandBlocksBox.SelectedIndex >= 0)
                 {
                     AELogger.Log("possible big error");
 
                     RefreshText();
                 }
-                else
+                else if (entry.subEntries.Count > 0)
                 {
-                    if (subsubEntryBox.SelectedIndex >= entry.subEntries[subEntryBox.SelectedIndex].subsubEntries.Count)
+                    if (commandsBox.SelectedIndex >= entry.subEntries[commandBlocksBox.SelectedIndex].subsubEntries.Count)
                     {
-                        subsubEntryBox.SelectedIndex = entry.subEntries.Count - 1;
+                        commandsBox.SelectedIndex = entry.subEntries.Count - 1;
                     }
 
                     RefreshText();
 
                     SaveSelectedIndices();
+                }
+                else
+                {
+                    RefreshText();
                 }
             }
             bDisableSubSubUpdate = false;
@@ -688,24 +756,24 @@ namespace AnmChrEdit
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[s];
 
-                if (subEntryBox.SelectedIndex >= entry.subEntries.Count || subEntryBox.SelectedIndex < 0)
+                if (commandBlocksBox.SelectedIndex >= entry.subEntries.Count || commandBlocksBox.SelectedIndex < 0)
                 {
                     dataTextBox.Enabled = false;
                     AELogger.Log("weird otherwise probably nonharmful data index error A");
                     dataTextBox.Text = "no data selected?";
                     return;
                 }
-                if (subsubEntryBox.SelectedIndex >= entry.subEntries[subEntryBox.SelectedIndex].subsubEntries.Count || subsubEntryBox.SelectedIndex < 0)
+                if (commandsBox.SelectedIndex >= entry.subEntries[commandBlocksBox.SelectedIndex].subsubEntries.Count || commandsBox.SelectedIndex < 0)
                 {
                     AELogger.Log("weird otherwise probably nonharmful data index error B");
                     dataTextBox.Enabled = false;
                     dataTextBox.Text = "no data selected?";
                     return;
                 }
-                byte[] data = entry.subEntries[subEntryBox.SelectedIndex].subsubEntries[subsubEntryBox.SelectedIndex];
+                byte[] data = entry.subEntries[commandBlocksBox.SelectedIndex].subsubEntries[commandsBox.SelectedIndex];
                 dataTextBox.Enabled = true;
                 dataTextBox.Text = BitConverter.ToString(data).Replace("-", "");
-                dataTextBox.Text = splitAndBreakEveryNChars(dataTextBox.Text, GetDataTexBoxFormat());
+                dataTextBox.Text = splitAndBreakEveryNChars(dataTextBox.Text, GetDataTextBoxFormat());
                 dataTextBox.ForeColor = Color.White;
             }
             else
@@ -759,12 +827,12 @@ namespace AnmChrEdit
                         
                         AnmChrEntry entry = (AnmChrEntry)tablefile.table[s];
 
-                        entry.subEntries[subEntryBox.SelectedIndex].subsubEntries[subsubEntryBox.SelectedIndex] 
+                        entry.subEntries[commandBlocksBox.SelectedIndex].subsubEntries[commandsBox.SelectedIndex] 
                             = StringToByteArray(dataTextBox.Text.Replace("\r\n", ""));
 
                         bDisableSubSubUpdate = true;
-                        subsubDataSource[subsubEntryBox.SelectedIndex] = entry.subEntries[subEntryBox.SelectedIndex]
-                            .GetSubSubName(subsubEntryBox.SelectedIndex);
+                        subsubDataSource[commandsBox.SelectedIndex] = entry.subEntries[commandBlocksBox.SelectedIndex]
+                            .GetSubSubName(commandsBox.SelectedIndex);
                         bDisableSubSubUpdate = false;
                     }
                     dataTextBox.ForeColor = Color.White;
@@ -790,17 +858,17 @@ namespace AnmChrEdit
         }
 
         // Creates labels for the sub entries box
-        private void OnsubEntryBoxMouseMove(object sender, MouseEventArgs e)
+        private void commandBlocksBoxMouseMove(object sender, MouseEventArgs e)
         {
             // if still on the same row, do nothing
-            if (!subEntryBox.IndexFromPoint(e.Location).Equals(subEntryHoveredIndex))
+            if (!commandBlocksBox.IndexFromPoint(e.Location).Equals(subEntryHoveredIndex))
             {
                 string strTip = "";
-                int nIdx = subEntryBox.IndexFromPoint(e.Location);
-                if ((nIdx >= 0) && (nIdx < subEntryBox.Items.Count))
+                int nIdx = commandBlocksBox.IndexFromPoint(e.Location);
+                if ((nIdx >= 0) && (nIdx < commandBlocksBox.Items.Count))
                 {
                     subEntryHoveredIndex = nIdx;
-                    strTip = subEntryBox.Items[nIdx].ToString();
+                    strTip = commandBlocksBox.Items[nIdx].ToString();
                     if (tablefile != null && tablefile.table[animBox.SelectedIndex] is AnmChrEntry)
                     {
                         AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
@@ -810,21 +878,21 @@ namespace AnmChrEdit
                         }
                     }
                 }
-                toolTip1.SetToolTip(subEntryBox, strTip);
+                toolTip1.SetToolTip(commandBlocksBox, strTip);
             }
         }
 
         // Creates labels for the sub sub entries box
-        private void OnsubsubEntryBoxMouseMove(object sender, MouseEventArgs e)
+        private void OnCommandsBoxMouseMove(object sender, MouseEventArgs e)
         {
             string strTip = "";
 
             //Get the item
-            int nIdx = subsubEntryBox.IndexFromPoint(e.Location);
-            if ((nIdx >= 0) && (nIdx < subsubEntryBox.Items.Count))
-                strTip = subsubEntryBox.Items[nIdx].ToString();
+            int nIdx = commandsBox.IndexFromPoint(e.Location);
+            if ((nIdx >= 0) && (nIdx < commandsBox.Items.Count))
+                strTip = commandsBox.Items[nIdx].ToString();
 
-            toolTip2.SetToolTip(subsubEntryBox, strTip);
+            toolTip2.SetToolTip(commandsBox, strTip);
         }
 
         // Creates labels for the entries (anim) box
@@ -851,22 +919,28 @@ namespace AnmChrEdit
                 try
                 {
                     int newTime = int.Parse(timeTextBox.Text);
-                    entry.subEntries[subEntryBox.SelectedIndex].bEdited = true;
-                    entry.subEntries[subEntryBox.SelectedIndex].tableindex = newTime;
-                    entry.subEntries[subEntryBox.SelectedIndex].localindex = newTime;
+                    if (newTime > entry.animTime)
+                    {
+                        throw new OutOfTimeException();
+                    }
+                    entry.subEntries[commandBlocksBox.SelectedIndex].isDisabled = false;
+                    entry.subEntries[commandBlocksBox.SelectedIndex].isEdited = true;
+                    entry.subEntries[commandBlocksBox.SelectedIndex].tableindex = newTime;
+                    entry.subEntries[commandBlocksBox.SelectedIndex].localindex = newTime;
                     timeTextBox.ForeColor = Color.White;
+                    lengthTextBox.ForeColor = Color.White;
                     bDisableSubSubUpdate = true;
                     bDisableSubUpdate = true;
-                    int s = subEntryBox.SelectedIndex;
+                    int s = commandBlocksBox.SelectedIndex;
                     subDataSource = entry.getSubEntryList();
-                    subEntryBox.DataSource = subDataSource;
+                    commandBlocksBox.DataSource = subDataSource;
                     bool bDontSelect = true;
                     for (int i = 0; i < entry.subEntries.Count; i++)
                     {
-                        if (entry.subEntries[i].bEdited)
+                        if (entry.subEntries[i].isEdited)
                         {
-                            entry.subEntries[i].bEdited = false;
-                            subEntryBox.SelectedIndex = i;
+                            entry.subEntries[i].isEdited = false;
+                            commandBlocksBox.SelectedIndex = i;
                             bDontSelect = false;
                             break;
                         }
@@ -874,17 +948,23 @@ namespace AnmChrEdit
 
                     if (bDontSelect)
                     {
-                        subEntryBox.SelectedIndex = s;
+                        commandBlocksBox.SelectedIndex = s;
                     }
 
                     bDisableSubUpdate = false;
                     bDisableSubSubUpdate = false;
+                }
+                catch (OutOfTimeException err)
+                {
+                    lengthTextBox.ForeColor = Color.Red;
+                    timeTextBox.ForeColor = Color.Red;
                 }
                 catch
                 {
                     timeTextBox.ForeColor = Color.Red;
                 }
             } else {
+                lengthTextBox.ForeColor = Color.White;
                 timeTextBox.ForeColor = Color.White;
             }
         }
@@ -896,11 +976,11 @@ namespace AnmChrEdit
                 && tablefile.table[animBox.SelectedIndex] is AnmChrEntry)
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
-
                 try
                 {
                     int newTime = int.Parse(lengthTextBox.Text);
                     entry.animTime = newTime;
+                    lengthTextBox.Text = lengthTextBox.Text;
                     lengthTextBox.ForeColor = Color.White;
                 }
                 catch
@@ -914,26 +994,28 @@ namespace AnmChrEdit
             }
         }
 
-        private void subCopyButton_Click(object sender, EventArgs e)
+        private void commandBlockCopyButton_Click(object sender, EventArgs e)
         {
             if (tablefile.table[animBox.SelectedIndex].bHasData
                 && tablefile.table[animBox.SelectedIndex] is AnmChrEntry)
             {
-                AELogger.Log("copying sub " + animBox.SelectedIndex + "." + subEntryBox.SelectedIndex);
+                AELogger.Log("copying sub " + animBox.SelectedIndex + "." + commandBlocksBox.SelectedIndex);
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
 
 
-                subCopyInstance = entry.subEntries[subEntryBox.SelectedIndex].Copy();
+                commandBlockCopyInstance = entry.subEntries[commandBlocksBox.SelectedIndex].Copy();
                 
-                subPasteButton.Enabled = true;
+                commandBlockPasteButton.Enabled = true;
+                pasteCommandBlockToolStripMenuItem1.Enabled = true;
+                pasteCommandBlockToolStripMenuItem.Enabled = true;
             }
         }
 
-        private void subPasteButton_Click(object sender, EventArgs e)
+        private void commandBlockPasteButton_Click(object sender, EventArgs e)
         {
             if (tablefile.table[animBox.SelectedIndex].bHasData
                 && tablefile.table[animBox.SelectedIndex] is AnmChrEntry
-                && subCopyInstance != null)
+                && commandBlockCopyInstance != null)
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
                 AELogger.Log("pasting sub to " + animBox.SelectedIndex);
@@ -941,161 +1023,262 @@ namespace AnmChrEdit
                 bDisableSubUpdate = true;
                 bDisableSubSubUpdate = true;
                 
-                entry.subEntries.Add(subCopyInstance.Copy());
+                entry.subEntries.Add(commandBlockCopyInstance.Copy());
                 subDataSource = entry.getSubEntryList();
-                subEntryBox.DataSource = subDataSource;
+                commandBlocksBox.DataSource = subDataSource;
 
-
+                timeTextBox.Enabled = true;
                 bDisableSubSubUpdate = false;
                 bDisableSubUpdate = false;
 
                 for (int i = 0; i < entry.subEntries.Count; i++)
                 {
-                    if (entry.subEntries[i].bEdited)
+                    if (entry.subEntries[i].isEdited)
                     {
-                        entry.subEntries[i].bEdited = false;
-                        subEntryBox.SelectedIndex = i;
+                        entry.subEntries[i].isEdited = false;
+                        commandBlocksBox.SelectedIndex = i;
                         break;
                     }
                 }
+                commandBlocksBox_SelectedIndexChanged(null, null);
             }
         }
 
-        private void subsubCopyButton_Click(object sender, EventArgs e)
+        private void commandsCopyButton_Click(object sender, EventArgs e)
         {
             if (tablefile.table[animBox.SelectedIndex].bHasData
                 && tablefile.table[animBox.SelectedIndex] is AnmChrEntry)
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
-                AELogger.Log("copying subsub " + animBox.SelectedIndex + "." + subEntryBox.SelectedIndex + "." + subsubEntryBox.SelectedIndex);
-                byte[] source = entry.subEntries[subEntryBox.SelectedIndex].subsubEntries[subsubEntryBox.SelectedIndex];
-                subsubCopyInstance = new byte[source.Length];
-                source.CopyTo(subsubCopyInstance, 0);
+                AELogger.Log("copying subsub " + animBox.SelectedIndex + "." + commandBlocksBox.SelectedIndex + "." + commandsBox.SelectedIndex);
+                byte[] source = entry.subEntries[commandBlocksBox.SelectedIndex].subsubEntries[commandsBox.SelectedIndex];
+                commandCopyInstance = new byte[source.Length];
+                source.CopyTo(commandCopyInstance, 0);
 
-                subsubPasteButton.Enabled = true;
+                commandsPasteButton.Enabled = true;
+                pasteCommandsToolStripMenuItem.Enabled = true;
+                pasteCommandToolStripMenuItem.Enabled = true;
             }
         }
 
-        private void subsubPasteButton_Click(object sender, EventArgs e)
+        private void commandsPasteButton_Click(object sender, EventArgs e)
         {
             if (tablefile.table[animBox.SelectedIndex].bHasData
                 && tablefile.table[animBox.SelectedIndex] is AnmChrEntry
-                && subsubCopyInstance != null)
+                && commandCopyInstance != null)
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
-                AELogger.Log("pasting subsub to " + animBox.SelectedIndex + "." + subsubEntryBox.SelectedIndex);
-                byte[] dest = new byte[subsubCopyInstance.Length];
-                subsubCopyInstance.CopyTo(dest, 0);
-                entry.subEntries[subEntryBox.SelectedIndex].subsubEntries.Add(dest);
-                entry.subEntries[subEntryBox.SelectedIndex].subsubPointers.Add(uint.MaxValue);
-                entry.subEntries[subEntryBox.SelectedIndex].subsubIndices.Add(0);
+                AELogger.Log("pasting subsub to " + animBox.SelectedIndex + "." + commandsBox.SelectedIndex);
+                byte[] dest = new byte[commandCopyInstance.Length];
+                commandCopyInstance.CopyTo(dest, 0);
+                entry.subEntries[commandBlocksBox.SelectedIndex].subsubEntries.Add(dest);
+                entry.subEntries[commandBlocksBox.SelectedIndex].subsubPointers.Add(uint.MaxValue);
+                entry.subEntries[commandBlocksBox.SelectedIndex].subsubIndices.Add(0);
 
                 bDisableSubUpdate = true;
                 bDisableSubSubUpdate = true;
-                subsubEntryBox.DataSource = null;
-                subsubDataSource = entry.subEntries[subEntryBox.SelectedIndex].GetCommandList();
-                subsubEntryBox.DataSource = subsubDataSource;
+                commandsBox.DataSource = null;
+                subsubDataSource = entry.subEntries[commandBlocksBox.SelectedIndex].GetCommandList();
+                commandsBox.DataSource = subsubDataSource;
 
                 bDisableSubSubUpdate = false;
                 bDisableSubUpdate = false;
-                subsubEntryBox.SelectedIndex = subsubEntryBox.Items.Count-1;
+                commandsBox.SelectedIndex = commandsBox.Items.Count-1;
             }
         }
 
-        private void subDeleteButton_Click(object sender, EventArgs e)
+        private void commandBlockDeleteButton_Click(object sender, EventArgs e)
         {
             if (tablefile.table[animBox.SelectedIndex].bHasData
                 && tablefile.table[animBox.SelectedIndex] is AnmChrEntry)
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
+                AnmChrSubEntry commandBlockEntry = entry.subEntries[commandBlocksBox.SelectedIndex];
 
-                if (MessageBox.Show(this, "Deleting subentry w time " + entry.subEntries[subEntryBox.SelectedIndex].localindex.ToString() + ", You sure bout dat?", "FINAL DELETION", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                if (MessageBox.Show(this, "Deleting command block with " + commandBlockEntry.subsubPointers.Count 
+                    + " commands and " + (commandBlockEntry.isDisabled ? "that is disabled" : 
+                    ("with timestamp " + commandBlockEntry.localindex.ToString())) + ". Are you sure?" 
+                    + Environment.NewLine + "This action is irreversible." + Environment.NewLine, "PERMANENT DELETION", MessageBoxButtons.YesNo, 
+                    MessageBoxIcon.Exclamation) != DialogResult.Yes)
                 {
                     return;
                 }
-                AELogger.Log("deleting sub " + animBox.SelectedIndex + "." + subEntryBox.SelectedIndex);
+                AELogger.Log("deleting sub " + animBox.SelectedIndex + "." + commandBlocksBox.SelectedIndex);
 
                 bDisableSubUpdate = true;
                 bDisableSubSubUpdate = true;
 
-                entry.subEntries.RemoveAt(subEntryBox.SelectedIndex);
-                subsubEntryBox.DataSource = null;
+                entry.subEntries.RemoveAt(commandBlocksBox.SelectedIndex);
+                commandsBox.DataSource = null;
                 subDataSource = entry.getSubEntryList();
-                subEntryBox.DataSource = subDataSource;
+                commandBlocksBox.DataSource = subDataSource;
 
                 bDisableSubSubUpdate = false;
                 bDisableSubUpdate = false;
                 
-                subEntryBox.SelectedIndex = 0;
-                RefreshSelectedIndices();
-                subsubDataSource = entry.subEntries[subEntryBox.SelectedIndex].GetCommandList();
-                subsubEntryBox.DataSource = subsubDataSource;
-                if (subsubDataSource.Count > 0)
+                if (subDataSource.Count > 0)
                 {
-                    subsubEntryBox.SelectedIndex = 0;
+                    commandBlocksBox.SelectedIndex = 0;
+                
+                    RefreshSelectedIndices();
+                    subsubDataSource = commandBlockEntry.GetCommandList();
+                    commandsBox.DataSource = subsubDataSource;
+                    if (subsubDataSource.Count > 0)
+                    {
+                        commandsBox.SelectedIndex = 0;
+                    }
                 }
                 else
                 {
                     AELogger.Log("odd issue ???????");
                     dataTextBox.Enabled = false;
                 }
-                
-
-                subDeleteButton.Enabled = entry.subEntries.Count > 1;
+                validateDeleteButtons(entry);
             }
         }
 
-        private void subsubDeleteButton_Click(object sender, EventArgs e)
+        private void disableCommandBlockToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!bDisableUpdate && !bDisableSubUpdate && !bDisableSubSubUpdate 
+    && tablefile.table[animBox.SelectedIndex].bHasData
+    && tablefile.table[animBox.SelectedIndex] is AnmChrEntry)
+            {
+                AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
+
+                int newTime = 21012;
+                entry.subEntries[commandBlocksBox.SelectedIndex].isEdited = true;
+                entry.subEntries[commandBlocksBox.SelectedIndex].isDisabled = true;
+                entry.subEntries[commandBlocksBox.SelectedIndex].tableindex = newTime;
+                entry.subEntries[commandBlocksBox.SelectedIndex].localindex = newTime;
+                timeTextBox.Clear();
+
+                bDisableSubSubUpdate = true;
+                bDisableSubUpdate = true;
+                int s = commandBlocksBox.SelectedIndex;
+                subDataSource = entry.getSubEntryList();
+                commandBlocksBox.DataSource = subDataSource;
+                bool bDontSelect = true;
+                for (int i = 0; i < entry.subEntries.Count; i++)
+                {
+                    if (entry.subEntries[i].isEdited)
+                    {
+                        entry.subEntries[i].isEdited = false;
+                        commandBlocksBox.SelectedIndex = i;
+                        bDontSelect = false;
+                        break;
+                    }
+                }
+
+                if (bDontSelect)
+                {
+                    commandBlocksBox.SelectedIndex = s;
+                }
+
+                bDisableSubUpdate = false;
+                bDisableSubSubUpdate = false;
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        private void commandsDeleteButton_Click(object sender, EventArgs e)
         {
             if (tablefile.table[animBox.SelectedIndex].bHasData
                 && tablefile.table[animBox.SelectedIndex] is AnmChrEntry)
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
+                AnmChrSubEntry commandBlockEntry = entry.subEntries[commandBlocksBox.SelectedIndex];
 
-                if (entry.subEntries[subEntryBox.SelectedIndex].subsubPointers.Count <= 1)
+                if (entry.subEntries[commandBlocksBox.SelectedIndex].subsubPointers.Count <= 0)
                 {
-                    // FIXME THIS SUX
+                    MessageBox.Show(this, "There is nothing to delete!"
+                    + Environment.NewLine, "INVALID ACTION", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
 
-                if (MessageBox.Show(this, "Deleting subsubentry w time " + entry.subEntries[subEntryBox.SelectedIndex].localindex.ToString() + " and ptr " + entry.subEntries[subEntryBox.SelectedIndex].subsubPointers[subsubEntryBox.SelectedIndex] + ", You sure bout dat?", "FINAL DELETION", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                if (MessageBox.Show(this, "Deleting command [" + (commandsBox.SelectedItem.ToString().Length <= 4 ?
+                    commandsBox.SelectedItem.ToString() : commandsBox.SelectedItem.ToString().Substring(0, commandsBox.SelectedItem.ToString()
+                    .IndexOf(" "))) + (commandBlockEntry.isDisabled ? "] that belongs to a disabled block" :
+                    ("] with timestamp " + commandBlockEntry.localindex.ToString())) + ". Are you sure?"
+                    + Environment.NewLine + "This action is irreversible." + Environment.NewLine, "PERMANENT DELETION", MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Exclamation) != DialogResult.Yes)
                 {
                     return;
                 }
 
-                AELogger.Log("deleting subsub " + animBox.SelectedIndex + "." + subEntryBox.SelectedIndex + "." + subsubEntryBox.SelectedIndex);
+                AELogger.Log("deleting subsub " + animBox.SelectedIndex + "." + commandBlocksBox.SelectedIndex + "." + commandsBox.SelectedIndex);
 
                 bDisableSubUpdate = true;
                 bDisableSubSubUpdate = true;
 
-                entry.subEntries[subEntryBox.SelectedIndex].subsubPointers.RemoveAt(subsubEntryBox.SelectedIndex);
-                entry.subEntries[subEntryBox.SelectedIndex].subsubEntries.RemoveAt(subsubEntryBox.SelectedIndex);
-                entry.subEntries[subEntryBox.SelectedIndex].subsubIndices.RemoveAt(subsubEntryBox.SelectedIndex);
-                subsubEntryBox.DataSource = null;
+                commandBlockEntry.subsubPointers.RemoveAt(commandsBox.SelectedIndex);
+                commandBlockEntry.subsubEntries.RemoveAt(commandsBox.SelectedIndex);
+                commandBlockEntry.subsubIndices.RemoveAt(commandsBox.SelectedIndex);
+                commandsBox.DataSource = null;
                 subDataSource = entry.getSubEntryList();
-                subEntryBox.DataSource = subDataSource;
+                commandBlocksBox.DataSource = subDataSource;
 
                 bDisableSubSubUpdate = false;
                 bDisableSubUpdate = false;
 
-                subEntryBox.SelectedIndex = 0;
+                commandBlocksBox.SelectedIndex = 0;
                 RefreshSelectedIndices();
-                subsubDataSource = entry.subEntries[subEntryBox.SelectedIndex].GetCommandList();
-                subsubEntryBox.DataSource = subsubDataSource;
-                subsubEntryBox.SelectedIndex = 0;
-
-                subDeleteButton.Enabled = entry.subEntries.Count > 1;
+                subsubDataSource = commandBlockEntry.GetCommandList();
+                commandsBox.DataSource = subsubDataSource;
+                if (commandsBox.Items.Count > 0)
+                {
+                    commandsBox.SelectedIndex = 0;
+                }
+                validateDeleteButtons(entry);
             }
         }
-        public int GetDataTexBoxFormat()
+
+        // Validates if the command related buttons ought to be enabled or not
+        private void validateDeleteButtons(AnmChrEntry entry)
         {
-            return dataTexBoxFormat;
+            bool isSubEntries = entry.subEntries.Count > 0;
+            commandBlockDeleteButton.Enabled = isSubEntries;
+            deleteCommandBlockToolStripMenuItem1.Enabled = isSubEntries;
+            deleteCommandBlockToolStripMenuItem.Enabled = isSubEntries;
+            commandBlockCopyButton.Enabled = isSubEntries;
+            copyCommandBlockToolStripMenuItem1.Enabled = isSubEntries;
+            copyCommandBlockToolStripMenuItem.Enabled = isSubEntries;
+            commandBlockDisableButton.Enabled = isSubEntries;
+            disableCommandBlockToolStripMenuItem1.Enabled = isSubEntries;
+            disableCommandBlookToolStripMenuItem.Enabled = isSubEntries;
+
+            timeTextBox.Text = isSubEntries ? timeTextBox.Text : null;
+            timeTextBox.Enabled = isSubEntries;
+            dataTextBox.Text = isSubEntries ? dataTextBox.Text : "no data selected?";
+            if (isSubEntries)
+            {
+                bool isSubSubEntries = entry.subEntries[commandBlocksBox.SelectedIndex].subsubPointers.Count > 0;
+                dataTextBox.Text = isSubSubEntries ? dataTextBox.Text : "no data selected?";
+                commandsDeleteButton.Enabled = isSubSubEntries;
+                deleteCommandsToolStripMenuItem.Enabled = isSubSubEntries;
+                commandsCopyButton.Enabled = isSubSubEntries;
+                copyCommandsToolStripMenuItem.Enabled = isSubSubEntries;
+            }else
+            {
+                commandsCopyButton.Enabled = false;
+                copyCommandsToolStripMenuItem.Enabled = false;
+                commandsDeleteButton.Enabled = false;
+                deleteCommandsToolStripMenuItem.Enabled = false;
+            }
+        }
+
+        public int GetDataTextBoxFormat()
+        {
+            return dataTextBoxFormat;
         }
 
         public void SetDataTexBoxFormat(int value = 0)
         {
-            dataTexBoxFormat = value;
+            dataTextBoxFormat = value;
         }
+
     } // class
 
     static class StringExtensions

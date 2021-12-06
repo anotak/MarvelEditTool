@@ -1,0 +1,34 @@
+ACE
+Context Menu (options menu on right click) added to Command Block and Commands - these reflect the buttons on the GUI
+Enabled the option to paste command blocks from file to new file
+Enabled the option to paste commands from file to new file
+Added a 4th button to the command block options to disable command blocks in order to facilitate testing while not losing data - to reenable just enter a new frame value
+
+
+SE
+
+
+
+
+SHT info:
+SHTbody1 ends at index 266 - reader position 767
+SHTbody1 size is 166
+
+SHTbody2 starts at index 267 - at reader position 768
+SHTbody2 nameRef starts at index 283 - at reader position832
+
+SHTbody2 can go to reader positions 968 / 1064 
+SHTbody2 size can be 50 / 74
+
+800 / 1184 | 200 / 296
+     Bytes	  |   Bytes
+
+
+
+LSH - list shot file
+header - 4bytes
+headerB - 12bytes
+
+loops of:
+	break - 8bytes
+	nameRef - 68Bytes
