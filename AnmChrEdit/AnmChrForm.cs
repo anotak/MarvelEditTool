@@ -594,8 +594,8 @@ namespace AnmChrEdit
                 lengthTextBox.Enabled = false;
                 lengthTextBox.Clear();
                 // commandBlocks button>menuOptions>contextMenu
-                commandBlocksBox.Items.Clear();
                 commandBlocksBox.DataSource = null;
+                commandBlocksBox.Items.Clear();
                 commandBlockDeleteButton.Enabled = false;
                 commandBlockDisableButton.Enabled = false;
                 commandBlockCopyButton.Enabled = false;
