@@ -1,7 +1,6 @@
 ACE
 Context Menu (options menu on right click) added to Command Block and Commands - these reflect the buttons on the GUI
 Enabled the option to paste command blocks from file to new file
-Enabled the option to paste commands from file to new file
 Added a 4th button to the command block options to disable command blocks in order to facilitate testing while not losing data - to reenable just enter a new frame value
 
 
