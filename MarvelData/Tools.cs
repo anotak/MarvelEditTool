@@ -99,13 +99,17 @@ namespace MarvelData
                     {
                        return input += " DT";
                     }
-                    if (input.Contains("dante"))
+                    else if (input.Contains("dante"))
                     {
                        return input += " DT";
                     }
+                    else
+                    {
+                        return input += " #" + (index + 1);
+                    }
                 }
             }
-            return String.Empty;
+            return input;
         }
     }
 }

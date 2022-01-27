@@ -4,7 +4,7 @@ using MarvelData;
 
 namespace AnmChrEdit
 {
-    partial class AnmChrForm
+    partial class ACE
     {
         /// <summary>
         /// Required designer variable.
@@ -55,7 +55,7 @@ namespace AnmChrEdit
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AnmChrForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ACE));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.filenameLabel = new System.Windows.Forms.Label();
             this.lblCurrentFile = new System.Windows.Forms.Label();
@@ -115,8 +115,11 @@ namespace AnmChrEdit
             this.commandBlockContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyCommandBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteCommandBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.disableCommandBlookToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.disableCommandBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pasteCommandBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.offSetToolStripMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.setCommandBlockFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.commandContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -259,14 +262,14 @@ namespace AnmChrEdit
             this.disableCommandBlockToolStripMenuItem1,
             this.pasteCommandBlockToolStripMenuItem1});
             this.commandBlockToolStripMenuItem.Name = "commandBlockToolStripMenuItem";
-            this.commandBlockToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.commandBlockToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.commandBlockToolStripMenuItem.Text = "Command Block";
             // 
             // copyCommandBlockToolStripMenuItem1
             // 
             this.copyCommandBlockToolStripMenuItem1.Enabled = false;
             this.copyCommandBlockToolStripMenuItem1.Name = "copyCommandBlockToolStripMenuItem1";
-            this.copyCommandBlockToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.copyCommandBlockToolStripMenuItem1.Size = new System.Drawing.Size(112, 22);
             this.copyCommandBlockToolStripMenuItem1.Text = "Copy";
             this.copyCommandBlockToolStripMenuItem1.Click += new System.EventHandler(this.commandBlockCopyButton_Click);
             // 
@@ -274,7 +277,7 @@ namespace AnmChrEdit
             // 
             this.deleteCommandBlockToolStripMenuItem1.Enabled = false;
             this.deleteCommandBlockToolStripMenuItem1.Name = "deleteCommandBlockToolStripMenuItem1";
-            this.deleteCommandBlockToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.deleteCommandBlockToolStripMenuItem1.Size = new System.Drawing.Size(112, 22);
             this.deleteCommandBlockToolStripMenuItem1.Text = "Delete";
             this.deleteCommandBlockToolStripMenuItem1.Click += new System.EventHandler(this.commandBlockDeleteButton_Click);
             // 
@@ -282,7 +285,7 @@ namespace AnmChrEdit
             // 
             this.disableCommandBlockToolStripMenuItem1.Enabled = false;
             this.disableCommandBlockToolStripMenuItem1.Name = "disableCommandBlockToolStripMenuItem1";
-            this.disableCommandBlockToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.disableCommandBlockToolStripMenuItem1.Size = new System.Drawing.Size(112, 22);
             this.disableCommandBlockToolStripMenuItem1.Text = "Disable";
             this.disableCommandBlockToolStripMenuItem1.Click += new System.EventHandler(this.disableCommandBlockToolStripMenuItem_Click);
             // 
@@ -290,7 +293,7 @@ namespace AnmChrEdit
             // 
             this.pasteCommandBlockToolStripMenuItem1.Enabled = false;
             this.pasteCommandBlockToolStripMenuItem1.Name = "pasteCommandBlockToolStripMenuItem1";
-            this.pasteCommandBlockToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.pasteCommandBlockToolStripMenuItem1.Size = new System.Drawing.Size(112, 22);
             this.pasteCommandBlockToolStripMenuItem1.Text = "Paste";
             this.pasteCommandBlockToolStripMenuItem1.Click += new System.EventHandler(this.commandBlockPasteButton_Click);
             // 
@@ -301,7 +304,7 @@ namespace AnmChrEdit
             this.deleteCommandsToolStripMenuItem,
             this.pasteCommandsToolStripMenuItem});
             this.commandsToolStripMenuItem.Name = "commandsToolStripMenuItem";
-            this.commandsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.commandsToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.commandsToolStripMenuItem.Text = "Command";
             // 
             // copyCommandsToolStripMenuItem
@@ -335,7 +338,7 @@ namespace AnmChrEdit
             this.hex8ToolStripMenuItem,
             this.hex16ToolStripMenuItem});
             this.formatDisplayToolStripMenuItem.Name = "formatDisplayToolStripMenuItem";
-            this.formatDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.formatDisplayToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.formatDisplayToolStripMenuItem.Text = "Format Display";
             // 
             // unsetToolStripMenuItem
@@ -365,7 +368,7 @@ namespace AnmChrEdit
             // tutorialFilesToolStripMenuItem
             // 
             this.tutorialFilesToolStripMenuItem.Name = "tutorialFilesToolStripMenuItem";
-            this.tutorialFilesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.tutorialFilesToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.tutorialFilesToolStripMenuItem.Text = "Tutorial Files";
             this.tutorialFilesToolStripMenuItem.Click += new System.EventHandler(this.testImgButton_Click);
             // 
@@ -463,7 +466,7 @@ namespace AnmChrEdit
             this.commandsBox.TabIndex = 0;
             this.commandsBox.SelectedIndexChanged += new System.EventHandler(this.commandsBox_SelectedIndexChanged);
             this.commandsBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnCommandsBoxMouseMove);
-            this.commandsBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.commandsBox_RightMouseClick);
+            this.commandsBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.CommandsBox_RightMouseClick);
             // 
             // commandBlocksBox
             // 
@@ -476,6 +479,7 @@ namespace AnmChrEdit
             this.commandBlocksBox.Margin = new System.Windows.Forms.Padding(2);
             this.commandBlocksBox.Name = "commandBlocksBox";
             this.commandBlocksBox.ScrollAlwaysVisible = true;
+            this.commandBlocksBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.commandBlocksBox.Size = new System.Drawing.Size(397, 243);
             this.commandBlocksBox.TabIndex = 0;
             this.commandBlocksBox.SelectedIndexChanged += new System.EventHandler(this.commandBlocksBox_SelectedIndexChanged);
@@ -628,7 +632,7 @@ namespace AnmChrEdit
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(210, 26);
             this.label2.TabIndex = 7;
-            this.label2.Text = "↑ total time:";
+            this.label2.Text = "↑ total frames:";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // commandBlockCopyButton
@@ -657,7 +661,7 @@ namespace AnmChrEdit
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(210, 20);
             this.label1.TabIndex = 0;
-            this.label1.Text = "← subchunk time:";
+            this.label1.Text = "command block frames:";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // timeTextBox
@@ -864,38 +868,60 @@ namespace AnmChrEdit
             this.commandBlockContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyCommandBlockToolStripMenuItem,
             this.deleteCommandBlockToolStripMenuItem,
-            this.disableCommandBlookToolStripMenuItem,
-            this.pasteCommandBlockToolStripMenuItem});
+            this.disableCommandBlockToolStripMenuItem,
+            this.pasteCommandBlockToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.offSetToolStripMenu,
+            this.setCommandBlockFramesToolStripMenuItem});
             this.commandBlockContextMenuStrip.Name = "contextMenuStrip1";
-            this.commandBlockContextMenuStrip.Size = new System.Drawing.Size(205, 92);
+            this.commandBlockContextMenuStrip.Size = new System.Drawing.Size(224, 142);
             // 
             // copyCommandBlockToolStripMenuItem
             // 
             this.copyCommandBlockToolStripMenuItem.Name = "copyCommandBlockToolStripMenuItem";
-            this.copyCommandBlockToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.copyCommandBlockToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
             this.copyCommandBlockToolStripMenuItem.Text = "Copy Command Block";
             this.copyCommandBlockToolStripMenuItem.Click += new System.EventHandler(this.commandBlockCopyButton_Click);
             // 
             // deleteCommandBlockToolStripMenuItem
             // 
             this.deleteCommandBlockToolStripMenuItem.Name = "deleteCommandBlockToolStripMenuItem";
-            this.deleteCommandBlockToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.deleteCommandBlockToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
             this.deleteCommandBlockToolStripMenuItem.Text = "Delete Command Block";
             this.deleteCommandBlockToolStripMenuItem.Click += new System.EventHandler(this.commandBlockDeleteButton_Click);
             // 
-            // disableCommandBlookToolStripMenuItem
+            // disableCommandBlockToolStripMenuItem
             // 
-            this.disableCommandBlookToolStripMenuItem.Name = "disableCommandBlookToolStripMenuItem";
-            this.disableCommandBlookToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-            this.disableCommandBlookToolStripMenuItem.Text = "Disable Command Block";
-            this.disableCommandBlookToolStripMenuItem.Click += new System.EventHandler(this.disableCommandBlockToolStripMenuItem_Click);
+            this.disableCommandBlockToolStripMenuItem.Name = "disableCommandBlockToolStripMenuItem";
+            this.disableCommandBlockToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+            this.disableCommandBlockToolStripMenuItem.Text = "Disable Command Block";
+            this.disableCommandBlockToolStripMenuItem.Click += new System.EventHandler(this.disableCommandBlockToolStripMenuItem_Click);
             // 
             // pasteCommandBlockToolStripMenuItem
             // 
             this.pasteCommandBlockToolStripMenuItem.Name = "pasteCommandBlockToolStripMenuItem";
-            this.pasteCommandBlockToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.pasteCommandBlockToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
             this.pasteCommandBlockToolStripMenuItem.Text = "Paste Command Block";
             this.pasteCommandBlockToolStripMenuItem.Click += new System.EventHandler(this.commandBlockPasteButton_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(220, 6);
+            // 
+            // offSetToolStripMenu
+            // 
+            this.offSetToolStripMenu.Name = "offSetToolStripMenu";
+            this.offSetToolStripMenu.Size = new System.Drawing.Size(223, 22);
+            this.offSetToolStripMenu.Text = "Add Frames Offset";
+            this.offSetToolStripMenu.Click += new System.EventHandler(this.OffsetToolStripMenu_Click);
+            // 
+            // setCommandBlockFramesToolStripMenuItem
+            // 
+            this.setCommandBlockFramesToolStripMenuItem.Name = "setCommandBlockFramesToolStripMenuItem";
+            this.setCommandBlockFramesToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+            this.setCommandBlockFramesToolStripMenuItem.Text = "Set Command Block Frames";
+            this.setCommandBlockFramesToolStripMenuItem.Click += new System.EventHandler(this.SetCommandBlockFramesToolStripMenuItem_Click);
             // 
             // commandContextMenuStrip1
             // 
@@ -927,7 +953,7 @@ namespace AnmChrEdit
             this.pasteCommandToolStripMenuItem.Text = "Paste Command";
             this.pasteCommandToolStripMenuItem.Click += new System.EventHandler(this.commandsPasteButton_Click);
             // 
-            // AnmChrForm
+            // ACE
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -936,8 +962,8 @@ namespace AnmChrEdit
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "AnmChrForm";
-            this.Text = "AnmChrEditor";
+            this.Name = "ACE";
+            this.Text = "ACE - AnmChrEditor";
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
@@ -1016,7 +1042,7 @@ namespace AnmChrEdit
         private System.Windows.Forms.ToolStripMenuItem tutorialFilesToolStripMenuItem;
         private System.Windows.Forms.Label lblCurrentFile;
         private ContextMenuStrip commandBlockContextMenuStrip;
-        private ToolStripMenuItem disableCommandBlookToolStripMenuItem;
+        private ToolStripMenuItem disableCommandBlockToolStripMenuItem;
         private ToolStripMenuItem copyCommandBlockToolStripMenuItem;
         private ToolStripMenuItem deleteCommandBlockToolStripMenuItem;
         private ToolStripMenuItem pasteCommandBlockToolStripMenuItem;
@@ -1034,6 +1060,9 @@ namespace AnmChrEdit
         private ToolStripMenuItem copyCommandsToolStripMenuItem;
         private ToolStripMenuItem deleteCommandsToolStripMenuItem;
         private ToolStripMenuItem pasteCommandsToolStripMenuItem;
+        private ToolStripMenuItem offSetToolStripMenu;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripMenuItem setCommandBlockFramesToolStripMenuItem;
     }
 
 }

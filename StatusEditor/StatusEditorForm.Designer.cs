@@ -716,8 +716,8 @@ namespace StatusEditor
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "StatusEditorForm";
-            this.Text = "Standard Editor";
+            this.Name = "SE - Standard Editor";
+            this.Text = "SE - Standard Editor";
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
