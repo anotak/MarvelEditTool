@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarvelEditTool", "MarvelEditTool\MarvelEditTool.csproj", "{BF0A5BD7-8B21-407F-A975-2C5679B3E259}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarvelData", "MarvelData\MarvelData.csproj", "{836AAC23-5EEE-440D-A559-7AA9A2CA1744}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatusEditor", "StatusEditor\StatusEditor.csproj", "{A950CD4D-7113-4A16-A9AA-6A43F86C3C17}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SE - StandardEditor", "StatusEditor\SE - StandardEditor.csproj", "{A950CD4D-7113-4A16-A9AA-6A43F86C3C17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnmChrEdit", "AnmChrEdit\AnmChrEdit.csproj", "{2E2D9F5E-ACB0-4DED-995D-888DF53FED94}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACE - AnmChrEditor", "AnmChrEdit\ACE - AnmChrEditor.csproj", "{2E2D9F5E-ACB0-4DED-995D-888DF53FED94}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSDEditor", "MSDEditor\MSDEditor.csproj", "{4F38DA84-5CA5-4EB9-8D28-6AB08B54E25C}"
 EndProject
@@ -42,5 +42,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {51EC52D7-5D8C-4792-AC2B-0F9EED5C3C2A}
 	EndGlobalSection
 EndGlobal

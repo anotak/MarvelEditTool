@@ -8,10 +8,11 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using MarvelData;
 using static System.Windows.Forms.LinkLabel;
+using Microsoft.VisualBasic;
 
 namespace AnmChrEdit
 {
-    public partial class AnmChrForm : Form
+    public partial class ACE : Form
     {
         public static bool bError = false;
         public string filePath;
@@ -21,6 +22,7 @@ namespace AnmChrEdit
         public bool bDisableUpdate;
         public bool bDisableSubUpdate;
         public bool bDisableSubSubUpdate;
+        public bool isMultiSelection;
         public AnmChrSubEntry commandBlockCopyInstance;
         public CmdSpAtkEntry spatkCopyInstance = new CmdSpAtkEntry();
         public byte[] commandCopyInstance;
@@ -33,9 +35,10 @@ namespace AnmChrEdit
         private int subEntryHoveredIndex = -1;
         private int dataTextBoxFormat;
         private ImageForm imageForm;
+        private bool isChecked;
+        private bool isBreak;
 
-
-        public AnmChrForm()
+        public ACE()
         {
             InitializeComponent();
             Text += ", build " + GetCompileDate();
@@ -193,7 +196,7 @@ namespace AnmChrEdit
 
             if (!tablefile.table[s].bHasData || commandBlocksBox.Items.Count == 0)
             {
-                emptyCommandsTextBox();
+                EmptyCommandsTextBox();
                 return;
             }
 
@@ -573,15 +576,15 @@ namespace AnmChrEdit
                 copyCommandBlockToolStripMenuItem1.Enabled = true;
                 copyCommandBlockToolStripMenuItem.Enabled = true;
                 commandBlockPasteButton.Enabled = commandBlockCopyInstance != null;
-                pasteCommandBlockToolStripMenuItem1.Enabled = commandBlockCopyInstance != null;
-                pasteCommandBlockToolStripMenuItem.Enabled = commandBlockCopyInstance != null;
+                pasteCommandBlockToolStripMenuItem1.Enabled = commandBlockCopyInstance != null && !isMultiSelection; ;
+                pasteCommandBlockToolStripMenuItem.Enabled = commandBlockCopyInstance != null && !isMultiSelection; ;
                 // commands button>menuOptions>contextMenu
                 commandsCopyButton.Enabled = true;
                 copyCommandsToolStripMenuItem.Enabled = true;
                 copyCommandToolStripMenuItem.Enabled = true;
                 commandsPasteButton.Enabled = commandCopyInstance != null;
-                pasteCommandsToolStripMenuItem.Enabled = commandCopyInstance != null;
-                pasteCommandToolStripMenuItem.Enabled = commandCopyInstance != null;
+                pasteCommandsToolStripMenuItem.Enabled = commandCopyInstance != null && !isMultiSelection; ;
+                pasteCommandToolStripMenuItem.Enabled = commandCopyInstance != null && !isMultiSelection; ;
                 validateDeleteButtons(entry);
             }
             else
@@ -626,6 +629,10 @@ namespace AnmChrEdit
                 var commandBlockIndex = commandBlocksBox.IndexFromPoint(e.Location);
                 if (commandBlockIndex >= 0)
                 {
+                    if ((Control.ModifierKeys & Keys.Shift) == Keys.None)
+                    {
+                        commandBlocksBox.ClearSelected();
+                    }
                     commandBlocksBox.SelectedIndex = commandBlockIndex;
                     //subEntryBox.Controls.;
                     this.Cursor = new Cursor(Cursor.Current.Handle);
@@ -645,41 +652,57 @@ namespace AnmChrEdit
             int top = animBox.TopIndex;
             if (tablefile.table[s] is AnmChrEntry && (tablefile.table[s].bHasData && tablefile.table[s].size > 0))
             {
-                AnmChrEntry entry = (AnmChrEntry)tablefile.table[s];
-
-                if (commandBlocksBox.SelectedIndex >= entry.subEntries.Count)
+                if (commandBlocksBox.SelectedIndices.Count == 1)
                 {
-                    commandsBox.SelectedIndex = entry.subEntries.Count - 1;
-                }
+                    isMultiSelection = false;
+                    AnmChrEntry entry = (AnmChrEntry)tablefile.table[s];
 
-                if (bDisableSubSubUpdate)
+                    if (commandBlocksBox.SelectedIndex >= entry.subEntries.Count)
+                    {
+                        commandsBox.SelectedIndex = entry.subEntries.Count - 1;
+                    }
+
+                    if (bDisableSubSubUpdate)
+                    {
+                        subsubDataSource = entry.subEntries[commandBlocksBox.SelectedIndex].GetCommandList();
+                        commandsBox.DataSource = subsubDataSource;
+                    }
+                    else
+                    {
+                        bDisableSubSubUpdate = true;
+                        subsubDataSource = entry.subEntries[commandBlocksBox.SelectedIndex].GetCommandList();
+                        commandsBox.DataSource = subsubDataSource;
+                        bDisableSubSubUpdate = false;
+                    }
+                    if (bDisableUpdate)
+                    {
+                        RefreshSelectedIndices();
+                    }
+                    else
+                    {
+                        SaveSelectedIndices();
+                    }
+                    RefreshText();
+                    timeTextBox.Text = entry.subEntries[commandBlocksBox.SelectedIndex].isDisabled ? "" : 
+                        entry.subEntries[commandBlocksBox.SelectedIndex].tableindex.ToString();
+                    timeTextBox.Enabled = true;
+                    validateDeleteButtons(entry);
+                } else if (commandBlocksBox.SelectedIndices.Count > 1)
                 {
-                    subsubDataSource = entry.subEntries[commandBlocksBox.SelectedIndex].GetCommandList();
-                    commandsBox.DataSource = subsubDataSource;
+                    isMultiSelection = true;
+                    EmptyCommandsTextBox();
+                    validateDeleteButtons(null);
                 }
                 else
                 {
-                    bDisableSubSubUpdate = true;
-                    subsubDataSource = entry.subEntries[commandBlocksBox.SelectedIndex].GetCommandList();
-                    commandsBox.DataSource = subsubDataSource;
-                    bDisableSubSubUpdate = false;
+                    isMultiSelection = false;
+                    EmptyCommandsTextBox();
+                    validateDeleteButtons(null);
                 }
-                if (bDisableUpdate)
-                {
-                    RefreshSelectedIndices();
-                }
-                else
-                {
-                    SaveSelectedIndices();
-                }
-                RefreshText();
-                timeTextBox.Text = entry.subEntries[commandBlocksBox.SelectedIndex].isDisabled ? "" : entry.subEntries[commandBlocksBox.SelectedIndex].tableindex.ToString();
-                timeTextBox.Enabled = true;
-                validateDeleteButtons(entry);
             }
             else
             {
-                emptyCommandsTextBox();
+                EmptyCommandsTextBox();
             }
 
             bDisableSubUpdate = false;
@@ -687,14 +710,93 @@ namespace AnmChrEdit
             //ResumeLayout();
         }
 
-        private void emptyCommandsTextBox()
+        private void EmptyCommandsTextBox()
         {
             timeTextBox.Enabled = false;
             commandsBox.DataSource = null;
             commandsBox.Items.Clear();
         }
 
-        private void commandsBox_RightMouseClick(object sender, MouseEventArgs e)
+        // Sets the given # frames to the selected command block(s)
+        private void SetCommandBlockFramesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var inputframes = Interaction.InputBox("Set #Frames", "Command Block number of frames", "");
+            int frames;
+
+            if (int.TryParse(inputframes, out frames))
+            {
+                AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
+                isChecked = false;
+                foreach (var index in commandBlocksBox.SelectedIndices)
+                {
+                    if (CheckNewFrameValue(entry, frames) && !isBreak)
+                    {
+                        entry.subEntries[(int)index].localindex = frames < 0 ? -1 : frames > entry.animTime ? entry.animTime : frames;
+                        entry.subEntries[(int)index].tableindex = entry.subEntries[(int)index].localindex;
+                    }
+                }
+                subDataSource = entry.getSubEntryList();
+                commandBlocksBox.DataSource = subDataSource; ;
+            }
+            else if (!String.IsNullOrEmpty(inputframes))
+            {
+                MessageBox.Show(this, "Invalid input.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Adds the given offset to the frames of the selected command block(s)
+        private void OffsetToolStripMenu_Click(object sender, EventArgs e)
+        {
+            var inputOffset = Interaction.InputBox("Set offset", "Command Block Offset", "");
+            int offset;
+
+            if (int.TryParse(inputOffset, out offset))
+            {
+                AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
+                isChecked = false;
+                foreach (var index in commandBlocksBox.SelectedIndices)
+                {
+                    if (CheckNewFrameValue(entry, entry.subEntries[(int)index].localindex + offset) && !isBreak)
+                    {
+                        entry.subEntries[(int)index].localindex =
+                            entry.subEntries[(int)index].localindex + offset < 0 ? -1 :
+                            entry.subEntries[(int)index].localindex + offset > entry.animTime ? entry.animTime :
+                            entry.subEntries[(int)index].localindex + offset;
+                        entry.subEntries[(int)index].tableindex = entry.subEntries[(int)index].localindex;
+                    }
+                }
+                subDataSource = entry.getSubEntryList();
+                commandBlocksBox.DataSource = subDataSource; ;
+            }
+            else if (!String.IsNullOrEmpty(inputOffset))
+            {
+                MessageBox.Show(this, "Invalid input.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Verifies new frame value giving a warning when it reaches negative values or the max frames
+        private bool CheckNewFrameValue(AnmChrEntry entry, int newValue)
+        {
+            if ((newValue >= entry.animTime || newValue < 0) && !isChecked)
+            {
+                switch (MessageBox.Show(this, "One or more of your new values will reach the " +
+                    (newValue < 0 ? "minimum " : newValue > entry.animTime ? "maximum " : "minimum/maximum ") + "threshold."
+                    + Environment.NewLine + "Are you sure you want to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                {
+                    case DialogResult.No:
+                        isChecked = true;
+                        isBreak = true;
+                        return false;
+                    default:
+                        isChecked = true;
+                        isBreak = false;
+                        return true;
+                }
+            }
+            return true;
+        }
+
+        private void CommandsBox_RightMouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -730,7 +832,7 @@ namespace AnmChrEdit
 
                     RefreshText();
                 }
-                else if (entry.subEntries.Count > 0)
+                else if (entry.subEntries.Count > 0 && commandBlocksBox.SelectedIndex > 0)
                 {
                     if (commandsBox.SelectedIndex >= entry.subEntries[commandBlocksBox.SelectedIndex].subsubEntries.Count)
                     {
@@ -940,6 +1042,7 @@ namespace AnmChrEdit
                         if (entry.subEntries[i].isEdited)
                         {
                             entry.subEntries[i].isEdited = false;
+                            commandBlocksBox.ClearSelected();
                             commandBlocksBox.SelectedIndex = i;
                             bDontSelect = false;
                             break;
@@ -1148,8 +1251,8 @@ namespace AnmChrEdit
                 int newTime = 21012;
                 entry.subEntries[commandBlocksBox.SelectedIndex].isEdited = true;
                 entry.subEntries[commandBlocksBox.SelectedIndex].isDisabled = true;
-                entry.subEntries[commandBlocksBox.SelectedIndex].tableindex = newTime;
-                entry.subEntries[commandBlocksBox.SelectedIndex].localindex = newTime;
+                entry.subEntries[commandBlocksBox.SelectedIndex].tableindex = entry.subEntries[commandBlocksBox.SelectedIndex].tableindex + newTime;
+                entry.subEntries[commandBlocksBox.SelectedIndex].localindex = entry.subEntries[commandBlocksBox.SelectedIndex].localindex + newTime;
                 timeTextBox.Clear();
 
                 bDisableSubSubUpdate = true;
@@ -1238,20 +1341,21 @@ namespace AnmChrEdit
         // Validates if the command related buttons ought to be enabled or not
         private void validateDeleteButtons(AnmChrEntry entry)
         {
-            bool isSubEntries = entry.subEntries.Count > 0;
-            commandBlockDeleteButton.Enabled = isSubEntries;
-            deleteCommandBlockToolStripMenuItem1.Enabled = isSubEntries;
-            deleteCommandBlockToolStripMenuItem.Enabled = isSubEntries;
-            commandBlockCopyButton.Enabled = isSubEntries;
-            copyCommandBlockToolStripMenuItem1.Enabled = isSubEntries;
-            copyCommandBlockToolStripMenuItem.Enabled = isSubEntries;
-            commandBlockDisableButton.Enabled = isSubEntries;
-            disableCommandBlockToolStripMenuItem1.Enabled = isSubEntries;
-            disableCommandBlookToolStripMenuItem.Enabled = isSubEntries;
+            bool isSubEntries = entry?.subEntries.Count > 0;
+            bool isDisabled = (entry?.subEntries[commandBlocksBox.SelectedIndex].isDisabled).Equals(true);
+            commandBlockDeleteButton.Enabled = isSubEntries && !isMultiSelection;
+            deleteCommandBlockToolStripMenuItem1.Enabled = isSubEntries && !isMultiSelection;
+            deleteCommandBlockToolStripMenuItem.Enabled = isSubEntries && !isMultiSelection;
+            commandBlockCopyButton.Enabled = isSubEntries && !isMultiSelection;
+            copyCommandBlockToolStripMenuItem1.Enabled = isSubEntries && !isMultiSelection;
+            copyCommandBlockToolStripMenuItem.Enabled = isSubEntries && !isMultiSelection;
+            commandBlockDisableButton.Enabled = isSubEntries && !isMultiSelection && !isDisabled;
+            disableCommandBlockToolStripMenuItem1.Enabled = isSubEntries && !isMultiSelection && !isDisabled;
+            disableCommandBlockToolStripMenuItem.Enabled = isSubEntries && !isMultiSelection && !isDisabled;
 
             timeTextBox.Text = isSubEntries ? timeTextBox.Text : null;
             timeTextBox.Enabled = isSubEntries;
-            dataTextBox.Text = isSubEntries ? dataTextBox.Text : "no data selected?";
+            dataTextBox.Text = isMultiSelection ? "multi selection mode" : isSubEntries ? dataTextBox.Text : "no data selected?";
             if (isSubEntries)
             {
                 bool isSubSubEntries = entry.subEntries[commandBlocksBox.SelectedIndex].subsubPointers.Count > 0;
