@@ -26,11 +26,11 @@ namespace AnmChrEdit
                 Application.ThreadException += new ThreadExceptionEventHandler(handler.ApplicationThreadException);
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new AnmChrForm());
+                Application.Run(new ACE());
             }
             catch (Exception e)
             {
-                AnmChrForm.bError = true;
+                ACE.bError = true;
 
                 AELogger.Log("Exception: " + e.Message);
 
@@ -59,7 +59,7 @@ namespace AnmChrEdit
         {
             public void HandleException(object sender, Exception e)
             {
-                AnmChrForm.bError = true;
+                ACE.bError = true;
                 string exceptionString = "UNHAPPY ERROR :(\nyou should save the logfile.txt and give it to the developers of this tool \n--------------\n ";
                 if (e == null)
                 {

@@ -339,7 +339,7 @@ namespace MarvelData
         public int slot6DHC;
         public int slotDHCUnk;
         public int XF1YellowHealthRegen;
-        public int XF1Unk;
+        public int XF1ChipDamageOn;
         public float XF1Damage;
         public float XF1Speed;
         public float XF1Duration;
@@ -351,7 +351,7 @@ namespace MarvelData
         public float XF1DmgTaken;
         public int unkFC;
         public int XF2YellowHealthRegen;
-        public int XF2Unk;
+        public int XF2ChipDamageOn;
         public float XF2Damage;
         public float XF2Speed;
         public float XF2Duration;
@@ -363,7 +363,7 @@ namespace MarvelData
         public float XF2DmgTaken;
         public int unk12C;
         public int XF3YellowHealthRegen;
-        public int XF3Unk;
+        public int XF3ChipDamageOn;
         public float XF3Damage;
         public float XF3Speed;
         public float XF3Duration;
@@ -675,7 +675,7 @@ namespace MarvelData
         None = 0,
         SpecialScalingUnk = 0x00000001,
         HyperScalingUnk = 0x00000002,
-        Unk0x04 = 0x00000004,
+        JuggleAwayFromDmgSource = 0x00000004,
         NeverCounterhit = 0x00000008,
         Unk0x10 = 0x00000010,
         Unk0x20 = 0x00000020,
@@ -725,7 +725,7 @@ namespace MarvelData
         Unk0x10000 = 0x00010000,
         Unk0x20000 = 0x00020000,
         Unk0x40000 = 0x00040000,
-        Unk0x80000 = 0x00080000,
+        PlayerCmdSPAtkXOnHitOn = 0x00080000,
         Unk0x100000 = 0x00100000,
         Unk0x200000 = 0x00200000,
         Unk0x400000 = 0x00400000,

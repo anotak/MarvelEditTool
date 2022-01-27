@@ -249,10 +249,10 @@ namespace MarvelData
         public string GetName()
         {
             sb.Clear();
-            if (isDisabled || localindex == 21012)
+            if (isDisabled || localindex >= 21011)
             {
-                sb.Append("Disabled");
-                isDisabled = localindex == 21012;
+                sb.Append("Disabled at #0" + (localindex - 21012));
+                isDisabled = localindex >= 21011;
             } else
             {
                 sb.Append("Time ");
