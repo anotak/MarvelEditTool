@@ -25,9 +25,9 @@ namespace MarvelData
         public float projectileAccel;
         public int unk98;
         public float beamDuration;
-        public int unkA0;
-        public int unkA4;
-        public int unkA8;
+        public float projectileYSpeed;
+        public float projectileYAccel;
+        public float unkA8;
         public int unkAC;
         public int unkB0;
         public int unkB4;
@@ -37,7 +37,7 @@ namespace MarvelData
         public int unkC4;
         public int unkC8;
         public int unkCC;
-        public int unkD0;
+        public float unkD0;
         public int unkD4;
         public int unkD8;
         public int unkDC;
@@ -54,13 +54,13 @@ namespace MarvelData
         public float ProjectileAngle;
         public int unk10C;
         public int unk110;
-        public int unk114;
+        public float unk114;
         public int unk118;
         public int unk11C;
         public int unk120;
         public int unk124;
-        public int unk128;
-        public int unk12C;
+        public float unk128;
+        public float unk12C;
         public int trapTransition; //bitwise flags
         public int unk134;
         public int unk138;
@@ -322,7 +322,7 @@ namespace MarvelData
         public int unk84;
         public int stunTimer;
         public int unk8C;
-        public ComboType comboType;
+        public int buttonChainLimit;
         public int unk94;
         public float minDmgScalingNormals;
         public float minDmgScalingSpecials;
@@ -347,7 +347,7 @@ namespace MarvelData
         public int unkE8;
         public int unkEC;
         public int unkF0;
-        public float XF1MeterGAin;
+        public float XF1MeterGain;
         public float XF1DmgTaken;
         public int unkFC;
         public int XF2YellowHealthRegen;
@@ -359,7 +359,7 @@ namespace MarvelData
         public int unk118;
         public int unk11C;
         public int unk120;
-        public float XF2MeterGAin;
+        public float XF2MeterGain;
         public float XF2DmgTaken;
         public int unk12C;
         public int XF3YellowHealthRegen;
@@ -371,7 +371,7 @@ namespace MarvelData
         public int unk148;
         public int unk150;
         public float unk154;
-        public float XF3MeterGAin;
+        public float XF3MeterGain;
         public float XF3DmgTaken;
         public int unk160;
         public int unk164;
@@ -379,8 +379,8 @@ namespace MarvelData
         public int unk16C;
         public int unk170;
         public int unk174;
-        public int unk178;
-        public int unk17C;
+        public float unk178;
+        public float unk17C;
         public int unk180;
         public int unk184;
         public int unk188;
@@ -393,9 +393,9 @@ namespace MarvelData
         public int unk1A4;
         public int unk1A8;
         public int unk1AC;
-        public int unk1B0;
-        public int unk1B4;
-        public int unk1B8;
+        public int damageSFXOnHit;
+        public int blockSFXOnHit;
+        public int jumpLandSFX;
         public float unk1BC;
         public float unk1C0;
         public float unk1C4;
@@ -433,15 +433,15 @@ namespace MarvelData
         public float unk244;
         public float unk248;
         public float unk24C;
-        public int unk250;
-        public int unk254;
-        public int unk258;
-        public int unk25C;
-        public int unk260;
-        public int unk264;
-        public int unk268;
-        public int unk26C;
-        public int unk270;
+        public int FaceGroup1;
+        public int FaceGroup2;
+        public int FaceGroup3;
+        public int FaceGroup4;
+        public int FaceGroup5;
+        public int FaceGroup6;
+        public int FaceGroup7;
+        public int FaceGroup8;
+        public int FaceGroup9;
         public float unk274;
         public float unk278;
         public float unk27C;
@@ -452,13 +452,13 @@ namespace MarvelData
         public float unk290;
         public float unk294;
         public int unk298;
-        public int unk29C;
-        public int unk2A0;
-        public int unk2A4;
-        public int unk2A8;
-        public int unk2AC;
-        public int unk2B0;
-        public int unk2B4;
+        public float unk29C;
+        public float unk2A0;
+        public float unk2A4;
+        public float unk2A8;
+        public float unk2AC;
+        public float unk2B0;
+        public float unk2B4;
         public int unk2B8;
         public int unk2BC;
         public int unk2C0;
@@ -486,14 +486,14 @@ namespace MarvelData
         public int unk318;
         public int unk31C;
         public int unk320;
-        public int unk324;
-        public int unk328;
-        public int unk32C;
-        public int unk330;
-        public int unk334;
-        public int unk338;
-        public int unk33C;
-        public int unk340;
+        public float unk324;
+        public float unk328;
+        public float unk32C;
+        public float unk330;
+        public float unk334;
+        public float unk338;
+        public float unk33C;
+        public float unk340;
         public int unk344;
         public int unk348;
         public int unk34C;
@@ -567,14 +567,14 @@ namespace MarvelData
         public int meterSteal;
         public int hitboxDestructionUnk;
         public int hiddenStunUnk;
-        public int AddedHitstun;
+        public int GroundHitstun;
         public int unk090;
         public int AddedBlockstun;
         public int hardKDTime;
-        public float enemyPushbackAndWallBounceDist;
-        public float opponentBlockPushCornerInverse;
-        public float playerBlockPushCorner;
-        public float playerBlockPushInverse;
+        public float enemyGroundPushbackAndWallBounceDist;
+        public float enemyGroundPushbackAccel;
+        public float attackerPushback;
+        public float attackerPushbackAccel;
         public float unk0AC;
         public float unk0B0;
         public float unk0B4;
@@ -589,19 +589,19 @@ namespace MarvelData
         public int unk0D8;
         public float juggleCarry;
         public float juggleSpeed;
-        public int FixedHitstunIfFlagOn;
+        public int AirFixedHitstun;
         public int SJJuggleHeight;
         public int unk0EC;
         public float SJJuggleCarry;
         public float SJJuggleSpeed;
-        public int SJFixedHitstun;
+        public int SJAirFixedHitstun;
         public int PlayerCmdSPAtkClassOnHit;
         public int PlayerCmdSPAtkIndexOnHit;
         public int EnemyCmdSPAtkClassOnHit;
         public int EnemyCmdSPAtkIndexOnHit;
         public int throwUnk1;
         public int unk110;
-        public int throwUnk2;
+        public int AmmyThrowModifier;
         public int Hitspark1;
         public int unk11C;
         public HitEffectOnEnemy OnHitEffectOnEnemy;
@@ -617,19 +617,19 @@ namespace MarvelData
         public int unk148;
         public int unk14C;
         public int hitSFXGroup;
-        public int hitSFX;
-        public int unk158;
-        public int unk15C;
+        public int hitSFXType;
+        public int hitSFXID;
+        public int AttackWhiffSoundEnable;
         public int launcherUnk;
         public int unk164;
         public float unk168;
         public float unk16C;
         public int unk170;
         public int unk174;
-        public int IdReference2;
-        public int delayIdReference2;
+        public int IDReference2;
+        public int FramesToIDReference2;
         public int unk180;
-        public int unk184;
+        public int HitsToIDReference2;
         public int unk188;
     }
 
@@ -677,7 +677,7 @@ namespace MarvelData
         HyperScalingUnk = 0x00000002,
         JuggleAwayFromDmgSource = 0x00000004,
         NeverCounterhit = 0x00000008,
-        Unk0x10 = 0x00000010,
+        EnableTransition = 0x00000010,
         Unk0x20 = 0x00000020,
         ChipDamage = 0x00000040,
         Unblockable = 0x00000080,
@@ -854,7 +854,7 @@ namespace MarvelData
         stagger = 3,
         fallBack1 = 4,
         crumple = 5,
-        fallBack2 = 6,
+        WallBounce = 6,
         fallFaceFirst = 7,
         groundBounce = 8,
         airJuggle = 9,
@@ -937,28 +937,29 @@ namespace MarvelData
 
     public enum BoneReferenceId : uint
     {
-      Unk01 = 01,
-      Unk02 = 02,
-      Stomach = 03,
-      Unk04 = 04,
+      Origin1 = 01,
+      Origin2 = 02,
+      Spine3 = 03,
+      Spine2 = 04,
       Chest = 05,
-      Unk06 = 06,
+      Neck = 06,
       Head = 07,
-      Unk08 = 08,
+      LeftShoulderBlade = 08,
       LeftShoulder = 09,
       LeftElbow = 10,
       LeftWrist = 11,
-      Unk12 = 12,
+      RightShoulderBlade = 12,
       RightShoulder = 13,
       RightElbow = 14,
       RightWrist = 15,
-      RighHand = 16,
+      LeftThigh = 16,
       LeftKnee = 17,
       LeftFoot = 18,
-      Unk19 = 19,
-      Unk20 = 20,
+      LToe = 19,
+      RightLeg = 20,
       RightKnee = 21,
       RightFoot = 22,
+      RightToe = 23,
       Detached = 4294967295
     }
 
@@ -1068,7 +1069,7 @@ namespace MarvelData
         public int chargeTimeUnk;
         public InputCode inputCodeLeniency;
         public InputCode inputCodeDirection;
-        public int unk14;
+        public int AtkSInput;
         public int unk18;
         public int unk1C;
     }
