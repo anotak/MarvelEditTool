@@ -622,7 +622,7 @@ namespace MarvelData
         AirBlockBounce = 0x00000020,
         NoHyperDrainGain = 0x00000040,
         NoHitstop = 0x00000080,
-        IMSentShumaUnk = 0x00000100,
+        BonneBreathingOff = 0x00000100,
         AirUnk = 0x00000200,
         ShumaUnk = 0x00000400,
         AmmyShumaUnk = 0x00000800,
@@ -732,7 +732,7 @@ namespace MarvelData
         public int hitSFXID;
         public int AttackWhiffSoundEnable;
         public int launcherUnk;
-        public int unk164;
+        public float unk164;
         public float unk168;
         public float unk16C;
         public int unk170;
@@ -786,7 +786,7 @@ namespace MarvelData
         None = 0,
         SpecialScalingUnk = 0x00000001,
         HyperScalingUnk = 0x00000002,
-        JuggleAwayFromDmgSource = 0x00000004,
+        ProjectileHitboxJuggleAway = 0x00000004,
         NeverCounterhit = 0x00000008,
         EnableTransition = 0x00000010,
         Unk0x20 = 0x00000020,
