@@ -810,7 +810,7 @@ namespace StatusEditor
             RefreshAnimBox();
         }
 
-        //translates the numeric values as known readable entries
+        //this creates the drop down list for enums and other integers
         private void structView_SelectedIndexChanged(object sender, EventArgs e)
         {
             String tag = "";
@@ -847,6 +847,12 @@ namespace StatusEditor
                 AddTags(typeof(SubChunkType), true);
             else if (tag.Contains("boneReferenceId"))
                 AddTags(typeof(BoneReferenceId), true);
+            else if (tag.Contains("ShtFlagsA"))
+                AddTags(typeof(ShtFlagsA), true);
+            else if (tag.Contains("ShtFlagsB"))
+                AddTags(typeof(ShtFlagsB), true);
+            else if (tag.Contains("ShtFlagsC"))
+                AddTags(typeof(ShtFlagsC), true);
             else
             {
                 tagsDataGridView.DataSource = null;
