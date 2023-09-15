@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Animation;
 
 namespace MarvelData
 {
@@ -38,15 +39,222 @@ namespace MarvelData
                 case 0x2:
                     name = "Walk Backward";
                     break;
-                /*
                 case 0x3:
-                    return "fwd dash";
+                    name = "Dash Forward";
+                    break;
                 case 0x4:
-                    return "backdash";
-                case 0x96:
-                    return "5L";
+                    name = "Dash Backward";
+                    break;
+                case 0x5:
+                    name = "Air Dash Forward";
+                    break;
+                case 0x6:
+                    name = "Air Dash Backward";
+                    break;
+                case 0xA:
+                    name = "Crouch";
+                    break;
+                case 0xC:
+                    name = "Neutral Jump";
+                    break;
+                case 0xD:
+                    name = "Jump Forward";
+                    break;
+                case 0xE:
+                    name = "Jump Backwards";
+                    break;
+                case 0xF:
+                    name = "Neutral Double Jump";
+                    break;
+                case 0x10:
+                    name = "Forward Double Jump";
+                    break;
+                case 0x11:
+                    name = "Double Jump Back";
+                    break;
+                case 0x13:
+                    name = "Neutral Super Jump";
+                    break;
+                case 0x14:
+                    name = "Forward Super Jump";
+                    break;
+                case 0x15:
+                    name = "Back Super Jump";
+                    break;
+                case 0x16:
+                    name = "Falling";
+                    break;
+                case 0x17:
+                    name = "Landing";
+                    break;
+                case 0x18:
+                    name = "Standing Turn";
+                    break;
+                case 0x1A:
+                    name = "Crouching Turn";
+                    break;
+                case 0x1E:
+                    name = "Standing Guard";
+                    break;
+                case 0x1F:
+                    name = "Crouching Guard";
+                    break;
+                case 0x20:
+                    name = "Jumping Guard";
+                    break;
+                case 0x21:
+                    name = "Standing Pushblock";
+                    break;
+                case 0x22:
+                    name = "Crouching Pushblock";
+                    break;
+                case 0x23:
+                    name = "Jumping Pushblock";
+                    break;
+                case 0x24:
+                    name = "Throw Broken - Standing";
+                    break;
+                case 0x25:
+                    name = "Breaking Throw - Standing";
+                    break;
+                case 0x26:
+                    name = "Throw Broken - Air";
+                    break;
+                case 0x27:
+                    name = "Breaking Throw - Air";
+                    break;
+                case 0x32:
+                    name = "Neutral Air Recovery";
+                    break;
+                case 0x33:
+                    name = "Back Air Recovery";
+                    break;
+                case 0x34:
+                    name = "Forward Air Recovery";
+                    break;
+                case 0x35:
+                    name = "Ground Knockdown Recovery";
+                    break;
+                case 0x36:
+                    name = "Ground Knockdown Recovery Fwd";
+                    break;
+                case 0x37:
+                    name = "Knockdown Recovery Forward";
+                    break;
+                case 0x38:
+                    name = "Knockdown Recovery Back";
+                    break;
+                case 0x3C:
+                    name = "Lean Damage 1";
+                    break;
+                case 0x3D:
+                    name = "Lean Damage 2";
+                    break;
+                case 0x3E:
+                    name = "Lean Damage 3";
+                    break;
+                case 0x3F:
+                    name = "Stationary Damage 1";
+                    break;
+                case 0x40:
+                    name = "Stationary Damage 2";
+                    break;
+                case 0x41:
+                    name = "Stationary Damage 3";
+                    break;
+                case 0x42:
+                    name = "Lean Forward Damage 1";
+                    break;
+                case 0x43:
+                    name = "Lean Forward Damage 2";
+                    break;
+                case 0x44:
+                    name = "Lean Forward Damage 3";
+                    break;
+                case 0x45:
+                    name = "Crouch Lean Back Damage 1";
+                    break;
+                case 0x46:
+                    name = "Crouch Lean Back Damage 2";
+                    break;
+                case 0x47:
+                    name = "Crouch Lean Back Damage 3";
+                    break;
+                case 0x82:
+                    name = "Intro As Point";
+                    break;
+                case 0x83:
+                    name = "Intro As Assist 1";
+                    break;
+                case 0x84:
+                    name = "Intro As Assist 2";
+                    break;
+                case 0x85:
+                    name = "Intro Partner Exit";
+                    break;
+                case 0x87:
+                    name = "Taunt";
+                    break;
+                case 0x88:
+                    name = "Death Vanish";
+                    break;
+                case 0x89:
+                    name = "Victory";
+                    break;
+                case 0x8A:
+                    name = "Time-over Victory";
+                    break;
+                case 0x8B:
+                    name = "Time-over Loss";
+                    break;
+                case 0xAA:
+                    name = "XFactor Activate";
+                    break;
+                case 0xAB:
+                    name = "Snap Back";
+                    break;
+                case 0xAC:
+                    name = "Alpha Assist";
+                    break;
+                case 0xAD:
+                    name = "Beta Assist";
+                    break;
+                case 0xAE:
+                    name = "Gamma Assist";
+                    break;
+                case 0x104:
+                    name = "Standing Forward Grab";
+                    break;
+                case 0x105:
+                    name = "Standing Back Grab";
+                    break;
+                case 0x106:
+                    name = "Air Forward Grab";
+                    break;
+                case 0x107:
+                    name = "Air Back Grab";
+                    break;
+                case 0x12c:
+                    name = "Cinematic Standing Forward Grab";
+                    break;
+                case 0x12d:
+                    name = "Cinematic Standing Back Grab";
+                    break;
+                case 0x12e:
+                    name = "Cinematic Air Forward Grab";
+                    break;
+                case 0x12F:
+                    name = "Cinematic Air Back Grab";
+                    break;
+                case 0x154:
+                    name = "Tag Out";
+                    break;
                 case 0x168:
-                    return "5S";*/
+                    name = "Standing S";
+                    break;
+                case 0x1B8:
+                    name = "Usually Gallery Pose";
+                    break;
                 default:
                     name = "unknown";
                     break;
