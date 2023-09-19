@@ -207,6 +207,12 @@ namespace AnmChrEdit
                 if (selectedSub >= 0 && selectedSub < commandBlocksBox.Items.Count)
                 {
                     commandBlocksBox.SelectedIndex = selectedSub;
+
+                    // un-selects top-most multi select entry if relevant
+                    if (commandBlocksBox.SelectedItems.Count > 1) 
+                    {
+                        commandBlocksBox.SelectedItems.Remove(commandBlocksBox.SelectedItems[0]);
+                    }
                 }
             }
 
@@ -819,7 +825,7 @@ namespace AnmChrEdit
                 return;
             }
 
-            AELogger.Log("selected subsubox " + commandsBox.SelectedIndex);
+            AELogger.Log("selected subsub box " + commandsBox.SelectedIndex);
 
             bDisableSubSubUpdate = true;
             int s = animBox.SelectedIndex;
@@ -1144,6 +1150,10 @@ namespace AnmChrEdit
                         break;
                     }
                 }
+                if (commandBlocksBox.SelectedItems.Count > 1) // catches multi select after pasting a time
+                {
+                    commandBlocksBox.SelectedItems.Remove(commandBlocksBox.SelectedItems[0]);
+                }
                 commandBlocksBox_SelectedIndexChanged(null, null);
             }
         }
@@ -1214,19 +1224,17 @@ namespace AnmChrEdit
                 isDeleting = true;
 
                 entry.subEntries.RemoveAt(commandBlocksBox.SelectedIndex);
-                commandsBox.DataSource = null;
-                subDataSource = entry.getSubEntryList();
-                commandBlocksBox.DataSource = subDataSource;
-
+                commandsBox.DataSource = null; //empties command list
+                subDataSource = entry.getSubEntryList(); //grabs subchunk list
+                commandBlocksBox.DataSource = subDataSource; //applies new subchunk list
                 bDisableSubSubUpdate = false;
                 bDisableSubUpdate = false;
                 if (subDataSource.Count > 0)
                 {
-                    commandBlocksBox.SelectedIndex = 0;
-                
+                    // commandBlocksBox.SelectedIndex = 0;
                     RefreshSelectedIndices();
                     subsubDataSource = commandBlockEntry.GetCommandList();
-                    commandsBox.DataSource = subsubDataSource;
+                    //commandsBox.DataSource = subsubDataSource; //this caused the commands to be reloaded improperly?
                     if (subsubDataSource.Count > 0)
                     {
                         commandsBox.SelectedIndex = 0;
@@ -1236,7 +1244,7 @@ namespace AnmChrEdit
                 {
                     AELogger.Log("odd issue ???????");
                     dataTextBox.Enabled = false;
-                }
+                } 
                 isDeleting = false;
                 validateDeleteButtons(entry);
             }
@@ -1273,7 +1281,10 @@ namespace AnmChrEdit
                         break;
                     }
                 }
-
+                if (commandBlocksBox.SelectedItems.Count > 1) // catches multi select after pasting a time
+                {
+                    commandBlocksBox.SelectedItems.Remove(commandBlocksBox.SelectedItems[0]);
+                }
                 if (bDontSelect)
                 {
                     commandBlocksBox.SelectedIndex = s;
@@ -1281,6 +1292,7 @@ namespace AnmChrEdit
 
                 bDisableSubUpdate = false;
                 bDisableSubSubUpdate = false;
+
             }
             else
             {
