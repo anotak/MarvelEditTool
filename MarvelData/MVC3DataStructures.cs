@@ -998,7 +998,7 @@ namespace MarvelData
         public int size;
         public int unk08;
         public float meterRequirement;
-        public CmdDisabled disable;
+        public CmdDisabled disabled;
         public int windowStart;
         public int windowEnd;
         public int delay;

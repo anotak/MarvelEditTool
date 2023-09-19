@@ -37,6 +37,7 @@ namespace AnmChrEdit
         private ImageForm imageForm;
         private bool isChecked;
         private bool isBreak;
+        public bool isDeleting = false;
 
         public ACE()
         {
@@ -1210,6 +1211,7 @@ namespace AnmChrEdit
 
                 bDisableSubUpdate = true;
                 bDisableSubSubUpdate = true;
+                isDeleting = true;
 
                 entry.subEntries.RemoveAt(commandBlocksBox.SelectedIndex);
                 commandsBox.DataSource = null;
@@ -1218,7 +1220,6 @@ namespace AnmChrEdit
 
                 bDisableSubSubUpdate = false;
                 bDisableSubUpdate = false;
-                
                 if (subDataSource.Count > 0)
                 {
                     commandBlocksBox.SelectedIndex = 0;
@@ -1236,6 +1237,7 @@ namespace AnmChrEdit
                     AELogger.Log("odd issue ???????");
                     dataTextBox.Enabled = false;
                 }
+                isDeleting = false;
                 validateDeleteButtons(entry);
             }
         }
