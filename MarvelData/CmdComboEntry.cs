@@ -73,7 +73,7 @@ namespace MarvelData
             
             StructEntry<CmdComboHeaderChunk> header = (StructEntry<CmdComboHeaderChunk>)subEntries[0];
 
-            if (header.data.disable.Equals(MarvelData.CmdDisabled.disabled))
+            if (header.data.disabled.Equals(MarvelData.CmdDisabled.disabled))
             {
                 nameSB.Append("DISABLED ");
             }

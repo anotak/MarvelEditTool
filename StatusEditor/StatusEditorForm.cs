@@ -853,6 +853,10 @@ namespace StatusEditor
                 AddTags(typeof(ShtFlagsB), true);
             else if (tag.Contains("ShtFlagsC"))
                 AddTags(typeof(ShtFlagsC), true);
+            else if (tag.Contains("disabled"))
+                AddTags(typeof(CmdDisabled), false);
+            else if (tag.Contains("disable"))
+                AddTags(typeof(SpatkDisabled), false);
             else
             {
                 tagsDataGridView.DataSource = null;
@@ -1237,23 +1241,23 @@ namespace StatusEditor
         }
         // end datatextbox stuff
         #endregion
-
+           // disabled until i find a good way to fix the move up button
         private void upButton_Click(object sender, EventArgs e)
         {
-            if (animBox.SelectedIndex < 0
-                ||
-                animBox.SelectedIndex >= tablefile.table.Count
-                ||
-                !tablefile.table[animBox.SelectedIndex].bHasData)
-            {
-                return;
-            }
-            int newindex = tablefile.Move(animBox.SelectedIndex, 1);
-            RefreshData();
-            if (newindex < animBox.Items.Count && newindex >= 0)
-            {
-                animBox.SelectedIndex = newindex;
-            }
+            /*   if (animBox.SelectedIndex < 0
+                   ||
+                   animBox.SelectedIndex >= tablefile.table.Count
+                   ||
+                   !tablefile.table[animBox.SelectedIndex].bHasData)
+               {
+                   return;
+               }
+               int newindex = tablefile.Move(animBox.SelectedIndex, 1);
+               RefreshData();
+               if (newindex < animBox.Items.Count && newindex >= 0)
+               {
+                  animBox.SelectedIndex = newindex;
+        }*/
         }
 
         private void textBox1_Validating(object sender, System.ComponentModel.CancelEventArgs e)
