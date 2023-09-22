@@ -54,7 +54,7 @@ namespace MarvelData
             string filenamelower = filename.ToLowerInvariant();
 
             // Reads .SHT file here
-            if (filenamelower.Contains("10be43d4") || filenamelower.Contains("SHT"))
+            if (filenamelower.Contains("10be43d4") || filenamelower.Contains("sht"))
             {
                 return ReadShotFile(filename, out entryType, ref structsize, tablefile);
             }
