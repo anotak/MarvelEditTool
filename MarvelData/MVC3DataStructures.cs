@@ -19,7 +19,7 @@ namespace MarvelData
         public ShtFlagsC ShtFlagsC;
         public int unk80;
         public float projectileDuration;
-        public int unk88;
+        public float unk88;
         public int unk8c;
         public float projectileSpeed;
         public float projectileAccel;

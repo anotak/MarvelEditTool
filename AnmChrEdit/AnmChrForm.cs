@@ -1231,13 +1231,13 @@ namespace AnmChrEdit
                 bDisableSubUpdate = false;
                 if (subDataSource.Count > 0)
                 {
-                    // commandBlocksBox.SelectedIndex = 0;
+                    commandBlocksBox.SelectedIndex = 0;
                     RefreshSelectedIndices();
                     subsubDataSource = commandBlockEntry.GetCommandList();
                     //commandsBox.DataSource = subsubDataSource; //this caused the commands to be reloaded improperly?
                     if (subsubDataSource.Count > 0)
                     {
-                        commandsBox.SelectedIndex = 0;
+                        // commandsBox.SelectedIndex = 0;
                     }
                 }
                 else
