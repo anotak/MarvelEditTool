@@ -1240,15 +1240,6 @@ namespace AnmChrEdit
                 isDeleting = true;
                 reselectID = commandBlocksBox.SelectedIndex;
                 entry.subEntries.RemoveAt(commandBlocksBox.SelectedIndex);
-                /*
-                if (reselectID <= commandBlocksBox.Items.Count && commandBlocksBox.Items.Count != 0)
-                {
-                  commandBlocksBox.SelectedIndex = reselectID;
-                }
-                else{
-                commandBlocksBox.SelectedIndex = 0;
-                    }
-                */
                 commandsBox.DataSource = null; //empties command list
                 subDataSource = entry.getSubEntryList(); //grabs subchunk list
                 commandBlocksBox.DataSource = subDataSource; //applies new subchunk list
