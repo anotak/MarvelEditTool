@@ -691,7 +691,10 @@ namespace StatusEditor
             int top = animBox.TopIndex;
             tableNames = tablefile.GetNames();
             animBox.DataSource = tableNames;
-            if (s > tableNames.Count) s = 0; //fixes outofbounds when loading new file
+            if (s >= tableNames.Count)
+            { 
+                s = 0; 
+            } //fixes outofbounds when loading new file
             animBox.SelectedIndex = s;
             animBox.TopIndex = top;
             bDisableUpdate = false;
