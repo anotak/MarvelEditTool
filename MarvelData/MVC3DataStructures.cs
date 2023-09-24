@@ -1104,16 +1104,11 @@ namespace MarvelData
         NeutralAndCombos = 0,
         NeutralOnly = 1,
         ComboOnly = 2,
-        Ukn3 = 3,
+        Unk3 = 3,
         GuardCancel = 4,
         GuardAndDamageCancel = 5
     }
 
-    public enum ComboType : int
-    {
-        Restrictive = 1,
-        Lenient = 2
-    }
     public enum BaseActState : int
     {
         Ground = 00,
@@ -1152,7 +1147,7 @@ namespace MarvelData
         public SubChunkType subChunkType; // 04
         public int cancelWindow;
         public int unk08;
-        public int unk0C;
+        public int atkS;
         public int unk10;
         public int unk14;
         public int unk18;
@@ -1225,7 +1220,7 @@ namespace MarvelData
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct SpatkStateChangeChunk // 2F
+    public struct SpatkRestrictedStateChunk // 2F
     {
         public SubChunkType subChunkType; //2F
         public int stateID;
@@ -1366,8 +1361,8 @@ namespace MarvelData
         superJumpAction_37 = 37, //25
         [Description("38 Snap Back Character")]
         snapBackChar_38 = 38, //26
-        [Description("47 State Change")]
-        stateChange_47 = 47, //2F
+        [Description("47 Restricted State")]
+        restrictedState_47 = 47, //2F
         [Description("48 S Unk")]
         SUnk_48 = 48, //30
         [Description("49 Prohibited Follow Up Action")]
@@ -1400,7 +1395,7 @@ namespace MarvelData
     public class MVC3DataStructures
     {
         public static string[] NumpadDirections = { "5", "6", "4", "?", "8", "9", "7", "?", "2", "3", "1" };
-        public static List<string> SubChunkTypeList = new List<string>(new string[] { "standardInput", "dashDirectionInput", "twoButtonInput1", "directionAndButtonInput", "twoButtonInput2", "executeAction", "modeRequired", "TACDHCAction", "stateChange", "prohibitedFollowUpAction", "airDash", "airSpecialActionLimit", "guardTACAction", "hypers", "allowedChainOnState" });
+        public static List<string> SubChunkTypeList = new List<string>(new string[] { "standardInput", "dashDirectionInput", "twoButtonInput1", "directionAndButtonInput", "twoButtonInput2", "executeAction", "modeRequired", "TACDHCAction", "restrictedState", "prohibitedFollowUpAction", "airDash", "airSpecialActionLimit", "guardTACAction", "hypers", "allowedChainOnState" });
 
         //FIXME: fugly implementation :s
         public static Type[] SpatkChunkTypes = 
@@ -1452,7 +1447,7 @@ namespace MarvelData
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkStateChangeChunk), // 2F         [47]
+            typeof(SpatkRestrictedStateChunk), // 2F         [47]
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkProhibitedChunk), // 31          [49]
             typeof(SpatkUnkChunk), // 00                  [0]
