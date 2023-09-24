@@ -38,6 +38,7 @@ namespace AnmChrEdit
         private bool isChecked;
         private bool isBreak;
         public bool isDeleting = false;
+        public int reselectID = -1;
 
         public ACE()
         {
@@ -207,9 +208,19 @@ namespace AnmChrEdit
                 if (selectedSub >= 0 && selectedSub < commandBlocksBox.Items.Count)
                 {
                     commandBlocksBox.SelectedIndex = selectedSub;
+                    
+                    // un-selects top-most multi select entry if relevant
+                    if (commandBlocksBox.SelectedItems.Count > 1)
+                    {
+                        commandBlocksBox.SelectedItems.Remove(commandBlocksBox.SelectedItems[0]);
+                    }
+                }
+                else if (selectedSub >= 0 && selectedSub <= commandBlocksBox.Items.Count)
+                {
+                    commandBlocksBox.SelectedIndex = selectedSub -1;
 
                     // un-selects top-most multi select entry if relevant
-                    if (commandBlocksBox.SelectedItems.Count > 1) 
+                    if (commandBlocksBox.SelectedItems.Count > 1)
                     {
                         commandBlocksBox.SelectedItems.Remove(commandBlocksBox.SelectedItems[0]);
                     }
@@ -654,7 +665,12 @@ namespace AnmChrEdit
             {
                 return;
             }
+
             bDisableSubUpdate = true;
+            if (commandBlocksBox.SelectedItems.Count > 1 && isDeleting)
+            {
+                commandBlocksBox.SelectedItems.Remove(commandBlocksBox.SelectedItems[0]);
+            } //multiselect fix
             int s = animBox.SelectedIndex;
             int top = animBox.TopIndex;
             if (tablefile.table[s] is AnmChrEntry && (tablefile.table[s].bHasData && tablefile.table[s].size > 0))
@@ -1222,8 +1238,17 @@ namespace AnmChrEdit
                 bDisableSubUpdate = true;
                 bDisableSubSubUpdate = true;
                 isDeleting = true;
-
+                reselectID = commandBlocksBox.SelectedIndex;
                 entry.subEntries.RemoveAt(commandBlocksBox.SelectedIndex);
+                /*
+                if (reselectID <= commandBlocksBox.Items.Count && commandBlocksBox.Items.Count != 0)
+                {
+                  commandBlocksBox.SelectedIndex = reselectID;
+                }
+                else{
+                commandBlocksBox.SelectedIndex = 0;
+                    }
+                */
                 commandsBox.DataSource = null; //empties command list
                 subDataSource = entry.getSubEntryList(); //grabs subchunk list
                 commandBlocksBox.DataSource = subDataSource; //applies new subchunk list
@@ -1234,17 +1259,23 @@ namespace AnmChrEdit
                     commandBlocksBox.SelectedIndex = 0;
                     RefreshSelectedIndices();
                     subsubDataSource = commandBlockEntry.GetCommandList();
-                    //commandsBox.DataSource = subsubDataSource; //this caused the commands to be reloaded improperly?
-                    if (subsubDataSource.Count > 0)
+                    if (reselectID == 0 && commandBlocksBox.Items.Count > 0)
                     {
-                        // commandsBox.SelectedIndex = 0;
+                        commandBlocksBox_SelectedIndexChanged(null, null);
                     }
+                    //commandsBox.DataSource = subsubDataSource; //this caused the commands to be reloaded improperly? need to reload the subchunk
+                    //if (commandsBox.SelectedIndex < 0)
+                    //{
+                    //    commandsBox.SelectedIndex = 0;
+                    //}
                 }
                 else
                 {
                     AELogger.Log("odd issue ???????");
                     dataTextBox.Enabled = false;
-                } 
+                }
+
+                
                 isDeleting = false;
                 validateDeleteButtons(entry);
             }
@@ -1356,7 +1387,15 @@ namespace AnmChrEdit
         private void validateDeleteButtons(AnmChrEntry entry)
         {
             bool isSubEntries = entry?.subEntries.Count > 0;
-            bool isDisabled = (entry?.subEntries[commandBlocksBox.SelectedIndex].isDisabled).Equals(true);
+            bool isDisabled;
+            if (commandBlocksBox.SelectedIndex > -1)
+            {
+                isDisabled = (entry?.subEntries[commandBlocksBox.SelectedIndex].isDisabled).Equals(true);
+            }
+            else
+            {
+                isDisabled = false;
+            }
             commandBlockDeleteButton.Enabled = isSubEntries && !isMultiSelection;
             deleteCommandBlockToolStripMenuItem1.Enabled = isSubEntries && !isMultiSelection;
             deleteCommandBlockToolStripMenuItem.Enabled = isSubEntries && !isMultiSelection;
