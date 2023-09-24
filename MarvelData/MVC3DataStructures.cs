@@ -32,7 +32,7 @@ namespace MarvelData
         public int unkB0;
         public int unkB4;
         public int unkB8;
-        public int unkBC;
+        public float unkBC;
         public int unkC0;
         public int unkC4;
         public int unkC8;
@@ -49,7 +49,7 @@ namespace MarvelData
         public int unkF4;
         public int unkF8;
         public int unkFC;
-        public int unk100;
+        public float unk100;
         public float SpawnPositionAngle;
         public float ProjectileAngle;
         public int unk10C;
@@ -194,10 +194,10 @@ namespace MarvelData
         Unk0x40 = 0x00000040,
         Unk0x80 = 0x00000080,
         Unk0x0100 = 0x00000100,
-        Unk0x0200 = 0x00000200,
+        persistAfterHit = 0x00000200,
         Unk0x0400 = 0x00000400,
         Unk0x0800 = 0x00000800,
-        Unk0x1000 = 0x00001000,
+        canBeReflected = 0x00001000,
         Unk0x2000 = 0x00002000,
         Unk0x4000 = 0x00004000,
         Unk0x8000 = 0x00008000,
@@ -209,7 +209,7 @@ namespace MarvelData
         Unk0x200000 = 0x00200000,
         Unk0x400000 = 0x00400000,
         Unk0x800000 = 0x00800000,
-        Unkx01000000 = 0x01000000,
+        Unk0x01000000 = 0x01000000,
         Unk0x02000000 = 0x02000000,
         Unk0x04000000 = 0x04000000,
         Unk0x08000000 = 0x08000000,
@@ -270,7 +270,7 @@ namespace MarvelData
         Unk0x0100 = 0x00000100,
         Unk0x0200 = 0x00000200,
         Unk0x0400 = 0x00000400,
-        Unk0x0800 = 0x00000800,
+        clearEffectOnTransition = 0x00000800,
         Unk0x1000 = 0x00001000,
         Unk0x2000 = 0x00002000,
         Unk0x4000 = 0x00004000,
@@ -312,8 +312,8 @@ namespace MarvelData
         public float unk378;
         public int unk37C;
         public int unk380;
-        public float unk384;
-        public float unk388;
+        public int unk384;
+        public int unk388;
         public float hitboxY;
         public float hitboxX;
         public float unk394;
@@ -375,7 +375,7 @@ namespace MarvelData
         public int unk3D8;
         public int unk3DC;
         public int unk3E0;
-        public float unk3E4;
+        public int unk3E4;
         public int unk3E8;
         public float hitboxY;
         public float hitboxX;
