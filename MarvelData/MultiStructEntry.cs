@@ -243,8 +243,8 @@ namespace MarvelData
             //}
             else if (subChunkType.Equals("stateChange"))
             {
-                StructEntry<SpatkStateChangeChunk> chunk = new StructEntry<SpatkStateChangeChunk>();
-                chunk.data = new SpatkStateChangeChunk();
+                StructEntry<SpatkRestrictedStateChunk> chunk = new StructEntry<SpatkRestrictedStateChunk>();
+                chunk.data = new SpatkRestrictedStateChunk();
                 chunk.data.subChunkType = (SubChunkType)47;
                 size += 0x20;
                 chunk.size = 0x20;
