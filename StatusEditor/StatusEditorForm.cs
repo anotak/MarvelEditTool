@@ -635,6 +635,7 @@ namespace StatusEditor
 
         private void addSubChunkTypeButton_Click(object sender, EventArgs e)
         {
+            /*
             if (cantAddSubChunk())
                 return;
 
@@ -656,7 +657,7 @@ namespace StatusEditor
             else
             {
                 contextMenuStrip1.Show(addSubChunkTypeButton, new Point(0, addSubChunkTypeButton.Height));
-            }
+            }*/
         }
 
         // checks if a subchunk can be added
@@ -675,7 +676,7 @@ namespace StatusEditor
                 }
             }
             return true;
-        }
+        } 
 
         private void formatButton_Click(object sender, EventArgs e)
         {
@@ -860,6 +861,8 @@ namespace StatusEditor
                 AddTags(typeof(CmdDisabled), false);
             else if (tag.Contains("disable"))
                 AddTags(typeof(SpatkDisabled), false);
+            else if (tag.Contains("flags"))
+                AddTags(typeof(cmdFlags), true);
             else
             {
                 tagsDataGridView.DataSource = null;
@@ -1244,10 +1247,10 @@ namespace StatusEditor
         }
         // end datatextbox stuff
         #endregion
-           // disabled until i find a good way to fix the move up button
+        // disabled until i find a good way to fix the move up button
         private void upButton_Click(object sender, EventArgs e)
         {
-            /*   if (animBox.SelectedIndex < 0
+         /*   if (animBox.SelectedIndex < 0
                    ||
                    animBox.SelectedIndex >= tablefile.table.Count
                    ||
@@ -1255,12 +1258,13 @@ namespace StatusEditor
                {
                    return;
                }
+            //
                int newindex = tablefile.Move(animBox.SelectedIndex, 1);
                RefreshData();
                if (newindex < animBox.Items.Count && newindex >= 0)
                {
                   animBox.SelectedIndex = newindex;
-        }*/
+               }*/
         }
 
         private void textBox1_Validating(object sender, System.ComponentModel.CancelEventArgs e)

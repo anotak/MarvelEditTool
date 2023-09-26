@@ -977,6 +977,41 @@ namespace MarvelData
         fallBack3 = 15
         
     }
+    [Flags]
+    public enum cmdFlags : uint
+    {
+        None = 0,
+        Unk0x01 = 0x00000001,
+        Unk0x02 = 0x00000002,
+        Unk0x04 = 0x00000004,
+        Unk0x08 = 0x00000008,
+        Unk0x10 = 0x00000010,
+        Unk0x20 = 0x00000020,
+        Unk0x40 = 0x00000040,
+        Unk0x80 = 0x00000080,
+        Unk0x0100 = 0x00000100,
+        Unk0x0200 = 0x00000200,
+        Unk0x0400 = 0x00000400,
+        Unk0x0800 = 0x00000800,
+        Unk0x1000 = 0x00001000,
+        Unk0x2000 = 0x00002000,
+        Unk0x4000 = 0x00004000,
+        Unk0x8000 = 0x00008000,
+        Unk0x10000 = 0x00010000,
+        Unk0x20000 = 0x00020000,
+        Unk0x40000 = 0x00040000,
+        Unk0x80000 = 0x00080000,
+        Unk0x100000 = 0x00100000,
+        Unk0x200000 = 0x00200000,
+        Unk0x400000 = 0x00400000,
+        Unk0x800000 = 0x00800000,
+        Unk0x01000000 = 0x01000000,
+        Unk0x02000000 = 0x02000000,
+        Unk0x04000000 = 0x04000000,
+        Unk0x08000000 = 0x08000000,
+        Unk0x10000000 = 0x10000000,
+        Unk0x20000000 = 0x20000000,
+    }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct BaseActChunk
@@ -1024,7 +1059,7 @@ namespace MarvelData
         public int cancelHierarchyThresh;
         public PositionState positionState;
         public ComboState comboState;
-        public int flags;
+        public cmdFlags flags;
     }
     [StructLayout(LayoutKind.Sequential)]
     public struct CollisionHeaderChunk
@@ -1193,6 +1228,18 @@ namespace MarvelData
         public int unk1C;
     }
 
+    public struct SpatkRequiredStateUnk // 17
+    {
+        public SubChunkType subChunkType; // 17
+        public int stateID;
+        public int unk08;
+        public int unk0C;
+        public int unk10;
+        public int unk14;
+        public int unk18;
+        public int unk1C;
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct SpatkModeRequiredChunk // 1E
     {
@@ -1349,6 +1396,8 @@ namespace MarvelData
         stateRestriction_11 = 11, //0B
         [Description("13 Simple Mode Air Combo Unk")]
         simpleModeAirComboUnk_13 = 13, //0D
+        [Description("23 Jill Stance Check?")]
+        stateRequirementUnk_23 = 23, //17
         [Description("30 Mode Required")]
         modeRequired_30 = 30, //1E
         [Description("33 TAC Unk")]
@@ -1423,7 +1472,7 @@ namespace MarvelData
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkRequiredStateUnk), // 17         [23]
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
