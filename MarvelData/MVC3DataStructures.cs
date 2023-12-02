@@ -1267,6 +1267,19 @@ namespace MarvelData
     }
 
     [StructLayout(LayoutKind.Sequential)]
+    public struct SpatkChrisStateChunk // 18
+    {
+        public SubChunkType subChunkType; //18
+        public int stateID;
+        public int unk08;
+        public int unk0C;
+        public int unk10;
+        public int unk14;
+        public int unk18;
+        public int unk1C;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
     public struct SpatkRestrictedStateChunk // 2F
     {
         public SubChunkType subChunkType; //2F
@@ -1398,6 +1411,8 @@ namespace MarvelData
         simpleModeAirComboUnk_13 = 13, //0D
         [Description("23 Jill Stance Check?")]
         stateRequirementUnk_23 = 23, //17
+        [Description("24 Chris Stance Check?")]
+        chrisInstallCheck_24 = 24, //18
         [Description("30 Mode Required")]
         modeRequired_30 = 30, //1E
         [Description("33 TAC Unk")]
@@ -1444,7 +1459,7 @@ namespace MarvelData
     public class MVC3DataStructures
     {
         public static string[] NumpadDirections = { "5", "6", "4", "?", "8", "9", "7", "?", "2", "3", "1" };
-        public static List<string> SubChunkTypeList = new List<string>(new string[] { "standardInput", "dashDirectionInput", "twoButtonInput1", "directionAndButtonInput", "twoButtonInput2", "executeAction", "modeRequired", "TACDHCAction", "restrictedState", "prohibitedFollowUpAction", "airDash", "airSpecialActionLimit", "guardTACAction", "hypers", "allowedChainOnState" });
+        public static List<string> SubChunkTypeList = new List<string>(new string[] { "standardInput", "dashDirectionInput", "twoButtonInput1", "directionAndButtonInput", "twoButtonInput2", "executeAction", "modeRequired", "TACDHCAction", "restrictedState", "chrisStateCheck", "prohibitedFollowUpAction", "airDash", "airSpecialActionLimit", "guardTACAction", "hypers", "allowedChainOnState" });
 
         //FIXME: fugly implementation :s
         public static Type[] SpatkChunkTypes = 
@@ -1473,7 +1488,7 @@ namespace MarvelData
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkRequiredStateUnk), // 17         [23]
-            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkChrisStateChunk), // 00          [24]
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
@@ -1495,8 +1510,8 @@ namespace MarvelData
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkRestrictedStateChunk), // 2F         [47]
+            typeof(SpatkUnkChunk), //                     [0]
+            typeof(SpatkRestrictedStateChunk), // 2F     [47]
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkProhibitedChunk), // 31          [49]
             typeof(SpatkUnkChunk), // 00                  [0]
