@@ -407,17 +407,16 @@ namespace StatusEditor
             extendButton.Visible = !isShtFile;
             duplicateButton.Visible = !isShtFile;
             upButton.Visible = !isShtFile;
+            downButton.Visible = !isShtFile;
             addSubChunkButton.Visible = !isShtFile;
-            addSubChunkTypeButton.Visible = !isShtFile;
-
             saveToolStripMenuItem.Enabled = true;
             saveAsToolStripMenuItem.Enabled = true;
             importButton.Enabled = false;
             duplicateButton.Enabled = false;
             upButton.Enabled = false;
+            downButton.Enabled = false;
             exportButton.Enabled = false;
             addSubChunkButton.Enabled = false;
-            addSubChunkTypeButton.Enabled = false;
             animBox.Enabled = true;
             extendButton.Enabled = extendButton.Visible;
             sizeLabel.Text = count + " entries loaded";
@@ -633,13 +632,13 @@ namespace StatusEditor
             animBox_SelectedIndexChanged(null, null);
         }
 
-        private void addSubChunkTypeButton_Click(object sender, EventArgs e)
+        private void downButton_Click(object sender, EventArgs e)
         {
             /*
             if (cantAddSubChunk())
                 return;
 
-            Point screenPoint = addSubChunkTypeButton.PointToScreen(new Point(addSubChunkTypeButton.Left, addSubChunkTypeButton.Bottom));
+            Point screenPoint = downButton.PointToScreen(new Point(downButton.Left, downButton.Bottom));
 
 
             //IEnumerable<TypeViewModel> enumValues = getEnumValuesList(typeof(SubChunkType));
@@ -652,11 +651,11 @@ namespace StatusEditor
 
             if (screenPoint.Y + contextMenuStrip1.Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
             {
-                contextMenuStrip1.Show(addSubChunkTypeButton, new Point(0, -contextMenuStrip1.Size.Height));
+                contextMenuStrip1.Show(downButton, new Point(0, -contextMenuStrip1.Size.Height));
             }
             else
             {
-                contextMenuStrip1.Show(addSubChunkTypeButton, new Point(0, addSubChunkTypeButton.Height));
+                contextMenuStrip1.Show(downButton, new Point(0, downButton.Height));
             }*/
         }
 
@@ -961,9 +960,9 @@ namespace StatusEditor
 
                 exportButton.Enabled = true;
                 addSubChunkButton.Enabled = false;
-                addSubChunkTypeButton.Enabled = false;
                 duplicateButton.Enabled = duplicateButton.Visible;
-                upButton.Enabled = upButton.Visible;
+                upButton.Enabled = false;
+                downButton.Enabled = false;
                 textBox1.Text = tablefile.table[animBox.SelectedIndex].name;
                 textBox1.Enabled = true;
                 SetTextConcurrent(tablefile.table[animBox.SelectedIndex].GetData());
@@ -999,10 +998,6 @@ namespace StatusEditor
                 else if (tablefile.table[animBox.SelectedIndex] is MultiStructEntry)
                 {
                     addSubChunkButton.Enabled = true;
-                    if (!(tablefile.table[animBox.SelectedIndex] is CollisionEntry))
-                    {
-                        addSubChunkTypeButton.Enabled = true;
-                    }
                     ClearItems();
                     MultiStructEntry multi = (MultiStructEntry)tablefile.table[animBox.SelectedIndex];
                     int offset = 0;
@@ -1246,11 +1241,11 @@ namespace StatusEditor
             }
         }
         // end datatextbox stuff
-        #endregion
+        #endregion  
         // disabled until i find a good way to fix the move up button
         private void upButton_Click(object sender, EventArgs e)
         {
-         /*   if (animBox.SelectedIndex < 0
+            /*if (animBox.SelectedIndex <= 0
                    ||
                    animBox.SelectedIndex >= tablefile.table.Count
                    ||
@@ -1259,8 +1254,11 @@ namespace StatusEditor
                    return;
                }
             //
-               int newindex = tablefile.Move(animBox.SelectedIndex, 1);
-               RefreshData();
+            //int newindex = tablefile.Move(animBox.SelectedIndex, 1);
+            int newindex = animBox.SelectedIndex;
+            tablefile.Move(newindex,1);
+            //(animBox.DataSource(newindex), animBox.Items(oldindex)) = (animBox.Items(oldindex), animBox.Items(newindex));
+            RefreshData();
                if (newindex < animBox.Items.Count && newindex >= 0)
                {
                   animBox.SelectedIndex = newindex;

@@ -491,7 +491,7 @@ namespace MarvelData
 
         public int Move(int index, int offset)
         {
-            int newindex = index - offset;
+            int newindex = index + offset;
             if (newindex < 0)
             {
                 newindex = table.Count + newindex;
@@ -500,13 +500,20 @@ namespace MarvelData
             {
                 newindex -= table.Count;
             }
-
+            /* 
             TableEntry first = table[index];
             TableEntry second = table[newindex];
-            table[index] = second;
-            table[newindex] = first;
-            first.index = (uint)newindex;
-            second.index = (uint)index;
+            (table[index], table[newindex]) = (table[newindex], table[index]);
+            //            table[index] = second;
+            //            table[newindex] = first;
+            (first.index, second.index) = (second.index, first.index);
+            first.index = (uint)index;
+            second.index = (uint)newindex;
+            */
+            TableEntry first = table[index];
+            TableEntry second = table[newindex];
+            (table[index], table[newindex]) = (table[newindex], table[index]);
+
             return newindex;
         }
 
@@ -998,16 +1005,22 @@ namespace MarvelData
 
                     string test = originalName.Substring(originalName.IndexOf(referenceType) + referenceType.Length + 2, 2);
                     int hexIndex = Convert.ToInt32(originalName.Substring(originalName.IndexOf(referenceType) + referenceType.Length + 2, 2), 16);
-                    int hexLastIndex = Convert.ToInt32(originalName.Substring(originalName.LastIndexOf(referenceType) + referenceType.Length + 2, 2), 16);
-
-                    if (hexIndex != hexLastIndex &&
+                    //int hexLastIndex = Convert.ToInt32(originalName.Substring(originalName.LastIndexOf(referenceType) + referenceType.Length + 2, 2), 16);
+                    int hexLastIndex = hexIndex - 1;
+                   if (hexIndex <= atiFile.table.Count && hexIndex >= 0)
+                   {
+                        if (hexIndex != hexLastIndex &&
                         (atiFile.table[hexIndex].name == "unknown" || atiFile.table[hexLastIndex].name == "unknown"))
-                    {
+                        {
                         table[i].name = table[i].name.Replace("unknown", atiFile.table[hexIndex].name + " " + atiFile.table[hexLastIndex].name);
+                        }
+                    else{
+                        table[i].name = table[i].name.Replace("unknown", atiFile.table[hexIndex].name);
                     }
+                   }
                     else
                     {
-                        table[i].name = table[i].name.Replace("unknown", atiFile.table[hexIndex].name);
+                        table[i].name = table[i].name.Replace("unknown", "unknown - Error?");
                     }
                 }
             }
