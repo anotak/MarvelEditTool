@@ -52,7 +52,7 @@ namespace StatusEditor
         public static string GetCompileDate()
         {
             System.Version MyVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            return new DateTime(2000, 1, 1).AddDays(MyVersion.Build).AddSeconds(MyVersion.Revision * 2).ToString("dd.MM.yyyy");
+            return new DateTime(2000, 1, 1).AddDays(MyVersion.Build).AddSeconds(MyVersion.Revision * 2).ToString("MM.dd.yyyy");
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -1245,7 +1245,7 @@ namespace StatusEditor
         // disabled until i find a good way to fix the move up button
         private void upButton_Click(object sender, EventArgs e)
         {
-            /*if (animBox.SelectedIndex <= 0
+            if (animBox.SelectedIndex <= 0
                    ||
                    animBox.SelectedIndex >= tablefile.table.Count
                    ||
@@ -1262,7 +1262,7 @@ namespace StatusEditor
                if (newindex < animBox.Items.Count && newindex >= 0)
                {
                   animBox.SelectedIndex = newindex;
-               }*/
+               }
         }
 
         private void textBox1_Validating(object sender, System.ComponentModel.CancelEventArgs e)
