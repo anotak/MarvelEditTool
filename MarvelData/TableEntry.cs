@@ -70,7 +70,7 @@ namespace MarvelData
                     name = "Forward Double Jump";
                     break;
                 case 0x11:
-                    name = "Double Jump Back";
+                    name = "Back Double Jump";
                     break;
                 case 0x13:
                     name = "Neutral Super Jump";
@@ -180,6 +180,9 @@ namespace MarvelData
                 case 0x47:
                     name = "Crouch Lean Back Damage 3";
                     break;
+                case 0x72:
+                    name = "Dead Body Vanish";
+                    break;
                 case 0x82:
                     name = "Intro As Point";
                     break;
@@ -196,7 +199,7 @@ namespace MarvelData
                     name = "Taunt";
                     break;
                 case 0x88:
-                    name = "Death Vanish";
+                    name = "Vanish";
                     break;
                 case 0x89:
                     name = "Victory";
@@ -247,7 +250,28 @@ namespace MarvelData
                     name = "Cinematic Air Back Grab";
                     break;
                 case 0x154:
+                    name = "Tag In";
+                    break;
+                case 0x155:
                     name = "Tag Out";
+                    break;
+                case 0x156:
+                    name = "Incoming Jump-In";
+                    break;
+                case 0x157:
+                    name = "Assist Tag-out";
+                    break;
+                case 0x158:
+                    name = "Hit By Snap Back";
+                    break;
+                case 0x159:
+                    name = "THC";
+                    break;
+                case 0x15A:
+                    name = "DHC-out";
+                    break;
+                case 0x15B:
+                    name = "DHC-in";
                     break;
                 case 0x168:
                     name = "Standing S";

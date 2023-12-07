@@ -1005,8 +1005,8 @@ namespace MarvelData
 
                     string test = originalName.Substring(originalName.IndexOf(referenceType) + referenceType.Length + 2, 2);
                     int hexIndex = Convert.ToInt32(originalName.Substring(originalName.IndexOf(referenceType) + referenceType.Length + 2, 2), 16);
-                    //int hexLastIndex = Convert.ToInt32(originalName.Substring(originalName.LastIndexOf(referenceType) + referenceType.Length + 2, 2), 16);
-                    int hexLastIndex = hexIndex - 1;
+                    int hexLastIndex = Convert.ToInt32(originalName.Substring(originalName.LastIndexOf(referenceType) + referenceType.Length + 2, 2), 16);
+                    //int hexLastIndex = hexIndex - 1;
                    if (hexIndex <= atiFile.table.Count && hexIndex >= 0)
                    {
                         if (hexIndex != hexLastIndex &&
@@ -1014,13 +1014,13 @@ namespace MarvelData
                         {
                         table[i].name = table[i].name.Replace("unknown", atiFile.table[hexIndex].name + " " + atiFile.table[hexLastIndex].name);
                         }
-                    else{
+                        else{
                         table[i].name = table[i].name.Replace("unknown", atiFile.table[hexIndex].name);
-                    }
+                        }
                    }
                     else
                     {
-                        table[i].name = table[i].name.Replace("unknown", "unknown - Error?");
+                        table[i].name = table[i].name.Replace("unknown", "unknown - atkinfo doesn't exist?");
                     }
                 }
             }
