@@ -301,7 +301,7 @@ namespace MarvelData
         public float durabilityUnk;
         public int durabilityType;
         public int unk354;
-        public int unk358;
+        public float unk358;
         public int unk35C;
         public int unk360;
         public int unk364;
@@ -340,7 +340,7 @@ namespace MarvelData
         public float durabilityUnk;
         public int durabilityType;
         public int unk354;
-        public int unk358;
+        public float unk358;
         public int unk35C;
         public int unk360;
         public int unk364;
@@ -386,7 +386,7 @@ namespace MarvelData
         public int unk404;
         public int unk408;
         public int unk40C;
-        public int unk410;
+        public float unk410;
         public int unk414;
         public float hitboxSize;
         public int unk41C;
@@ -424,15 +424,15 @@ namespace MarvelData
         public float flightMaxSpeed;
         public float flightClearance;
         public float flightMaxHeight;
-        public int unk6C; // 0x6c
-        public int unk70;
-        public int unk74;
-        public int unk78;
-        public int unk7C;
-        public int meterSteal;
-        public int unk84;
-        public int stunTimer;
-        public int unk8C;
+        public int standLBaseHitstun; // 0x6c
+        public int standMBaseHitstun;
+        public int standHBaseHitstun;
+        public int crouchLBaseHitstun;
+        public int crouchMBaseHitstun;
+        public int crouchHBaseHitstun;
+        public int jumpLBaseHitstun;
+        public int jumpMBaseHitstun;
+        public int jumpHBaseHitstun;
         public int sixButtonChainLimit;
         public int unk94;
         public float minDmgScalingNormals;
@@ -784,8 +784,8 @@ namespace MarvelData
     public enum AtkFlagsB : uint
     {
         None = 0,
-        SpecialScalingUnk = 0x00000001,
-        HyperScalingUnk = 0x00000002,
+        SpecialScaling = 0x00000001,
+        HyperScaling = 0x00000002,
         ProjectileHitboxJuggleAway = 0x00000004,
         NeverCounterhit = 0x00000008,
         EnableTransition = 0x00000010,
