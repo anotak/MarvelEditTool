@@ -28,6 +28,8 @@ namespace MarvelData
         private byte[] shotName2Bytes;
         private String shotName2String;
         private byte[] headerC;
+        //public List<StructEntryBase> subEntries;
+        public List<StructEntryBase> subEntries;
 
         public static Type[] structTypes = { typeof(StructEntry<StatusChunk>), typeof(StructEntry<ATKInfoChunk>), typeof(StructEntry<BaseActChunk>),
             typeof(CmdSpAtkEntry), typeof(CmdComboEntry), typeof(AnmChrEntry), typeof(CollisionEntry), typeof(StructEntry<ShotChunk>),
@@ -500,19 +502,26 @@ namespace MarvelData
             {
                 newindex -= table.Count;
             }
-            /* 
-            TableEntry first = table[index];
-            TableEntry second = table[newindex];
-            (table[index], table[newindex]) = (table[newindex], table[index]);
+            int i = 0;
+            //TableEntry first = table[index];
+            //TableEntry second = table[newindex];
+            TableEntry first = (TableEntry)Activator.CreateInstance(fileType);
+            TableEntry second = (TableEntry)Activator.CreateInstance(fileType);
+            //subEntries = new List<StructEntryBase>();
+            //int total = table[index].subEntries.Count();
+            while (i <= 0)
+            {
+            //first.subEntries = table[index].subEntries;
+            //second.subEntries = table[newindex].subEntries;
+            i++;
+            }
+            //(table[index], table[newindex]) = (table[newindex], table[index]);
             //            table[index] = second;
             //            table[newindex] = first;
-            (first.index, second.index) = (second.index, first.index);
             first.index = (uint)index;
             second.index = (uint)newindex;
-            */
-            TableEntry first = table[index];
-            TableEntry second = table[newindex];
-            (table[index], table[newindex]) = (table[newindex], table[index]);
+        
+
 
             return newindex;
         }
@@ -944,7 +953,10 @@ namespace MarvelData
                         //output.Add(subEntries[l].GetName());
                         for (int m = 0; m < subEntries[l].GetCommandList().ToArray().Length; m++)
                         {
-                            if (subEntries[l].GetCommandList().ToArray()[m].Contains("1_99"))
+                            if (subEntries[l].GetCommandList().ToArray()[m].Contains("1_99")
+                                //&& subEntries[l].localindex < 20000 // generic disabled time, how do i grab the AnimTime?
+                                 && subEntries[l].localindex <= ((AnmChrEntry)table[i]).animTime
+                                )
                             {
                                 byte[] data = subEntries[l].subsubEntries[m];
                                 string dataString = BitConverter.ToString(data).Replace("-", "");
@@ -953,9 +965,17 @@ namespace MarvelData
 
                                 table[infoRef].name += " ATI=>" + ati + "? CLI=>" + cli + "?";
                             }
-                            if (subEntries[l].GetCommandList().ToArray()[m].Contains("0_0C"))
+                            if (subEntries[l].GetCommandList().ToArray()[m].Contains("0_0C")
+                                && subEntries[l].localindex <= ((AnmChrEntry)table[i]).animTime
+                                )
                             {
                                 table[infoRef].name = "Charge " + table[infoRef].name;
+                            }
+                            if (subEntries[l].GetCommandList().ToArray()[m].Contains("3_30")|| subEntries[l].GetCommandList().ToArray()[m].Contains("3_31")
+                                && subEntries[l].localindex <= ((AnmChrEntry)table[i]).animTime
+                                )
+                            {
+                                table[infoRef].name = "Shot " + table[infoRef].name;
                             }
                         }
                     }
