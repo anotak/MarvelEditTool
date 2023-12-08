@@ -599,25 +599,39 @@ namespace StatusEditor
 
         private void duplicateButton_Click(object sender, EventArgs e)
         {
-            if (cantAddSubChunk())
-                return;
-
-            tablefile.Duplicate(animBox.SelectedIndex);
-            RefreshDataAlt();
-            if (animBox.TopIndex < animBox.Items.Count - 2)
+            switch (MessageBox.Show(this, "Do you want to duplicate this entry?" + Environment.NewLine + "This action cannot be undone!", "Duplicate", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
             {
-                animBox.TopIndex++;
+                case DialogResult.No:
+                    break;
+                default:
+                    if (cantAddSubChunk())
+                        return;
+
+                    tablefile.Duplicate(animBox.SelectedIndex);
+                    RefreshDataAlt();
+                    if (animBox.TopIndex < animBox.Items.Count - 2)
+                    {
+                        animBox.TopIndex++;
+                    }
+                    break;
             }
         }
 
         private void extendButton_Click(object sender, EventArgs e)
         {
-            tablefile.Extend();
-            RefreshData();
-
-            if (animBox.TopIndex < animBox.Items.Count - 2)
+            switch (MessageBox.Show(this, "Do you want to extend list?" + Environment.NewLine + "This action cannot be undone!", "Extend List", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
             {
-                animBox.TopIndex++;
+                case DialogResult.No:
+                    break;
+                default:
+                    tablefile.Extend();
+                    RefreshData();
+
+                    if (animBox.TopIndex < animBox.Items.Count - 2)
+                    {
+                        animBox.TopIndex++;
+                    }
+                    break;
             }
         }
 
