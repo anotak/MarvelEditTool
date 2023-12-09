@@ -36,7 +36,8 @@ namespace AnmChrEdit
                 e.Graphics.DrawString(commandBlocksBox.Items[e.Index].ToString(),
                     e.Font, myBrush, e.Bounds, StringFormat.GenericDefault);
                 e.DrawFocusRectangle();
-                if (commandBlocksBox.Items[e.Index].ToString().Contains("Disabled"))
+                 
+                if (commandBlocksBox.Items[e.Index].ToString().Contains("Disabled") || ((AnmChrEntry)tablefile.table[animBox.SelectedIndex]).animTime < ((AnmChrEntry)tablefile.table[animBox.SelectedIndex]).subEntries[e.Index].localindex)
                 {
                     myBrush = Brushes.Gray;
                     e.Graphics.DrawString(commandBlocksBox.Items[e.Index].ToString(),

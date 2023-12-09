@@ -16,7 +16,6 @@ namespace MarvelData
         public string name; // DONT SAVE THIS (??)
         public string filePath; // DONT SAVE THIS (??)
         public int size;
-
         public static StringBuilder nameSB;
 
         public virtual bool isAnmChrEdit { get; internal set; }
