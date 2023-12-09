@@ -716,7 +716,7 @@ namespace AnmChrEdit
                     }
                     RefreshText();
                     timeTextBox.Text = entry.subEntries[commandBlocksBox.SelectedIndex].isDisabled ? "" : 
-                        entry.subEntries[commandBlocksBox.SelectedIndex].tableindex.ToString();
+                    entry.subEntries[commandBlocksBox.SelectedIndex].tableindex.ToString();
                     timeTextBox.Enabled = true;
                     validateDeleteButtons(entry);
                 } else if (commandBlocksBox.SelectedIndices.Count > 1)
@@ -759,6 +759,7 @@ namespace AnmChrEdit
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
                 isChecked = false;
+                isBreak = false;
                 foreach (var index in commandBlocksBox.SelectedIndices)
                 {
                     if (CheckNewFrameValue(entry, frames) && !isBreak)
@@ -786,14 +787,16 @@ namespace AnmChrEdit
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
                 isChecked = false;
+                isBreak = false;
                 foreach (var index in commandBlocksBox.SelectedIndices)
                 {
                     if (CheckNewFrameValue(entry, entry.subEntries[(int)index].localindex + offset) && !isBreak)
                     {
-                        entry.subEntries[(int)index].localindex =
+                        /*entry.subEntries[(int)index].localindex =
                             entry.subEntries[(int)index].localindex + offset < 0 ? -1 :
                             entry.subEntries[(int)index].localindex + offset > entry.animTime ? entry.animTime :
-                            entry.subEntries[(int)index].localindex + offset;
+                            entry.subEntries[(int)index].localindex + offset;*/
+                        entry.subEntries[(int)index].localindex = entry.subEntries[(int)index].localindex + offset;
                         entry.subEntries[(int)index].tableindex = entry.subEntries[(int)index].localindex;
                     }
                 }
@@ -809,10 +812,10 @@ namespace AnmChrEdit
         // Verifies new frame value giving a warning when it reaches negative values or the max frames
         private bool CheckNewFrameValue(AnmChrEntry entry, int newValue)
         {
-            if ((newValue >= entry.animTime || newValue < 0) && !isChecked)
+            if ((newValue >= entry.animTime || newValue < 0) && !isChecked) 
             {
-                switch (MessageBox.Show(this, "One or more of your new values will reach the " +
-                    (newValue < 0 ? "minimum " : newValue > entry.animTime ? "maximum " : "minimum/maximum ") + "threshold."
+                switch (MessageBox.Show(this, "One or more of your new values will reach or exceed the " +
+                    (newValue < 0 ? "minimum " : newValue > entry.animTime ? "maximum " : "minimum/maximum ") + "threshold. These values may not be read properly."
                     + Environment.NewLine + "Are you sure you want to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                 {
                     case DialogResult.No:
@@ -1049,19 +1052,25 @@ namespace AnmChrEdit
                 && tablefile.table[animBox.SelectedIndex] is AnmChrEntry)
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
-
                 try
                 {
                     int newTime = int.Parse(timeTextBox.Text);
-                    if (newTime > entry.animTime)
-                    {
-                        throw new OutOfTimeException();
-                    }
+                    //if (newTime > entry.animTime)
+                    //{
+                    //    throw new OutOfTimeException();
+                    //}
                     entry.subEntries[commandBlocksBox.SelectedIndex].isDisabled = false;
                     entry.subEntries[commandBlocksBox.SelectedIndex].isEdited = true;
                     entry.subEntries[commandBlocksBox.SelectedIndex].tableindex = newTime;
                     entry.subEntries[commandBlocksBox.SelectedIndex].localindex = newTime;
-                    timeTextBox.ForeColor = Color.White;
+                    /*if (newTime > entry.animTime)
+                    {
+                        timeTextBox.ForeColor = Color.Gray;
+                    }
+                    else
+                    {*/
+                        timeTextBox.ForeColor = Color.White;
+                    //}
                     lengthTextBox.ForeColor = Color.White;
                     bDisableSubSubUpdate = true;
                     bDisableSubUpdate = true;
@@ -1098,7 +1107,8 @@ namespace AnmChrEdit
                 {
                     timeTextBox.ForeColor = Color.Red;
                 }
-            } else {
+            }
+            else {
                 lengthTextBox.ForeColor = Color.White;
                 timeTextBox.ForeColor = Color.White;
             }

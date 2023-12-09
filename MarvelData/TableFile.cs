@@ -954,7 +954,6 @@ namespace MarvelData
                         for (int m = 0; m < subEntries[l].GetCommandList().ToArray().Length; m++)
                         {
                             if (subEntries[l].GetCommandList().ToArray()[m].Contains("1_99")
-                                //&& subEntries[l].localindex < 20000 // generic disabled time, how do i grab the AnimTime?
                                  && subEntries[l].localindex <= ((AnmChrEntry)table[i]).animTime
                                 )
                             {
