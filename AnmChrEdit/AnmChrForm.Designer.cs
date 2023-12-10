@@ -36,6 +36,16 @@ namespace AnmChrEdit
                 e.Graphics.DrawString(commandBlocksBox.Items[e.Index].ToString(),
                     e.Font, myBrush, e.Bounds, StringFormat.GenericDefault);
                 e.DrawFocusRectangle();
+
+
+                if (commandBlocksBox.Items[e.Index].ToString().Contains("Disabled"))
+                {
+                    myBrush = Brushes.Gray;
+                    e.Graphics.DrawString(commandBlocksBox.Items[e.Index].ToString(),
+                        e.Font, myBrush, e.Bounds, StringFormat.GenericDefault);
+                    e.DrawFocusRectangle();
+                }
+                /*          This crashes because the index cap doesnt update until after its drawn, fix later, vV
                  
                 if (commandBlocksBox.Items[e.Index].ToString().Contains("Disabled") || ((AnmChrEntry)tablefile.table[animBox.SelectedIndex]).animTime < ((AnmChrEntry)tablefile.table[animBox.SelectedIndex]).subEntries[e.Index].localindex)
                 {
@@ -43,7 +53,7 @@ namespace AnmChrEdit
                     e.Graphics.DrawString(commandBlocksBox.Items[e.Index].ToString(),
                         e.Font, myBrush, e.Bounds, StringFormat.GenericDefault);
                     e.DrawFocusRectangle();
-                }
+                }*/
             }
         }
 
