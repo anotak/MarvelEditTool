@@ -12,7 +12,7 @@ namespace MarvelData
     {
         public int unk64;
         public int unk68;
-        public int unk6c;
+        public int unk6C;
         public int projectileSpawn;
         public ShtFlagsA ShtFlagsA;
         public ShtFlagsB ShtFlagsB;
@@ -28,7 +28,7 @@ namespace MarvelData
         public float projectileYSpeed;
         public float projectileYAccel;
         public float unkA8;
-        public int unkAC;
+        public float unkAC;
         public int unkB0;
         public int unkB4;
         public int unkB8;
@@ -43,7 +43,7 @@ namespace MarvelData
         public int unkDC;
         public int unkE0;
         public int unkE4;
-        public int unkE8;
+        public float unkE8;
         public float SpawnVerticalPosition;
         public float SpawnHorizontalPosition;
         public int unkF4;
@@ -55,13 +55,13 @@ namespace MarvelData
         public int unk10C;
         public int unk110;
         public float unk114;
-        public int unk118;
+        public float unk118;
         public int unk11C;
         public int unk120;
         public int unk124;
         public float unk128;
         public float unk12C;
-        public int trapTransition; //bitwise flags
+        public TrapTransition trapTransition; //bitwise flags
         public int unk134;
         public int unk138;
         public int indexProjectileReference00;
@@ -118,15 +118,15 @@ namespace MarvelData
         public int unk208;
         public int unk20C;
         public int unk210;
-        public int unk214;
-        public int unk218;
-        public int unk21C;
-        public int unk220;
-        public int unk224;
-        public int unk228;
-        public int unk22C;
-        public int unk230;
-        public int unk234;
+        public int projectileAnmString1;
+        public int projectileAnmString2;
+        public int projectileAnmString3;
+        public int projectileAnmString4;
+        public int projectileAnmString5;
+        public int projectileAnmString6;
+        public int projectileAnmString7;
+        public int projectileAnmString8;
+        public int projectileAnmString9;
         public int unk238;
         public int unk23C;
         public int unk240;
@@ -198,18 +198,18 @@ namespace MarvelData
         Unk0x0400 = 0x00000400,
         Unk0x0800 = 0x00000800,
         canBeReflected = 0x00001000,
-        Unk0x2000 = 0x00002000,
-        Unk0x4000 = 0x00004000,
+        rotateBackwards = 0x00002000,
+        despawnInstantUnk = 0x00004000,
         Unk0x8000 = 0x00008000,
         Unk0x10000 = 0x00010000,
-        Unk0x20000 = 0x00020000,
-        Unk0x40000 = 0x00040000,
+        SpawnAtOpponentXY = 0x00020000,
+        AimAtOpponent = 0x00040000,
         Unk0x80000 = 0x00080000,
         Unk0x100000 = 0x00100000,
         Unk0x200000 = 0x00200000,
         Unk0x400000 = 0x00400000,
         Unk0x800000 = 0x00800000,
-        Unk0x01000000 = 0x01000000,
+        projectileUnk = 0x01000000,
         Unk0x02000000 = 0x02000000,
         Unk0x04000000 = 0x04000000,
         Unk0x08000000 = 0x08000000,
@@ -223,7 +223,7 @@ namespace MarvelData
     {
         None = 0,
         Unk0x01 = 0x00000001,
-        Unk0x02 = 0x00000002,
+        disappearOnOwnerCancel = 0x00000002,
         Unk0x04 = 0x00000004,
         despawnWhenOwnerHit = 0x00000008,
         Unk0x10 = 0x00000010,
@@ -235,12 +235,12 @@ namespace MarvelData
         Unk0x0400 = 0x00000400,
         Unk0x0800 = 0x00000800,
         Unk0x1000 = 0x00001000,
-        Unk0x2000 = 0x00002000,
+        EffectFadeAway = 0x00002000,
         Unk0x4000 = 0x00004000,
         Unk0x8000 = 0x00008000,
         Unk0x10000 = 0x00010000,
         Unk0x20000 = 0x00020000,
-        Unk0x40000 = 0x00040000,
+        GroundImpactRemoveHitbox = 0x00040000,
         Unk0x80000 = 0x00080000,
         Unk0x100000 = 0x00100000,
         Unk0x200000 = 0x00200000,
@@ -289,6 +289,8 @@ namespace MarvelData
         Unk0x08000000 = 0x08000000,
         Unk0x10000000 = 0x10000000,
         Unk0x20000000 = 0x20000000,
+        Unk0x40000000 = 0x40000000,
+        Unk0x80000000 = 0x80000000
     }
 
 
@@ -610,6 +612,43 @@ namespace MarvelData
         public int unk34C;
         public int unk350;
     }
+    [Flags]
+    public enum TrapTransition : uint
+    {
+        None = 0,
+        Unk0x01 = 0x00000001,
+        TimeUp = 0x00000002,
+        WhenDestroyed = 0x00000004,
+        Unk0x08 = 0x00000008,
+        HitBlockorDestroyed = 0x00000010,
+        Unk0x20 = 0x00000020,
+        Unk0x40 = 0x00000040,
+        Unk0x80 = 0x00000080,
+        Unk0x0100 = 0x00000100,
+        WhenOwnerHit = 0x00000200,
+        Unk0x0400 = 0x00000400,
+        Unk0x0800 = 0x00000800,
+        Unk0x1000 = 0x00001000,
+        Unk0x2000 = 0x00002000,
+        Unk0x4000 = 0x00004000,
+        Unk0x8000 = 0x00008000,
+        Unk0x10000 = 0x00010000,
+        Unk0x20000 = 0x00020000,
+        Unk0x40000 = 0x00040000,
+        Unk0x80000 = 0x00080000,
+        Unk0x100000 = 0x00100000,
+        Unk0x200000 = 0x00200000,
+        Unk0x400000 = 0x00400000,
+        Unk0x800000 = 0x00800000,
+        Unkx01000000 = 0x01000000,
+        Unk0x02000000 = 0x02000000,
+        Unk0x04000000 = 0x04000000,
+        Unk0x08000000 = 0x08000000,
+        Unk0x10000000 = 0x10000000,
+        Unk0x20000000 = 0x20000000,
+        Unk0x40000000 = 0x40000000,
+        Unk0x80000000 = 0x80000000
+    }
 
     [Flags]
     public enum StatusFlags : uint
@@ -711,8 +750,8 @@ namespace MarvelData
         public int EnemyCmdSPAtkClassOnHit;
         public int EnemyCmdSPAtkIndexOnHit;
         public int throwUnk1;
-        public int unk110;
-        public int AmmyThrowModifier;
+        public int AltAnmchr;
+        public int AltAnmtdown;
         public int Hitspark1;
         public int unk11C;
         public HitEffectOnEnemy OnHitEffectOnEnemy;
@@ -1239,7 +1278,18 @@ namespace MarvelData
         public int unk18;
         public int unk1C;
     }
-
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SpatkChrisStateChunk // 18
+    {
+        public SubChunkType subChunkType; //18
+        public int stateID;
+        public int unk08;
+        public int unk0C;
+        public int unk10;
+        public int unk14;
+        public int unk18;
+        public int unk1C;
+    }
     [StructLayout(LayoutKind.Sequential)]
     public struct SpatkModeRequiredChunk // 1E
     {
@@ -1267,17 +1317,18 @@ namespace MarvelData
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct SpatkChrisStateChunk // 18
+    public struct SpatkSuperJumpAction // 25
     {
-        public SubChunkType subChunkType; //18
-        public int stateID;
-        public int unk08;
-        public int unk0C;
+        public SubChunkType subChunkType; //25
+        public int NeutralSJAnmchrAction;
+        public int ForwardSJAnmchrAction;
+        public int BackwardsSJAnmchrAction;
         public int unk10;
         public int unk14;
         public int unk18;
         public int unk1C;
     }
+
 
     [StructLayout(LayoutKind.Sequential)]
     public struct SpatkRestrictedStateChunk // 2F
@@ -1331,7 +1382,7 @@ namespace MarvelData
         public int unk1C;
     }
 
-    [StructLayout(LayoutKind.Sequential)]
+        [StructLayout(LayoutKind.Sequential)]
     public struct SpatkGuardTACChunk // 38
     {
         public SubChunkType subChunkType; //38
@@ -1371,6 +1422,19 @@ namespace MarvelData
     }
 
     [StructLayout(LayoutKind.Sequential)]
+    public struct SpatkEnumUnk // 55
+    {
+        public SubChunkType subChunkType; //55
+        public EnumUnk flags;
+        public int unk08;
+        public int unk0C;
+        public int unk10;
+        public int unk14;
+        public int unk18;
+        public int unk1C;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
     public struct SpatkUnkChunk // ??
     {
         public SubChunkType subChunkType; //??
@@ -1382,7 +1446,42 @@ namespace MarvelData
         public int unk18;
         public int unk1C;
     }
-
+    public enum EnumUnk : uint
+    {
+        None = 0,
+        Unk0x01 = 0x00000001,
+        Unk0x02 = 0x00000002,
+        Unk0x04 = 0x00000004,
+        Unk0x08 = 0x00000008,
+        Unk0x10 = 0x00000010,
+        Unk0x20 = 0x00000020,
+        Unk0x40 = 0x00000040,
+        Unk0x80 = 0x00000080,
+        Unk0x0100 = 0x00000100,
+        Unk0x0200 = 0x00000200,
+        Unk0x0400 = 0x00000400,
+        Unk0x0800 = 0x00000800,
+        Unk0x1000 = 0x00001000,
+        Unk0x2000 = 0x00002000,
+        Unk0x4000 = 0x00004000,
+        Unk0x8000 = 0x00008000,
+        Unk0x10000 = 0x00010000,
+        Unk0x20000 = 0x00020000,
+        Unk0x40000 = 0x00040000,
+        Unk0x80000 = 0x00080000,
+        Unk0x100000 = 0x00100000,
+        Unk0x200000 = 0x00200000,
+        Unk0x400000 = 0x00400000,
+        Unk0x800000 = 0x00800000,
+        Unkx01000000 = 0x01000000,
+        Unk0x02000000 = 0x02000000,
+        Unk0x04000000 = 0x04000000,
+        Unk0x08000000 = 0x08000000,
+        Unk0x10000000 = 0x10000000,
+        Unk0x20000000 = 0x20000000,
+        Unk0x40000000 = 0x40000000,
+        Unk0x80000000 = 0x80000000
+    }
     public enum SubChunkType : uint
     {
         [Description("0 None")]
@@ -1413,6 +1512,8 @@ namespace MarvelData
         stateRequirementUnk_23 = 23, //17
         [Description("24 Chris Stance Check?")]
         chrisInstallCheck_24 = 24, //18
+        [Description("26 Taskmaster Air Arrows Unk")]
+        taskmasterFlags_26 = 26, //1A
         [Description("30 Mode Required")]
         modeRequired_30 = 30, //1E
         [Description("33 TAC Unk")]
@@ -1425,6 +1526,8 @@ namespace MarvelData
         superJumpAction_37 = 37, //25
         [Description("38 Snap Back Character")]
         snapBackChar_38 = 38, //26
+        [Description("41 Easy Mode Unk?")]
+        easyModeUnk_41 = 41, //29
         [Description("47 Restricted State")]
         restrictedState_47 = 47, //2F
         [Description("48 S Unk")]
@@ -1449,6 +1552,8 @@ namespace MarvelData
         allowedChainCancelingState_63 = 63, //3F
         [Description("73 Advancing Guard Unk")]
         advGuardUnk_73 = 73, //49
+        [Description("85 Haggar Flags Unk")]
+        haggarFlags_85 = 85, //55
         [Description("90 Whiff Cancel Unk")]
         whiffCancelUnk_90 = 90,
         [Description("91 Is Prop Active")]
@@ -1487,25 +1592,25 @@ namespace MarvelData
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkRequiredStateUnk), // 17         [23]
-            typeof(SpatkChrisStateChunk), // 00          [24]
+            typeof(SpatkRequiredStateUnk), // 17          [23]
+            typeof(SpatkChrisStateChunk), // 00           [24]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkEnumUnk), // 00                   [26]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkModeRequiredChunk), // 1E         [30]
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkTACDHCChunk), // 23               [35]
             typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkModeRequiredChunk), // 1E        [30]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkTACDHCChunk), // 23              [35]
+            typeof(SpatkSuperJumpAction), // 00           [37]
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [41]
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
@@ -1528,6 +1633,30 @@ namespace MarvelData
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkUnkChunk), // 00                  [0]
             typeof(SpatkAllowedChainChunk), // 3F        [63]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkEnumUnk), // 00                  [85]
+
         }; // if it's past the end of this list, it'll default to SpatkUnkChunk
     }
 }
