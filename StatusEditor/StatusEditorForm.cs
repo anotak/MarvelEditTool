@@ -876,6 +876,8 @@ namespace StatusEditor
                 AddTags(typeof(SpatkDisabled), false);
             else if (tag.Contains("flags"))
                 AddTags(typeof(cmdFlags), true);
+            else if (tag.Contains("trapTransition"))
+                AddTags(typeof(TrapTransition), true);
             else
             {
                 tagsDataGridView.DataSource = null;
