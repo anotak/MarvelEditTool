@@ -33,7 +33,7 @@ namespace MSDEditor
         public static string GetCompileDate()
         {
             System.Version MyVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            return new DateTime(2000, 1, 1).AddDays(MyVersion.Build).AddSeconds(MyVersion.Revision * 2).ToString();
+            return new DateTime(2000, 1, 1).AddDays(MyVersion.Build).AddSeconds(MyVersion.Revision * 2).ToString("MMM.dd.yyyy"); ;
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
