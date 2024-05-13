@@ -32,15 +32,15 @@ namespace MarvelData {
             public float projectileYAccel;
             public float unkA8;
             public float unkAC;
-            public float unkB0;
-            public float unkB4;
-            public float unkB8;
-            public float unkBC;
+            public float trackingStrength;
+            public float trackingUnk;
+            public float trackingRotation;
+            public float trackingStartFrame;
             public int unkC0;
             public int unkC4;
-            public int unkC8;
+            public float trackingEndFrame;
             public int unkCC;
-            public float boomerangToggleUnk;
+            public float despawnProjectileFrame;
             public int returnBone;
             public int unkD8;
             public int unkDC;
@@ -57,8 +57,8 @@ namespace MarvelData {
             public float ProjectileAngle;
             public float unk10C;
             public float unk110;
-            public float unk114;
-            public float unk118;
+            public float RandomSpawnAngle;
+            public float RandomSpawnAngle2;
             public int unk11C;
             public int unk120;
             public int unk124;
@@ -327,9 +327,9 @@ namespace MarvelData {
             public float unk3A0;
             public float unk3A4;
             public int unk3A8;
-            public int unk3AC;
-            public int unk3B0;
-            public int unk3B4;
+            public float BeamLengthLimitUnk;
+            public float unk3B0;
+            public float unk3B4;
             public float hitboxSize;
             public int unk3BC;
             public int unk3C0;
@@ -390,7 +390,7 @@ namespace MarvelData {
             public int unk400;
             public int unk404;
             public int unk408;
-            public float unk40C;
+            public float BeamLengthLimitUnk;
             public float unk410;
             public float unk414;
             public float hitboxSize;
@@ -429,17 +429,17 @@ namespace MarvelData {
             public float flightMaxSpeed;
             public float flightClearance;
             public float flightMaxHeight;
-            public int standLBaseHitstun; // 0x6c
-            public int standMBaseHitstun;
-            public int standHBaseHitstun;
-            public int crouchLBaseHitstun;
-            public int crouchMBaseHitstun;
-            public int crouchHBaseHitstun;
-            public int jumpLBaseHitstun;
-            public int jumpMBaseHitstun;
-            public int jumpHBaseHitstun;
-            public int sixButtonChainLimit;
-            public int unk94;
+            public int stLBaseStun; // 0x6c
+            public int stMBaseStun;
+            public int stHBaseStun;
+            public int crLBaseStun;
+            public int crMBaseStun;
+            public int crHBaseStun;
+            public int jLBaseStun;
+            public int jMBaseStun;
+            public int jHBaseStun;
+            public int GroundChainLimit;
+            public int AirChainLimit;
             public float minDmgScalingNormals;
             public float minDmgScalingSpecials;
             public float minDmgScalingHypers;
@@ -490,19 +490,19 @@ namespace MarvelData {
             public float XF3MeterGain;
             public float XF3DmgTaken;
             public int unk160;
-            public int unk164;
-            public int unk168;
-            public int unk16C;
-            public int unk170;
+            public int frankLevel2XP;
+            public int frankLevel3XP;
+            public int frankLevel4XP;
+            public int frankLevel5XP;
             public int unk174;
             public float unk178;
             public float unk17C;
             public int unk180;
             public int unk184;
             public int unk188;
-            public float unk18C;
-            public float unk190;
-            public float unk194;
+            public float LandingDustCloudXScaling;
+            public float LandingDustCloudYScaling;
+            public float JumpAndKnockdownEffectScaling;
             public float unk198;
             public int unk19C;
             public int unk1A0;
@@ -714,47 +714,47 @@ namespace MarvelData {
             public float damageMult;
             public float ChipDamage;
             public int unk070;
-            public float meterGain;
-            public float unk078;
-            public int unk07c;
+            public float MeterGain;
+            public float MeterGainOnHit;
+            public int OppMeterGain;
             public int meterSteal;
             public int hitboxDestructionUnk;
             public int hiddenStunUnk;
-            public int GroundHitstun;
-            public int unk090;
+            public int AddedGroundHitstun;
+            public int AddedCounterhitStun;
             public int AddedBlockstun;
-            public int hardKDTime;
-            public float enemyGroundPushbackAndWallBounceDist;
-            public float enemyGroundPushbackAccel;
-            public float hitOrBlockPushback;
-            public float hitOrBlockPushbackAccel;
+            public int AddedHardKDTime;
+            public float GroundHitPushbackWallBounceXSpeed;
+            public float GroundHitPushbackWallBounceXAccel;
+            public float BlockPushbackXSpeed;
+            public float BlockPushbackXAccel;
             public float unk0AC;
             public float unk0B0;
             public float unk0B4;
             public float unk0B8;
-            public float GroundBounceHeight;
-            public float unk0C0;
+            public float GroundWallBounceYSpeed;
+            public float GroundWallBounceYAccel;
             public int hitstop;
             public int unk0C8;
-            public int unk0CC;
+            public int RemoveAllHealthAndMeterTest;
             public int sjCancelDelay;
             public int juggleHeight;
-            public int unk0D8;
+            public int JuggleGravityDelay;
             public float juggleCarry;
             public float juggleSpeed;
-            public int AirFixedHitstun;
+            public int AddedAirHitstun;
             public int SJJuggleHeight;
-            public int unk0EC;
+            public int SJJuggleGravityDelay;
             public float SJJuggleCarry;
             public float SJJuggleSpeed;
-            public int SJAirFixedHitstun;
+            public int AddedSJAirHitstun;
             public int PlayerCmdSPAtkClassOnHit;
             public int PlayerCmdSPAtkIndexOnHit;
             public int EnemyCmdSPAtkClassOnHit;
             public int EnemyCmdSPAtkIndexOnHit;
-            public int throwUnk1;
-            public int AltAnmchr;
-            public int AltAnmtdown;
+            public int AmmyThrowModifier;
+            public int AmmyAnmchrEntryOnHit;
+            public int AmmyAnmtdownEntryOnHit;
             public int Hitspark1;
             public int unk11C;
             public HitEffectOnEnemy OnHitEffectOnEnemy;
@@ -807,7 +807,7 @@ namespace MarvelData {
             Unk0x4000 = 0x00004000,
             Unk0x8000 = 0x00008000,
             Unk0x10000 = 0x00010000,
-            Unk0x20000 = 0x00020000,
+            PreventPushback = 0x00020000,
             Unk0x40000 = 0x00040000,
             FlyingScreen = 0x00080000,
             CanWallBounce = 0x00100000,
@@ -866,7 +866,7 @@ namespace MarvelData {
             Unk0x10 = 0x00000010,
             ThrowGroundedOpp = 0x00000020,
             ThrowAirborneOpp = 0x00000040,
-            Unk0x80 = 0x00000080,
+            DisableRecapture = 0x00000080,
             Unk0x100 = 0x00000100,
             Unk0x200 = 0x00000200,
             Unk0x400 = 0x00000400,
