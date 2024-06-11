@@ -28,6 +28,8 @@ namespace MarvelData
         private byte[] shotName2Bytes;
         private String shotName2String;
         private byte[] headerC;
+        //public List<StructEntryBase> subEntries;
+        public List<StructEntryBase> subEntries;
 
         public static Type[] structTypes = { typeof(StructEntry<StatusChunk>), typeof(StructEntry<ATKInfoChunk>), typeof(StructEntry<BaseActChunk>),
             typeof(CmdSpAtkEntry), typeof(CmdComboEntry), typeof(AnmChrEntry), typeof(CollisionEntry), typeof(StructEntry<ShotChunk>),
@@ -54,7 +56,7 @@ namespace MarvelData
             string filenamelower = filename.ToLowerInvariant();
 
             // Reads .SHT file here
-            if (filenamelower.Contains("10be43d4") || filenamelower.Contains("SHT"))
+            if (filenamelower.Contains("10be43d4") || filenamelower.Contains("sht"))
             {
                 return ReadShotFile(filename, out entryType, ref structsize, tablefile);
             }
@@ -491,7 +493,7 @@ namespace MarvelData
 
         public int Move(int index, int offset)
         {
-            int newindex = index - offset;
+            int newindex = index + offset;
             if (newindex < 0)
             {
                 newindex = table.Count + newindex;
@@ -500,13 +502,27 @@ namespace MarvelData
             {
                 newindex -= table.Count;
             }
+            int i = 0;
+            //TableEntry first = table[index];
+            //TableEntry second = table[newindex];
+            TableEntry first = (TableEntry)Activator.CreateInstance(fileType);
+            TableEntry second = (TableEntry)Activator.CreateInstance(fileType);
+            //subEntries = new List<StructEntryBase>();
+            //int total = table[index].subEntries.Count();
+            while (i <= 0)
+            {
+            //first.subEntries = table[index].subEntries;
+            //second.subEntries = table[newindex].subEntries;
+            i++;
+            }
+            //(table[index], table[newindex]) = (table[newindex], table[index]);
+            //            table[index] = second;
+            //            table[newindex] = first;
+            first.index = (uint)index;
+            second.index = (uint)newindex;
+        
 
-            TableEntry first = table[index];
-            TableEntry second = table[newindex];
-            table[index] = second;
-            table[newindex] = first;
-            first.index = (uint)newindex;
-            second.index = (uint)index;
+
             return newindex;
         }
 
@@ -937,7 +953,9 @@ namespace MarvelData
                         //output.Add(subEntries[l].GetName());
                         for (int m = 0; m < subEntries[l].GetCommandList().ToArray().Length; m++)
                         {
-                            if (subEntries[l].GetCommandList().ToArray()[m].Contains("1_99"))
+                            if (subEntries[l].GetCommandList().ToArray()[m].Contains("1_99")
+                                 && subEntries[l].localindex <= ((AnmChrEntry)table[i]).animTime
+                                )
                             {
                                 byte[] data = subEntries[l].subsubEntries[m];
                                 string dataString = BitConverter.ToString(data).Replace("-", "");
@@ -946,9 +964,17 @@ namespace MarvelData
 
                                 table[infoRef].name += " ATI=>" + ati + "? CLI=>" + cli + "?";
                             }
-                            if (subEntries[l].GetCommandList().ToArray()[m].Contains("0_0C"))
+                            if (subEntries[l].GetCommandList().ToArray()[m].Contains("0_0C")
+                                && subEntries[l].localindex <= ((AnmChrEntry)table[i]).animTime
+                                )
                             {
                                 table[infoRef].name = "Charge " + table[infoRef].name;
+                            }
+                            if (subEntries[l].GetCommandList().ToArray()[m].Contains("3_30")|| subEntries[l].GetCommandList().ToArray()[m].Contains("3_31")
+                                && subEntries[l].localindex <= ((AnmChrEntry)table[i]).animTime
+                                )
+                            {
+                                table[infoRef].name = "Shot " + table[infoRef].name;
                             }
                         }
                     }
@@ -999,15 +1025,21 @@ namespace MarvelData
                     string test = originalName.Substring(originalName.IndexOf(referenceType) + referenceType.Length + 2, 2);
                     int hexIndex = Convert.ToInt32(originalName.Substring(originalName.IndexOf(referenceType) + referenceType.Length + 2, 2), 16);
                     int hexLastIndex = Convert.ToInt32(originalName.Substring(originalName.LastIndexOf(referenceType) + referenceType.Length + 2, 2), 16);
-
-                    if (hexIndex != hexLastIndex &&
+                    //int hexLastIndex = hexIndex - 1;
+                   if (hexIndex <= atiFile.table.Count && hexIndex >= 0)
+                   {
+                        if (hexIndex != hexLastIndex &&
                         (atiFile.table[hexIndex].name == "unknown" || atiFile.table[hexLastIndex].name == "unknown"))
-                    {
+                        {
                         table[i].name = table[i].name.Replace("unknown", atiFile.table[hexIndex].name + " " + atiFile.table[hexLastIndex].name);
-                    }
+                        }
+                        else{
+                        table[i].name = table[i].name.Replace("unknown", atiFile.table[hexIndex].name);
+                        }
+                   }
                     else
                     {
-                        table[i].name = table[i].name.Replace("unknown", atiFile.table[hexIndex].name);
+                        table[i].name = table[i].name.Replace("unknown", "unknown - atkinfo doesn't exist?");
                     }
                 }
             }

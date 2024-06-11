@@ -52,7 +52,7 @@ namespace StatusEditor
             this.duplicateButton = new System.Windows.Forms.Button();
             this.upButton = new System.Windows.Forms.Button();
             this.addSubChunkButton = new System.Windows.Forms.Button();
-            this.addSubChunkTypeButton = new System.Windows.Forms.Button();
+            this.downButton = new System.Windows.Forms.Button();
             this.sizeLabel = new System.Windows.Forms.Label();
             this.dataTextBox = new System.Windows.Forms.TextBox();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
@@ -288,9 +288,9 @@ namespace StatusEditor
             this.tableLayoutPanel1.Controls.Add(this.extendButton, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.duplicateButton, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.upButton, 0, 5);
-            this.tableLayoutPanel1.Controls.Add(this.addSubChunkButton, 0, 6);
-            this.tableLayoutPanel1.Controls.Add(this.addSubChunkTypeButton, 0, 7);
             this.tableLayoutPanel1.Controls.Add(this.sizeLabel, 0, 8);
+            this.tableLayoutPanel1.Controls.Add(this.downButton, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.addSubChunkButton, 0, 7);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
@@ -406,7 +406,7 @@ namespace StatusEditor
             this.upButton.Name = "upButton";
             this.upButton.Size = new System.Drawing.Size(248, 23);
             this.upButton.TabIndex = 5;
-            this.upButton.Text = "Move Up";
+            this.upButton.Text = "Move Up (Disabled)";
             this.upButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.upButton.UseVisualStyleBackColor = true;
             this.upButton.Click += new System.EventHandler(this.upButton_Click);
@@ -417,7 +417,7 @@ namespace StatusEditor
             | System.Windows.Forms.AnchorStyles.Right)));
             this.addSubChunkButton.AutoSize = true;
             this.addSubChunkButton.Enabled = false;
-            this.addSubChunkButton.Location = new System.Drawing.Point(2, 161);
+            this.addSubChunkButton.Location = new System.Drawing.Point(2, 188);
             this.addSubChunkButton.Margin = new System.Windows.Forms.Padding(2);
             this.addSubChunkButton.Name = "addSubChunkButton";
             this.addSubChunkButton.Size = new System.Drawing.Size(248, 23);
@@ -427,21 +427,21 @@ namespace StatusEditor
             this.addSubChunkButton.UseVisualStyleBackColor = true;
             this.addSubChunkButton.Click += new System.EventHandler(this.addSubChunkButton_Click);
             // 
-            // addSubChunkTypeButton
+            // downButton
             // 
-            this.addSubChunkTypeButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.downButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.addSubChunkTypeButton.AutoSize = true;
-            this.addSubChunkTypeButton.Enabled = false;
-            this.addSubChunkTypeButton.Location = new System.Drawing.Point(2, 188);
-            this.addSubChunkTypeButton.Margin = new System.Windows.Forms.Padding(2);
-            this.addSubChunkTypeButton.Name = "addSubChunkTypeButton";
-            this.addSubChunkTypeButton.Size = new System.Drawing.Size(248, 23);
-            this.addSubChunkTypeButton.TabIndex = 7;
-            this.addSubChunkTypeButton.Text = "Add SubChunkType";
-            this.addSubChunkTypeButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.addSubChunkTypeButton.UseVisualStyleBackColor = true;
-            this.addSubChunkTypeButton.Click += new System.EventHandler(this.addSubChunkTypeButton_Click);
+            this.downButton.AutoSize = true;
+            this.downButton.Enabled = false;
+            this.downButton.Location = new System.Drawing.Point(2, 161);
+            this.downButton.Margin = new System.Windows.Forms.Padding(2);
+            this.downButton.Name = "downButton";
+            this.downButton.Size = new System.Drawing.Size(248, 23);
+            this.downButton.TabIndex = 7;
+            this.downButton.Text = "Move Down (Disabled)";
+            this.downButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.downButton.UseVisualStyleBackColor = true;
+            this.downButton.Click += new System.EventHandler(this.downButton_Click);
             // 
             // sizeLabel
             // 
@@ -716,7 +716,7 @@ namespace StatusEditor
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "SE - Standard Editor";
+            this.Name = "StatusEditorForm";
             this.Text = "SE - Standard Editor";
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
@@ -774,7 +774,7 @@ namespace StatusEditor
         private DataGridViewTextBoxColumn hexColumn;
         private ToolStripContainer toolStripContainer1;
         private Label sizeLabel;
-        private Button addSubChunkTypeButton;
+        private Button downButton;
         private ContextMenuStrip contextMenuStrip1;
         private ToolStripMenuItem toolStripMenuItem1;
         private ToolStripComboBox toolStripComboBox1;

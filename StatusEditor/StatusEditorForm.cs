@@ -52,7 +52,7 @@ namespace StatusEditor
         public static string GetCompileDate()
         {
             System.Version MyVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            return new DateTime(2000, 1, 1).AddDays(MyVersion.Build).AddSeconds(MyVersion.Revision * 2).ToString("dd.MM.yyyy");
+            return new DateTime(2000, 1, 1).AddDays(MyVersion.Build).AddSeconds(MyVersion.Revision * 2).ToString("MMM.dd.yyyy");
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -407,17 +407,16 @@ namespace StatusEditor
             extendButton.Visible = !isShtFile;
             duplicateButton.Visible = !isShtFile;
             upButton.Visible = !isShtFile;
+            downButton.Visible = !isShtFile;
             addSubChunkButton.Visible = !isShtFile;
-            addSubChunkTypeButton.Visible = !isShtFile;
-
             saveToolStripMenuItem.Enabled = true;
             saveAsToolStripMenuItem.Enabled = true;
             importButton.Enabled = false;
             duplicateButton.Enabled = false;
             upButton.Enabled = false;
+            downButton.Enabled = false;
             exportButton.Enabled = false;
             addSubChunkButton.Enabled = false;
-            addSubChunkTypeButton.Enabled = false;
             animBox.Enabled = true;
             extendButton.Enabled = extendButton.Visible;
             sizeLabel.Text = count + " entries loaded";
@@ -600,25 +599,39 @@ namespace StatusEditor
 
         private void duplicateButton_Click(object sender, EventArgs e)
         {
-            if (cantAddSubChunk())
-                return;
-
-            tablefile.Duplicate(animBox.SelectedIndex);
-            RefreshDataAlt();
-            if (animBox.TopIndex < animBox.Items.Count - 2)
+            switch (MessageBox.Show(this, "Do you want to duplicate this entry?" + Environment.NewLine + "This action cannot be undone!", "Duplicate", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
             {
-                animBox.TopIndex++;
+                case DialogResult.No:
+                    break;
+                default:
+                    if (cantAddSubChunk())
+                        return;
+
+                    tablefile.Duplicate(animBox.SelectedIndex);
+                    RefreshDataAlt();
+                    if (animBox.TopIndex < animBox.Items.Count - 2)
+                    {
+                        animBox.TopIndex++;
+                    }
+                    break;
             }
         }
 
         private void extendButton_Click(object sender, EventArgs e)
         {
-            tablefile.Extend();
-            RefreshData();
-
-            if (animBox.TopIndex < animBox.Items.Count - 2)
+            switch (MessageBox.Show(this, "Do you want to extend list?" + Environment.NewLine + "This action cannot be undone!", "Extend List", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
             {
-                animBox.TopIndex++;
+                case DialogResult.No:
+                    break;
+                default:
+                    tablefile.Extend();
+                    RefreshData();
+
+                    if (animBox.TopIndex < animBox.Items.Count - 2)
+                    {
+                        animBox.TopIndex++;
+                    }
+                    break;
             }
         }
 
@@ -633,12 +646,13 @@ namespace StatusEditor
             animBox_SelectedIndexChanged(null, null);
         }
 
-        private void addSubChunkTypeButton_Click(object sender, EventArgs e)
+        private void downButton_Click(object sender, EventArgs e)
         {
+            /*
             if (cantAddSubChunk())
                 return;
 
-            Point screenPoint = addSubChunkTypeButton.PointToScreen(new Point(addSubChunkTypeButton.Left, addSubChunkTypeButton.Bottom));
+            Point screenPoint = downButton.PointToScreen(new Point(downButton.Left, downButton.Bottom));
 
 
             //IEnumerable<TypeViewModel> enumValues = getEnumValuesList(typeof(SubChunkType));
@@ -651,12 +665,12 @@ namespace StatusEditor
 
             if (screenPoint.Y + contextMenuStrip1.Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
             {
-                contextMenuStrip1.Show(addSubChunkTypeButton, new Point(0, -contextMenuStrip1.Size.Height));
+                contextMenuStrip1.Show(downButton, new Point(0, -contextMenuStrip1.Size.Height));
             }
             else
             {
-                contextMenuStrip1.Show(addSubChunkTypeButton, new Point(0, addSubChunkTypeButton.Height));
-            }
+                contextMenuStrip1.Show(downButton, new Point(0, downButton.Height));
+            }*/
         }
 
         // checks if a subchunk can be added
@@ -675,7 +689,7 @@ namespace StatusEditor
                 }
             }
             return true;
-        }
+        } 
 
         private void formatButton_Click(object sender, EventArgs e)
         {
@@ -691,7 +705,10 @@ namespace StatusEditor
             int top = animBox.TopIndex;
             tableNames = tablefile.GetNames();
             animBox.DataSource = tableNames;
-            if (s > tableNames.Count) s = 0; //fixes outofbounds when loading new file
+            if (s >= tableNames.Count)
+            { 
+                s = 0; 
+            } //fixes outofbounds when loading new file
             animBox.SelectedIndex = s;
             animBox.TopIndex = top;
             bDisableUpdate = false;
@@ -810,7 +827,7 @@ namespace StatusEditor
             RefreshAnimBox();
         }
 
-        //translates the numeric values as known readable entries
+        //this creates the drop down list for enums and other integers
         private void structView_SelectedIndexChanged(object sender, EventArgs e)
         {
             String tag = "";
@@ -847,6 +864,20 @@ namespace StatusEditor
                 AddTags(typeof(SubChunkType), true);
             else if (tag.Contains("boneReferenceId"))
                 AddTags(typeof(BoneReferenceId), true);
+            else if (tag.Contains("ShtFlagsA"))
+                AddTags(typeof(ShtFlagsA), true);
+            else if (tag.Contains("ShtFlagsB"))
+                AddTags(typeof(ShtFlagsB), true);
+            else if (tag.Contains("ShtFlagsC"))
+                AddTags(typeof(ShtFlagsC), true);
+            else if (tag.Contains("disabled"))
+                AddTags(typeof(CmdDisabled), false);
+            else if (tag.Contains("disable"))
+                AddTags(typeof(SpatkDisabled), false);
+            else if (tag.Contains("flags"))
+                AddTags(typeof(cmdFlags), true);
+            else if (tag.Contains("trapTransition"))
+                AddTags(typeof(TrapTransition), true);
             else
             {
                 tagsDataGridView.DataSource = null;
@@ -945,9 +976,9 @@ namespace StatusEditor
 
                 exportButton.Enabled = true;
                 addSubChunkButton.Enabled = false;
-                addSubChunkTypeButton.Enabled = false;
                 duplicateButton.Enabled = duplicateButton.Visible;
-                upButton.Enabled = upButton.Visible;
+                upButton.Enabled = false;
+                downButton.Enabled = false;
                 textBox1.Text = tablefile.table[animBox.SelectedIndex].name;
                 textBox1.Enabled = true;
                 SetTextConcurrent(tablefile.table[animBox.SelectedIndex].GetData());
@@ -983,10 +1014,6 @@ namespace StatusEditor
                 else if (tablefile.table[animBox.SelectedIndex] is MultiStructEntry)
                 {
                     addSubChunkButton.Enabled = true;
-                    if (!(tablefile.table[animBox.SelectedIndex] is CollisionEntry))
-                    {
-                        addSubChunkTypeButton.Enabled = true;
-                    }
                     ClearItems();
                     MultiStructEntry multi = (MultiStructEntry)tablefile.table[animBox.SelectedIndex];
                     int offset = 0;
@@ -1230,24 +1257,28 @@ namespace StatusEditor
             }
         }
         // end datatextbox stuff
-        #endregion
-
+        #endregion  
+        // disabled until i find a good way to fix the move up button
         private void upButton_Click(object sender, EventArgs e)
         {
-            if (animBox.SelectedIndex < 0
-                ||
-                animBox.SelectedIndex >= tablefile.table.Count
-                ||
-                !tablefile.table[animBox.SelectedIndex].bHasData)
-            {
-                return;
-            }
-            int newindex = tablefile.Move(animBox.SelectedIndex, 1);
+            if (animBox.SelectedIndex <= 0
+                   ||
+                   animBox.SelectedIndex >= tablefile.table.Count
+                   ||
+                   !tablefile.table[animBox.SelectedIndex].bHasData)
+               {
+                   return;
+               }
+            //
+            //int newindex = tablefile.Move(animBox.SelectedIndex, 1);
+            int newindex = animBox.SelectedIndex;
+            tablefile.Move(newindex,1);
+            //(animBox.DataSource(newindex), animBox.Items(oldindex)) = (animBox.Items(oldindex), animBox.Items(newindex));
             RefreshData();
-            if (newindex < animBox.Items.Count && newindex >= 0)
-            {
-                animBox.SelectedIndex = newindex;
-            }
+               if (newindex < animBox.Items.Count && newindex >= 0)
+               {
+                  animBox.SelectedIndex = newindex;
+               }
         }
 
         private void textBox1_Validating(object sender, System.ComponentModel.CancelEventArgs e)

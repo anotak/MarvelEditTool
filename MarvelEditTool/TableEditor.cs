@@ -35,7 +35,7 @@ namespace MarvelEditTool
         public static string GetCompileDate()
         {
             System.Version MyVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            return new DateTime(2000, 1, 1).AddDays(MyVersion.Build).AddSeconds(MyVersion.Revision * 2).ToString();
+            return new DateTime(2000, 1, 1).AddDays(MyVersion.Build).AddSeconds(MyVersion.Revision * 2).ToString("MMM.dd.yyyy");
         }
 
         public void SaferExit()
@@ -408,11 +408,18 @@ namespace MarvelEditTool
 
         private void extendButton_Click(object sender, EventArgs e)
         {
-            tablefile.Extend();
-            RefreshData();
-            if(animBox.TopIndex < animBox.Items.Count - 2)
+            switch (MessageBox.Show(this, "Do you want to extend list?" + Environment.NewLine + "This action cannot be undone!", "Extend List", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
             {
-                animBox.TopIndex++;
+                case DialogResult.No:
+                    break;
+                default:
+                    tablefile.Extend();
+                    RefreshData();
+                    if (animBox.TopIndex < animBox.Items.Count - 2)
+                    {
+                        animBox.TopIndex++;
+                    }
+                    break;
             }
         }
 

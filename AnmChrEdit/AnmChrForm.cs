@@ -9,6 +9,7 @@ using System.Windows.Threading;
 using MarvelData;
 using static System.Windows.Forms.LinkLabel;
 using Microsoft.VisualBasic;
+using System.Diagnostics.Eventing.Reader;
 
 namespace AnmChrEdit
 {
@@ -37,6 +38,8 @@ namespace AnmChrEdit
         private ImageForm imageForm;
         private bool isChecked;
         private bool isBreak;
+        public bool isDeleting = false;
+        public int reselectID = -1;
 
         public ACE()
         {
@@ -55,7 +58,7 @@ namespace AnmChrEdit
         public static string GetCompileDate()
         {
             System.Version MyVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            return new DateTime(2000, 1, 1).AddDays(MyVersion.Build).AddSeconds(MyVersion.Revision * 2).ToString("dd.MM.yyyy");
+            return new DateTime(2000, 1, 1).AddDays(MyVersion.Build).AddSeconds(MyVersion.Revision * 2).ToString("MMM.dd.yyyy");
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -206,6 +209,22 @@ namespace AnmChrEdit
                 if (selectedSub >= 0 && selectedSub < commandBlocksBox.Items.Count)
                 {
                     commandBlocksBox.SelectedIndex = selectedSub;
+                    
+                    // un-selects top-most multi select entry if relevant
+                    if (commandBlocksBox.SelectedItems.Count > 1)
+                    {
+                        commandBlocksBox.SelectedItems.Remove(commandBlocksBox.SelectedItems[0]);
+                    }
+                }
+                else if (selectedSub >= 0 && selectedSub <= commandBlocksBox.Items.Count)
+                {
+                    commandBlocksBox.SelectedIndex = selectedSub -1;
+
+                    // un-selects top-most multi select entry if relevant
+                    if (commandBlocksBox.SelectedItems.Count > 1)
+                    {
+                        commandBlocksBox.SelectedItems.Remove(commandBlocksBox.SelectedItems[0]);
+                    }
                 }
             }
 
@@ -487,11 +506,19 @@ namespace AnmChrEdit
 
         private void extendButton_Click(object sender, EventArgs e)
         {
-            tablefile.Extend();
-            RefreshData();
-            if (animBox.TopIndex < animBox.Items.Count - 2)
+            switch (MessageBox.Show(this, "Do you want to extend list?" + Environment.NewLine + "This action cannot be undone!", "Extend List", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
             {
-                animBox.TopIndex++;
+                case DialogResult.No:
+                    break;
+                default:
+                    tablefile.Extend();
+                    
+                    RefreshData();
+                    if (animBox.TopIndex < animBox.Items.Count - 2)
+                    {
+                        animBox.TopIndex++;
+                    }
+                    break;
             }
         }
 
@@ -647,7 +674,12 @@ namespace AnmChrEdit
             {
                 return;
             }
+
             bDisableSubUpdate = true;
+            if (commandBlocksBox.SelectedItems.Count > 1 && isDeleting)
+            {
+                commandBlocksBox.SelectedItems.Remove(commandBlocksBox.SelectedItems[0]);
+            } //multiselect fix
             int s = animBox.SelectedIndex;
             int top = animBox.TopIndex;
             if (tablefile.table[s] is AnmChrEntry && (tablefile.table[s].bHasData && tablefile.table[s].size > 0))
@@ -684,7 +716,7 @@ namespace AnmChrEdit
                     }
                     RefreshText();
                     timeTextBox.Text = entry.subEntries[commandBlocksBox.SelectedIndex].isDisabled ? "" : 
-                        entry.subEntries[commandBlocksBox.SelectedIndex].tableindex.ToString();
+                    entry.subEntries[commandBlocksBox.SelectedIndex].tableindex.ToString();
                     timeTextBox.Enabled = true;
                     validateDeleteButtons(entry);
                 } else if (commandBlocksBox.SelectedIndices.Count > 1)
@@ -727,6 +759,7 @@ namespace AnmChrEdit
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
                 isChecked = false;
+                isBreak = false;
                 foreach (var index in commandBlocksBox.SelectedIndices)
                 {
                     if (CheckNewFrameValue(entry, frames) && !isBreak)
@@ -754,14 +787,16 @@ namespace AnmChrEdit
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
                 isChecked = false;
+                isBreak = false;
                 foreach (var index in commandBlocksBox.SelectedIndices)
                 {
                     if (CheckNewFrameValue(entry, entry.subEntries[(int)index].localindex + offset) && !isBreak)
                     {
-                        entry.subEntries[(int)index].localindex =
+                        /*entry.subEntries[(int)index].localindex =
                             entry.subEntries[(int)index].localindex + offset < 0 ? -1 :
                             entry.subEntries[(int)index].localindex + offset > entry.animTime ? entry.animTime :
-                            entry.subEntries[(int)index].localindex + offset;
+                            entry.subEntries[(int)index].localindex + offset;*/
+                        entry.subEntries[(int)index].localindex = entry.subEntries[(int)index].localindex + offset;
                         entry.subEntries[(int)index].tableindex = entry.subEntries[(int)index].localindex;
                     }
                 }
@@ -777,10 +812,10 @@ namespace AnmChrEdit
         // Verifies new frame value giving a warning when it reaches negative values or the max frames
         private bool CheckNewFrameValue(AnmChrEntry entry, int newValue)
         {
-            if ((newValue >= entry.animTime || newValue < 0) && !isChecked)
+            if ((newValue >= entry.animTime || newValue < 0) && !isChecked) 
             {
-                switch (MessageBox.Show(this, "One or more of your new values will reach the " +
-                    (newValue < 0 ? "minimum " : newValue > entry.animTime ? "maximum " : "minimum/maximum ") + "threshold."
+                switch (MessageBox.Show(this, "One or more of your new values will reach or exceed the " +
+                    (newValue < 0 ? "minimum " : newValue > entry.animTime ? "maximum " : "minimum/maximum ") + "threshold. These values may not be read properly."
                     + Environment.NewLine + "Are you sure you want to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                 {
                     case DialogResult.No:
@@ -818,7 +853,7 @@ namespace AnmChrEdit
                 return;
             }
 
-            AELogger.Log("selected subsubox " + commandsBox.SelectedIndex);
+            AELogger.Log("selected subsub box " + commandsBox.SelectedIndex);
 
             bDisableSubSubUpdate = true;
             int s = animBox.SelectedIndex;
@@ -1017,19 +1052,25 @@ namespace AnmChrEdit
                 && tablefile.table[animBox.SelectedIndex] is AnmChrEntry)
             {
                 AnmChrEntry entry = (AnmChrEntry)tablefile.table[animBox.SelectedIndex];
-
                 try
                 {
                     int newTime = int.Parse(timeTextBox.Text);
-                    if (newTime > entry.animTime)
-                    {
-                        throw new OutOfTimeException();
-                    }
+                    //if (newTime > entry.animTime)
+                    //{
+                    //    throw new OutOfTimeException();
+                    //}
                     entry.subEntries[commandBlocksBox.SelectedIndex].isDisabled = false;
                     entry.subEntries[commandBlocksBox.SelectedIndex].isEdited = true;
                     entry.subEntries[commandBlocksBox.SelectedIndex].tableindex = newTime;
                     entry.subEntries[commandBlocksBox.SelectedIndex].localindex = newTime;
-                    timeTextBox.ForeColor = Color.White;
+                    /*if (newTime > entry.animTime)
+                    {
+                        timeTextBox.ForeColor = Color.Gray;
+                    }
+                    else
+                    {*/
+                        timeTextBox.ForeColor = Color.White;
+                    //}
                     lengthTextBox.ForeColor = Color.White;
                     bDisableSubSubUpdate = true;
                     bDisableSubUpdate = true;
@@ -1066,7 +1107,8 @@ namespace AnmChrEdit
                 {
                     timeTextBox.ForeColor = Color.Red;
                 }
-            } else {
+            }
+            else {
                 lengthTextBox.ForeColor = Color.White;
                 timeTextBox.ForeColor = Color.White;
             }
@@ -1143,6 +1185,10 @@ namespace AnmChrEdit
                         break;
                     }
                 }
+                if (commandBlocksBox.SelectedItems.Count > 1) // catches multi select after pasting a time
+                {
+                    commandBlocksBox.SelectedItems.Remove(commandBlocksBox.SelectedItems[0]);
+                }
                 commandBlocksBox_SelectedIndexChanged(null, null);
             }
         }
@@ -1210,32 +1256,37 @@ namespace AnmChrEdit
 
                 bDisableSubUpdate = true;
                 bDisableSubSubUpdate = true;
-
+                isDeleting = true;
+                reselectID = commandBlocksBox.SelectedIndex;
                 entry.subEntries.RemoveAt(commandBlocksBox.SelectedIndex);
-                commandsBox.DataSource = null;
-                subDataSource = entry.getSubEntryList();
-                commandBlocksBox.DataSource = subDataSource;
-
+                commandsBox.DataSource = null; //empties command list
+                subDataSource = entry.getSubEntryList(); //grabs subchunk list
+                commandBlocksBox.DataSource = subDataSource; //applies new subchunk list
                 bDisableSubSubUpdate = false;
                 bDisableSubUpdate = false;
-                
                 if (subDataSource.Count > 0)
                 {
                     commandBlocksBox.SelectedIndex = 0;
-                
                     RefreshSelectedIndices();
                     subsubDataSource = commandBlockEntry.GetCommandList();
-                    commandsBox.DataSource = subsubDataSource;
-                    if (subsubDataSource.Count > 0)
+                    if (reselectID == 0 && commandBlocksBox.Items.Count > 0)
                     {
-                        commandsBox.SelectedIndex = 0;
+                        commandBlocksBox_SelectedIndexChanged(null, null);
                     }
+                    //commandsBox.DataSource = subsubDataSource; //this caused the commands to be reloaded improperly? need to reload the subchunk
+                    //if (commandsBox.SelectedIndex < 0)
+                    //{
+                    //    commandsBox.SelectedIndex = 0;
+                    //}
                 }
                 else
                 {
                     AELogger.Log("odd issue ???????");
                     dataTextBox.Enabled = false;
                 }
+
+                
+                isDeleting = false;
                 validateDeleteButtons(entry);
             }
         }
@@ -1271,7 +1322,10 @@ namespace AnmChrEdit
                         break;
                     }
                 }
-
+                if (commandBlocksBox.SelectedItems.Count > 1) // catches multi select after pasting a time
+                {
+                    commandBlocksBox.SelectedItems.Remove(commandBlocksBox.SelectedItems[0]);
+                }
                 if (bDontSelect)
                 {
                     commandBlocksBox.SelectedIndex = s;
@@ -1279,6 +1333,7 @@ namespace AnmChrEdit
 
                 bDisableSubUpdate = false;
                 bDisableSubSubUpdate = false;
+
             }
             else
             {
@@ -1342,7 +1397,15 @@ namespace AnmChrEdit
         private void validateDeleteButtons(AnmChrEntry entry)
         {
             bool isSubEntries = entry?.subEntries.Count > 0;
-            bool isDisabled = (entry?.subEntries[commandBlocksBox.SelectedIndex].isDisabled).Equals(true);
+            bool isDisabled;
+            if (commandBlocksBox.SelectedIndex > -1)
+            {
+                isDisabled = (entry?.subEntries[commandBlocksBox.SelectedIndex].isDisabled).Equals(true);
+            }
+            else
+            {
+                isDisabled = false;
+            }
             commandBlockDeleteButton.Enabled = isSubEntries && !isMultiSelection;
             deleteCommandBlockToolStripMenuItem1.Enabled = isSubEntries && !isMultiSelection;
             deleteCommandBlockToolStripMenuItem.Enabled = isSubEntries && !isMultiSelection;
