@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Media.Animation;
 
@@ -419,9 +420,13 @@ namespace MarvelData
 
             return name;
         }
-
+        public string ReplaceInvalidChars(string filename)
+        {
+            return string.Join("_", filename.Split(Path.GetInvalidFileNameChars()));
+        }
         public virtual string GetFancyName()
         {
+            string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
             nameSB = nameSB == null ? new StringBuilder() : nameSB.Clear();
             nameSB.Append(index.ToString("X3"));
             nameSB.Append("h: ");
@@ -450,7 +455,7 @@ namespace MarvelData
             {
                 return GuessAnmChrEntry(nameSB.ToString());
             }
-            return  nameSB.ToString();
+            return nameSB.ToString();
         }
 
         public virtual string GetFilename()
