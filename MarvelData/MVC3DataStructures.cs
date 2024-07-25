@@ -564,7 +564,7 @@ namespace MarvelData {
             public float unk280;
             public float unk284;
             public float unk288;
-            public int unk28C;
+            public float unk28C;
             public float unk290;
             public float unk294;
             public int unk298;
@@ -820,7 +820,9 @@ namespace MarvelData {
             NegatePushBlock = 0x08000000,
             OTGOnly = 0x10000000,
             NegatePushBlockAirUnk = 0x20000000,
-        }
+            Unk0x40000000 = 0x20000000,
+            Unk0x80000000 = 0x80000000
+    }
 
         [Flags]
         public enum AtkFlagsB : uint
@@ -853,8 +855,12 @@ namespace MarvelData {
             Unk0x1000000 = 0x01000000,
             Unk0x2000000 = 0x02000000,
             Unk0x4000000 = 0x04000000,
-            Unk0x8000000 = 0x08000000
-        }
+            Unk0x8000000 = 0x08000000,
+            Unk0x10000000 = 0x10000000,
+            Unk0x20000000 = 0x20000000,
+            Unk0x40000000 = 0x20000000,
+            Unk0x80000000 = 0x80000000
+    }
         [Flags]
         public enum AtkFlagsC : uint
         {
@@ -887,8 +893,11 @@ namespace MarvelData {
             TechTAC1 = 0x02000000,
             HitComboGrab = 0x04000000,
             Unk0x8000000 = 0x08000000,
-            TechTAC2 = 0x10000000
-        }
+            TechTAC2 = 0x10000000,
+            Unk0x20000000 = 0x20000000,
+            Unk0x40000000 = 0x20000000,
+            Unk0x80000000 = 0x80000000
+    }
 
         public enum HitEffectOnEnemy : int
         {

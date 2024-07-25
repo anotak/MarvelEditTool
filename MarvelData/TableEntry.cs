@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -28,6 +29,7 @@ namespace MarvelData
 
         public virtual void GuessName()
         {
+
             switch(index)
             {
                 case 0x0:
@@ -416,6 +418,35 @@ namespace MarvelData
             if (index >= 100 && index <=102 && HasAtkFlags())
             {
                 return "Assist " + (index - 99);
+            }
+            if(((StructEntry<MarvelData.ATKInfoChunk>)this).data.atkflags3.HasFlag(AtkFlagsC.TechGrabs)){
+                return "Throw Entry";
+            }
+            if ((((StructEntry<MarvelData.ATKInfoChunk>)this).data.atkflags3.HasFlag(AtkFlagsC.ThrowGroundedOpp) || ((StructEntry<MarvelData.ATKInfoChunk>)this).data.atkflags3.HasFlag(AtkFlagsC.ThrowAirborneOpp)) && !((StructEntry<MarvelData.ATKInfoChunk>)this).data.atkflags3.HasFlag(AtkFlagsC.TechGrabs))
+            {
+                if (index >= 50 && index <= 79)
+                {
+                return "Command Grab " + (index - 49); 
+                }
+                if (index >= 80 && index <= 99)
+                {
+                    return "Hyper Command Grab " + (index - 79);
+                }
+            }
+            if (((StructEntry<MarvelData.ATKInfoChunk>)this).data.activeframes > 0 && !HasAtkFlags())
+            {
+                if (index >= 40 && index <= 49)
+                {
+                    return "Command Move " + (index - 39) + "?";
+                }
+                if (index >= 50 && index <= 79)
+                {
+                    return "Special Move " + (index - 49) + "?";
+                }
+                if (index >= 80 && index <= 99)
+                {
+                    return "Hyper Move " + (index - 79) + "?";
+                }
             }
 
             return name;
