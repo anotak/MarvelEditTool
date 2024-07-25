@@ -214,11 +214,10 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
-.vs/slnx.sqlite
-.vs/slnx.sqlite-journal
+.vs/slnx.sqlite*
 .vs/MarvelEditTool/FileContentIndex/70955326-1a51-489b-9f7c-088cadeeef67.vsidx
 .vs/MarvelEditTool/FileContentIndex/ce183182-8791-4148-a8fe-aaa9edaa6fbf.vsidx
 .vs/MarvelEditTool/FileContentIndex/ecabb523-42fa-4dfa-b7dd-6d64852d8c85.vsidx
 .vs/MarvelEditTool/FileContentIndex/f1bc64cb-3e49-4ad3-95e2-071056ad3a49.vsidx
-.vs/slnx.sqlite
 .vs/VSWorkspaceState.json
+.vs/MarvelEditTool/FileContentIndex/*
