@@ -728,10 +728,10 @@ namespace MarvelData {
             public float GroundHitPushbackWallBounceXAccel;
             public float BlockPushbackXSpeed;
             public float BlockPushbackXAccel;
-            public float SelfForceVsAirOpponent;
-            public float SelfAccelVsAirOpponent;
-            public float SJSelfForceVsAirOpponent;
-            public float SJSelfAccelVsAirOpponent;
+            public float SelfYForceAgainstAirOpp;
+            public float SelfYAccAgainstAirOpp;
+            public float SJSelfYForceAgainstAirOpp;
+            public float SJSelfYAccAgainstAirOpp;
             public float GroundWallBounceYSpeed;
             public float GroundWallBounceYAccel;
             public int hitstop;
@@ -769,10 +769,10 @@ namespace MarvelData {
             public int unk144;
             public int unk148;
             public int unk14C;
-            public int hitSFXGroup;
-            public int hitSFXType;
-            public int hitSFXID;
-            public int AttackWhiffSoundEnable;
+            public HitSFXGroup hitSFXGroup;
+            public HitSFXSubGroup hitSFXSubGroup;
+            public HitSFXEntry hitSFXEntry;
+            public PlayWhiffSFXOnNormals playWhiffSFXOnNormals;
             public int launcherUnk;
             public float unk164;
             public float unk168;
@@ -822,7 +822,7 @@ namespace MarvelData {
             NegatePushBlockAirUnk = 0x20000000,
             Unk0x40000000 = 0x20000000,
             Unk0x80000000 = 0x80000000
-    }
+        }
 
         [Flags]
         public enum AtkFlagsB : uint
@@ -1007,6 +1007,7 @@ namespace MarvelData {
             Unk0x4000000 = 0x000400000,
             Unk0x8000000 = 0x000800000
         }
+
         [Flags]
         public enum OppHitAnim : int
         {
@@ -1026,8 +1027,39 @@ namespace MarvelData {
             flyingScreenHK2 = 13,
             forceGuard = 14,
             fallBack3 = 15
-
         }
+
+        [Flags]
+        public enum HitSFXGroup : int 
+        {
+                
+        }
+
+        [Flags]
+        public enum HitSFXSubGroup : int 
+        { 
+            generic = 0,
+            handSwing = 1,
+            footSwing = 2,
+            swordSwing = 3,
+            gunShotUnk = 15
+        }
+
+        [Flags]
+        public enum HitSFXEntry : int 
+        {
+            l = 0,
+            m = 1,
+            h = 2,
+        }
+
+        [Flags]
+        public enum PlayWhiffSFXOnNormals : int
+        {
+            no = 1551001600,
+            yes = 1551001601,
+        }
+
         [Flags]
         public enum cmdFlags : uint
         {

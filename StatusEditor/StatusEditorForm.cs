@@ -903,7 +903,7 @@ namespace StatusEditor
             RefreshAnimBox();
         }
 
-        //this creates the drop down list for enums and other integers
+        //this creates the drop down option list for enums and other integers
         private void structView_SelectedIndexChanged(object sender, EventArgs e)
         {
             String tag = "";
@@ -954,6 +954,12 @@ namespace StatusEditor
                 AddTags(typeof(cmdFlags), true);
             else if (tag.Contains("trapTransition"))
                 AddTags(typeof(TrapTransition), true);
+            else if (tag.Contains("hitSFXGroup"))
+                AddTags(typeof(HitSFXGroup), false);
+            else if (tag.Contains("hitSFXSubGroup"))
+                AddTags(typeof(HitSFXSubGroup), false);
+            else if (tag.Contains("hitSFXEntry"))
+                AddTags(typeof(HitSFXEntry), false);
             else
             {
                 tagsDataGridView.DataSource = null;
