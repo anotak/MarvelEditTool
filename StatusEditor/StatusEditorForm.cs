@@ -304,12 +304,12 @@ namespace StatusEditor
                             return;
                         default:
                             Text = "StatusEditor, build " + GetCompileDate();
-                            isOpeningNewFile = true;
+                            /*isOpeningNewFile = true;
                             filenameLabel.Text = String.Empty;
                             FilePath = String.Empty;
                             ImportPath = String.Empty;
                             tablefile = null;
-                            SetDataTexBoxFormat(0);
+                            SetDataTexBoxFormat(0);*/
                             AELogger.WriteLog();
                             break;
                     }
@@ -319,6 +319,12 @@ namespace StatusEditor
                 openFile.ShowDialog();
                 if (openFile.FileNames.Length > 0)
                 {
+                    isOpeningNewFile = true;
+                    filenameLabel.Text = String.Empty;
+                    FilePath = String.Empty;
+                    ImportPath = String.Empty;
+                    tablefile = null;
+                    SetDataTexBoxFormat(0);
                     //TableFile newTable = TableFile.LoadFile(openFile.FileNames[0], typeof(StatusEntry));
                     TableFile newTable = TableFile.LoadFile(openFile.FileNames[0], true, null, 848, false);
                     int count = newTable.table.Count;
@@ -972,6 +978,10 @@ namespace StatusEditor
         public static List<String> GetEnumListA()
         {
             return Enum.GetNames(typeof(AtkFlagsA)).ToList();
+        }
+        public static List<String> GetEnumListC()
+        {
+            return Enum.GetNames(typeof(AtkFlagsC)).ToList();
         }
 
         //TODO: check if this code works / is relevant at all
