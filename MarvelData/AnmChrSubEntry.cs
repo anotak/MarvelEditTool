@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 using System.ComponentModel;
@@ -276,7 +275,7 @@ namespace MarvelData
                     long header = ((long)subsubEntries[i][0] << 32) + (long)subsubEntries[i][4];
                     if (cmdNames.ContainsKey(header))
                     {
-                        return cmdNames[header];
+                        return UpdateCmdNameByContent(cmdNames[header], subsubEntries[i]);
                     }
                 }
                 
@@ -293,6 +292,30 @@ namespace MarvelData
                 sb.Append(currentCount);
             }
             return sb.ToString();
+        }
+
+        private String UpdateCmdNameByContent(string cmdName, byte[] subsubEntry) 
+        {
+            if (cmdName.Contains("1_DB add/subtract meter"))
+            {
+                byte[] last4Bytes = new byte[4];
+                int meter = 0;
+                Array.Copy(subsubEntry, subsubEntry.Length - 4, last4Bytes, 0, 4);
+                meter = Tools.MVCHexToDecimal(BitConverter.ToString(last4Bytes).Replace("-", ""));
+                if (meter >= 0)
+                {
+                    return "1_DB add " + meter + " meter (10000 = 1 Meter bar)";
+                }
+                else
+                {
+                    return "1_DB subtract " + meter + " meter (10000 = 1 Meter bar)";
+                }
+            }
+            else
+            {
+
+                return cmdName;
+            }
         }
     }
 }
