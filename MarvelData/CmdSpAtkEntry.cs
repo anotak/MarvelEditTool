@@ -11,7 +11,7 @@ namespace MarvelData
         private StructEntry<SpatkHeaderChunk> header;
         public static int[] anmChrIndexOffsets = {
             0, // 0 movement
-            -1, // 1 blockin
+            -1, // 1 blocking
             -1,
             -1,
             -1,
