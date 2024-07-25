@@ -111,5 +111,34 @@ namespace MarvelData
             }
             return input;
         }
+
+        // Converts a decimal integer to a hex string in this convulted format
+        // Used ie: for meter bars
+        public static string DecimalToMVCHex(int value)
+        {
+            // Convert the integer to a byte array in little-endian order
+            byte[] bytes = BitConverter.GetBytes(value);
+            // Convert the byte array to a hex string
+            string hex = BitConverter.ToString(bytes).Replace("-", "");
+            // Reverse the byte pairs
+            string reversedHex = string.Concat(Enumerable.Range(0, hex.Length / 2)
+                .Select(i => hex.Substring(i * 2, 2)));
+            return reversedHex;
+        }
+
+        // Converts a hex string in the mvc3 format to a decimal integer
+        public static int MVCHexToDecimal(string hex)
+        {
+            // Reverse the byte pairs
+            string reversedHex = string.Concat(Enumerable.Range(0, hex.Length / 2)
+                .Select(i => hex.Substring(i * 2, 2)));
+            // Convert the hex string to a byte array
+            byte[] bytes = Enumerable.Range(0, reversedHex.Length / 2)
+                .Select(i => Convert.ToByte(reversedHex.Substring(i * 2, 2), 16))
+                .ToArray();
+            // Convert the byte array to an integer
+            int value = BitConverter.ToInt32(bytes, 0);
+            return value;
+        }
     }
 }
