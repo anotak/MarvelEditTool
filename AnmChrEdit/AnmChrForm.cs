@@ -10,6 +10,7 @@ using MarvelData;
 using static System.Windows.Forms.LinkLabel;
 using Microsoft.VisualBasic;
 using System.Diagnostics.Eventing.Reader;
+using System.Text.RegularExpressions;
 
 namespace AnmChrEdit
 {
@@ -53,7 +54,8 @@ namespace AnmChrEdit
             AnmChrSubEntry.InitCmdNames();
             commandBlocksBox.DrawItem += commandBlocksBox_DrawItem;
             commandBlocksBox.DrawMode = DrawMode.OwnerDrawFixed;
-        }
+            
+    }
 
         public static string GetCompileDate()
         {
@@ -450,7 +452,7 @@ namespace AnmChrEdit
                 }
             }
         }
-
+        
         private void exportButton_Click(object sender, EventArgs ev)
         {
             if (animBox.SelectedIndex < 0
@@ -462,8 +464,18 @@ namespace AnmChrEdit
 
             using (SaveFileDialog saveFileDialog1 = new SaveFileDialog())
             {
+
+                Regex rgx = new Regex("[^a-zA-Z0-9 -]");
                 saveFileDialog1.Title = "Export " + tablefile.table[animBox.SelectedIndex].GetFancyName();
-                saveFileDialog1.Filter = "mvc3 table data files (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
+                if (tablefile.fileExtension == "CAC")
+                {
+                  saveFileDialog1.Filter = "All files (*.*)|*.*|UMVC3 Loose Data (*.mvc3data)|*.mvc3data|UMVC3 Character Script File (*.mvc3anm;*.mvc3data)|*.mvc3anm;*.mvc3data";
+                }
+                else
+                {
+                    saveFileDialog1.Filter = "All files (*.*)|*.*|UMVC3 Loose Data(*.mvc3data)|*.mvc3data";
+                }
+
                 if (filePath != String.Empty)
                 {
                     try
@@ -488,11 +500,9 @@ namespace AnmChrEdit
                         }
                     }
                 }
-                saveFileDialog1.FilterIndex = 2;
+                saveFileDialog1.FilterIndex = 3;
                 saveFileDialog1.RestoreDirectory = true;
-
-                saveFileDialog1.FileName = tablefile.table[animBox.SelectedIndex].GetFilename() + ".mvc3data";
-
+                saveFileDialog1.FileName = rgx.Replace(tablefile.table[animBox.SelectedIndex].GetFilename(), "");
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)
                 {
                     if (saveFileDialog1.FileNames.Length > 0)

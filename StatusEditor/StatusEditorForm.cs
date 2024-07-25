@@ -304,12 +304,12 @@ namespace StatusEditor
                             return;
                         default:
                             Text = "StatusEditor, build " + GetCompileDate();
-                            isOpeningNewFile = true;
+                            /*isOpeningNewFile = true;
                             filenameLabel.Text = String.Empty;
                             FilePath = String.Empty;
                             ImportPath = String.Empty;
                             tablefile = null;
-                            SetDataTexBoxFormat(0);
+                            SetDataTexBoxFormat(0);*/
                             AELogger.WriteLog();
                             break;
                     }
@@ -319,6 +319,12 @@ namespace StatusEditor
                 openFile.ShowDialog();
                 if (openFile.FileNames.Length > 0)
                 {
+                    isOpeningNewFile = true;
+                    filenameLabel.Text = String.Empty;
+                    FilePath = String.Empty;
+                    ImportPath = String.Empty;
+                    tablefile = null;
+                    SetDataTexBoxFormat(0);
                     //TableFile newTable = TableFile.LoadFile(openFile.FileNames[0], typeof(StatusEntry));
                     TableFile newTable = TableFile.LoadFile(openFile.FileNames[0], true, null, 848, false);
                     int count = newTable.table.Count;
@@ -522,7 +528,46 @@ namespace StatusEditor
                 }
                 openFile.Title = "Import" + tablefile.table[animBox.SelectedIndex].GetFancyName();
                 // The Filter property requires a search string after the pipe ( | )
-                openFile.Filter = "mvc3 table data files (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
+                if (tablefile.fileExtension == "CAC")
+                {
+                    openFile.Filter = "|UMVC3 Character Script File (*.mvc3anm;*.mvc3data)|*.mvc3anm;*.mvc3data|UMVC3 Loose Data (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
+                }
+                else if (tablefile.fileExtension == "CSP")
+                {
+                    openFile.Filter = "MVC3 Special Input Command File (*.mvc3csp;*.mvc3data)|*.mvc3csp;*.mvc3data|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
+                }
+                else if (tablefile.fileExtension == "CBA")
+                {
+                    openFile.Filter = "MVC3 Basic Input Action File (*.mvc3cba;*.mvc3data)|*.mvc3cba;*.mvc3data|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                }
+                else if (tablefile.fileExtension == "CCM")
+                {
+                    openFile.Filter = "MVC3 Extra Cancel Input File (*.mvc3ccm;*.mvc3data)|*.mvc3ccm;*.mvc3data|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                }
+                else if (tablefile.fileExtension == "ATI")
+                {
+                    openFile.Filter = "MVC3 Attack Data File (*.mvc3data;*.mvc3ati)|*.mvc3ati;*.mvc3data|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                }
+                else if (tablefile.fileExtension == "CLI")
+                {
+                    openFile.Filter = "MVC3 Collision File (*.mvc3cli;*.mvc3data)|*.mvc3cli;*.mvc3data|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                }
+                else if (tablefile.fileExtension == "CHS")
+                {
+                    openFile.Filter = "MVC3 Character Status File (*.mvc3chs;*.mvc3data)|*.mvc3chs;*.mvc3data|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                }
+                else if (tablefile.fileExtension == "CPI")
+                {
+                    openFile.Filter = "MVC3 Character Status File (*.mvc3chs;*.mvc3data)|*.mvc3chs;*.mvc3data|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                }
+                else if (tablefile.fileExtension == "SHT")
+                {
+                    openFile.Filter = "UMVC3 Projectile File (*.mvc3sht;*.mvc3data)|*.mvc3sht;*.mvc3data|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                }
+                else
+                {
+                    openFile.Filter = "All files (*.*)|*.*|UMVC3 Loose Data(*.mvc3data)|*.mvc3data";
+                }
 
                 openFile.ShowDialog();
                 if (openFile.FileNames.Length > 0)
@@ -552,7 +597,38 @@ namespace StatusEditor
             using (SaveFileDialog saveFileDialog1 = new SaveFileDialog())
             {
                 saveFileDialog1.Title = "Export " + tablefile.table[animBox.SelectedIndex].GetFancyName();
-                saveFileDialog1.Filter = "mvc3 table data files (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
+                if (tablefile.fileExtension == "CSP")
+                {
+                    saveFileDialog1.Filter = "MVC3 Special Input Command File (*.mvc3csp)|*.mvc3csp|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
+                }
+                else if (tablefile.fileExtension == "CBA")
+                {
+                    saveFileDialog1.Filter = "MVC3 Basic Input Action File (*.mvc3cba)|*.mvc3cba|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                }
+                else if (tablefile.fileExtension == "CCM")
+                {
+                    saveFileDialog1.Filter = "MVC3 Extra Cancel Input File (*.mvc3ccm)|*.mvc3ccm|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                }
+                else if (tablefile.fileExtension == "ATI")
+                {
+                    saveFileDialog1.Filter = "MVC3 Attack Data File (*.mvc3ati|*.mvc3ati|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                }
+                else if (tablefile.fileExtension == "CLI")
+                {
+                    saveFileDialog1.Filter = "MVC3 Collision File (*.mvc3cli)|*.mvc3cli|UMVC3 Loose Data (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
+                }
+                else if (tablefile.fileExtension == "CHS")
+                {
+                    saveFileDialog1.Filter = "MVC3 Character Status File (*.mvc3chs)|*.mvc3chs|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                }
+                else if (tablefile.fileExtension == "SHT")
+                {
+                    saveFileDialog1.Filter = "UMVC3 Projectile File (*.mvc3sht)|*.mvc3sht|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                }
+                else
+                {
+                    saveFileDialog1.Filter = "All files (*.*)|*.*|UMVC3 Loose Data(*.mvc3data)|*.mvc3data";
+                }
                 if (FilePath != String.Empty)
                 {
                     try
@@ -577,10 +653,10 @@ namespace StatusEditor
                         }
                     }
                 }
-                saveFileDialog1.FilterIndex = 2;
+                saveFileDialog1.FilterIndex = 1;
                 saveFileDialog1.RestoreDirectory = true;
 
-                saveFileDialog1.FileName = tablefile.table[animBox.SelectedIndex].GetFilename() + ".mvc3data";
+                saveFileDialog1.FileName = tablefile.table[animBox.SelectedIndex].GetFilename();
 
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)
                 {
@@ -903,6 +979,10 @@ namespace StatusEditor
         {
             return Enum.GetNames(typeof(AtkFlagsA)).ToList();
         }
+        public static List<String> GetEnumListC()
+        {
+            return Enum.GetNames(typeof(AtkFlagsC)).ToList();
+        }
 
         //TODO: check if this code works / is relevant at all
         private void StructView_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
@@ -977,7 +1057,7 @@ namespace StatusEditor
                 exportButton.Enabled = true;
                 addSubChunkButton.Enabled = false;
                 duplicateButton.Enabled = duplicateButton.Visible;
-                upButton.Enabled = false;
+                upButton.Enabled = false; //up button test toggle is here
                 downButton.Enabled = false;
                 textBox1.Text = tablefile.table[animBox.SelectedIndex].name;
                 textBox1.Enabled = true;
