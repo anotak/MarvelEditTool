@@ -118,22 +118,28 @@ namespace MarvelData
             }
         }
 
+        public virtual List<StructEntryBase> RemoveSubChunk(int index)
+        {
+            // Check if the index is within the bounds of the list
+            if (index >= 0 && index < subEntries.Count)
+            {
+                var firstItem = subEntries.FirstOrDefault() as MarvelData.StructEntry<MarvelData.SpatkHeaderChunk>;
+                if (firstItem != null)
+                {
+                    // reduce header size info
+                    firstItem.data.size -= 1;
+                }
+
+                // Remove the entry at the specified index
+                subEntries.RemoveAt(index);
+
+                return subEntries;
+             }
+            return subEntries;
+        }
+        
         public virtual void AddSubChunk()
         {
-
-            if (this.GetType().ToString().Contains("CollisionEntry"))
-            {
-                StructEntry<CollisionStandardChunk> chunk = new StructEntry<CollisionStandardChunk>();
-                chunk.data = new CollisionStandardChunk();
-                size += 0x20;
-                chunk.size = 0x20;
-                chunk.bHasData = true;
-                chunk.name = "unknown";
-                subEntries.Add(chunk);
-                //this.subEntries[subEntries.Count - 1].SetData         figure out how make unk04 and objectreference -1 by default, maybe update size in the header?
-            }
-            else
-            {
                 StructEntry<SpatkUnkChunk> chunk = new StructEntry<SpatkUnkChunk>();
                 chunk.data = new SpatkUnkChunk();
                 size += 0x20;
@@ -142,7 +148,6 @@ namespace MarvelData
                 chunkName = Tools.GetDescription(chunk.data.subChunkType);
                 chunk.name = chunkName;
                 subEntries.Add(chunk);
-            }
         }
 
         // creates subchunk section according to selected type - FM: looks fugly af
