@@ -47,18 +47,19 @@ namespace StatusEditor
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.importButton = new System.Windows.Forms.Button();
+            this.upButton = new System.Windows.Forms.Button();
+            this.addSubChunkButton = new System.Windows.Forms.Button();
+            this.deleteSubChunkButton = new System.Windows.Forms.Button();
+            this.deleteSubChunkMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.exportButton = new System.Windows.Forms.Button();
             this.extendButton = new System.Windows.Forms.Button();
             this.duplicateButton = new System.Windows.Forms.Button();
-            this.upButton = new System.Windows.Forms.Button();
-            this.addSubChunkButton = new System.Windows.Forms.Button();
             this.downButton = new System.Windows.Forms.Button();
             this.sizeLabel = new System.Windows.Forms.Label();
             this.dataTextBox = new System.Windows.Forms.TextBox();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.tagsDataGridView = new System.Windows.Forms.DataGridView();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -280,22 +281,24 @@ namespace StatusEditor
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.Controls.Add(this.textBox1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.importButton, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.exportButton, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.extendButton, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.duplicateButton, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.upButton, 0, 5);
-            this.tableLayoutPanel1.Controls.Add(this.sizeLabel, 0, 8);
-            this.tableLayoutPanel1.Controls.Add(this.downButton, 0, 6);
             this.tableLayoutPanel1.Controls.Add(this.addSubChunkButton, 0, 7);
+            this.tableLayoutPanel1.Controls.Add(this.deleteSubChunkButton, 1, 7);
+            this.tableLayoutPanel1.Controls.Add(this.exportButton, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.extendButton, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.duplicateButton, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.downButton, 1, 5);
+            this.tableLayoutPanel1.Controls.Add(this.sizeLabel, 0, 9);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 8;
+            this.tableLayoutPanel1.RowCount = 10;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -303,9 +306,9 @@ namespace StatusEditor
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.Size = new System.Drawing.Size(252, 243);
             this.tableLayoutPanel1.TabIndex = 4;
             // 
@@ -313,6 +316,7 @@ namespace StatusEditor
             // 
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.textBox1, 2);
             this.textBox1.Enabled = false;
             this.textBox1.Location = new System.Drawing.Point(2, 2);
             this.textBox1.Margin = new System.Windows.Forms.Padding(2);
@@ -334,13 +338,67 @@ namespace StatusEditor
             this.importButton.Location = new System.Drawing.Point(2, 26);
             this.importButton.Margin = new System.Windows.Forms.Padding(2);
             this.importButton.Name = "importButton";
-            this.importButton.Size = new System.Drawing.Size(248, 23);
+            this.importButton.Size = new System.Drawing.Size(122, 23);
             this.importButton.TabIndex = 1;
             this.importButton.Text = "&Import";
             this.importButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.toolTip.SetToolTip(this.importButton, "Ctrl + R");
             this.importButton.UseVisualStyleBackColor = true;
             this.importButton.Click += new System.EventHandler(this.importButton_Click);
+            // 
+            // upButton
+            // 
+            this.upButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.upButton.AutoSize = true;
+            this.upButton.Enabled = false;
+            this.upButton.Location = new System.Drawing.Point(2, 80);
+            this.upButton.Margin = new System.Windows.Forms.Padding(2);
+            this.upButton.Name = "upButton";
+            this.upButton.Size = new System.Drawing.Size(122, 23);
+            this.upButton.TabIndex = 5;
+            this.upButton.Text = "Move Up (Disabled)";
+            this.upButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.upButton.UseVisualStyleBackColor = true;
+            this.upButton.Click += new System.EventHandler(this.upButton_Click);
+            // 
+            // addSubChunkButton
+            // 
+            this.addSubChunkButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.addSubChunkButton.AutoSize = true;
+            this.addSubChunkButton.Enabled = false;
+            this.addSubChunkButton.Location = new System.Drawing.Point(2, 107);
+            this.addSubChunkButton.Margin = new System.Windows.Forms.Padding(2);
+            this.addSubChunkButton.Name = "addSubChunkButton";
+            this.addSubChunkButton.Size = new System.Drawing.Size(122, 23);
+            this.addSubChunkButton.TabIndex = 7;
+            this.addSubChunkButton.Text = "Add SubChunk";
+            this.addSubChunkButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.addSubChunkButton.UseVisualStyleBackColor = true;
+            this.addSubChunkButton.Click += new System.EventHandler(this.addSubChunkButton_Click);
+            // 
+            // deleteSubChunkButton
+            // 
+            this.deleteSubChunkButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.deleteSubChunkButton.AutoSize = true;
+            this.deleteSubChunkButton.ContextMenuStrip = this.deleteSubChunkMenuStrip;
+            this.deleteSubChunkButton.Enabled = false;
+            this.deleteSubChunkButton.Location = new System.Drawing.Point(128, 107);
+            this.deleteSubChunkButton.Margin = new System.Windows.Forms.Padding(2);
+            this.deleteSubChunkButton.Name = "deleteSubChunkButton";
+            this.deleteSubChunkButton.Size = new System.Drawing.Size(122, 23);
+            this.deleteSubChunkButton.TabIndex = 9;
+            this.deleteSubChunkButton.Text = "Delete SubChunk";
+            this.deleteSubChunkButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.deleteSubChunkButton.UseVisualStyleBackColor = true;
+            this.deleteSubChunkButton.Click += new System.EventHandler(this.deleteSubChunkButton_Click);
+            // 
+            // deleteSubChunkMenuStrip
+            // 
+            this.deleteSubChunkMenuStrip.Name = "contextMenuStrip1";
+            this.deleteSubChunkMenuStrip.Size = new System.Drawing.Size(61, 4);
             // 
             // exportButton
             // 
@@ -349,10 +407,10 @@ namespace StatusEditor
             this.exportButton.AutoSize = true;
             this.exportButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.exportButton.Enabled = false;
-            this.exportButton.Location = new System.Drawing.Point(2, 53);
+            this.exportButton.Location = new System.Drawing.Point(128, 26);
             this.exportButton.Margin = new System.Windows.Forms.Padding(2);
             this.exportButton.Name = "exportButton";
-            this.exportButton.Size = new System.Drawing.Size(248, 23);
+            this.exportButton.Size = new System.Drawing.Size(122, 23);
             this.exportButton.TabIndex = 2;
             this.exportButton.Text = "&Export";
             this.exportButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -367,10 +425,10 @@ namespace StatusEditor
             this.extendButton.AutoSize = true;
             this.extendButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.extendButton.Enabled = false;
-            this.extendButton.Location = new System.Drawing.Point(2, 80);
+            this.extendButton.Location = new System.Drawing.Point(128, 53);
             this.extendButton.Margin = new System.Windows.Forms.Padding(2);
             this.extendButton.Name = "extendButton";
-            this.extendButton.Size = new System.Drawing.Size(248, 23);
+            this.extendButton.Size = new System.Drawing.Size(122, 23);
             this.extendButton.TabIndex = 3;
             this.extendButton.Text = "&Ex&tend List";
             this.extendButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -385,47 +443,15 @@ namespace StatusEditor
             this.duplicateButton.AutoSize = true;
             this.duplicateButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.duplicateButton.Enabled = false;
-            this.duplicateButton.Location = new System.Drawing.Point(2, 107);
+            this.duplicateButton.Location = new System.Drawing.Point(2, 53);
             this.duplicateButton.Margin = new System.Windows.Forms.Padding(2);
             this.duplicateButton.Name = "duplicateButton";
-            this.duplicateButton.Size = new System.Drawing.Size(248, 23);
+            this.duplicateButton.Size = new System.Drawing.Size(122, 23);
             this.duplicateButton.TabIndex = 4;
             this.duplicateButton.Text = "Duplicate";
             this.duplicateButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.duplicateButton.UseVisualStyleBackColor = true;
             this.duplicateButton.Click += new System.EventHandler(this.duplicateButton_Click);
-            // 
-            // upButton
-            // 
-            this.upButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.upButton.AutoSize = true;
-            this.upButton.Enabled = false;
-            this.upButton.Location = new System.Drawing.Point(2, 134);
-            this.upButton.Margin = new System.Windows.Forms.Padding(2);
-            this.upButton.Name = "upButton";
-            this.upButton.Size = new System.Drawing.Size(248, 23);
-            this.upButton.TabIndex = 5;
-            this.upButton.Text = "Move Up (Disabled)";
-            this.upButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.upButton.UseVisualStyleBackColor = true;
-            this.upButton.Click += new System.EventHandler(this.upButton_Click);
-            // 
-            // addSubChunkButton
-            // 
-            this.addSubChunkButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.addSubChunkButton.AutoSize = true;
-            this.addSubChunkButton.Enabled = false;
-            this.addSubChunkButton.Location = new System.Drawing.Point(2, 188);
-            this.addSubChunkButton.Margin = new System.Windows.Forms.Padding(2);
-            this.addSubChunkButton.Name = "addSubChunkButton";
-            this.addSubChunkButton.Size = new System.Drawing.Size(248, 23);
-            this.addSubChunkButton.TabIndex = 6;
-            this.addSubChunkButton.Text = "Add SubChunk";
-            this.addSubChunkButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.addSubChunkButton.UseVisualStyleBackColor = true;
-            this.addSubChunkButton.Click += new System.EventHandler(this.addSubChunkButton_Click);
             // 
             // downButton
             // 
@@ -433,11 +459,11 @@ namespace StatusEditor
             | System.Windows.Forms.AnchorStyles.Right)));
             this.downButton.AutoSize = true;
             this.downButton.Enabled = false;
-            this.downButton.Location = new System.Drawing.Point(2, 161);
+            this.downButton.Location = new System.Drawing.Point(128, 80);
             this.downButton.Margin = new System.Windows.Forms.Padding(2);
             this.downButton.Name = "downButton";
-            this.downButton.Size = new System.Drawing.Size(248, 23);
-            this.downButton.TabIndex = 7;
+            this.downButton.Size = new System.Drawing.Size(122, 23);
+            this.downButton.TabIndex = 6;
             this.downButton.Text = "Move Down (Disabled)";
             this.downButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.downButton.UseVisualStyleBackColor = true;
@@ -446,7 +472,7 @@ namespace StatusEditor
             // sizeLabel
             // 
             this.sizeLabel.AutoSize = true;
-            this.sizeLabel.Location = new System.Drawing.Point(2, 214);
+            this.sizeLabel.Location = new System.Drawing.Point(2, 132);
             this.sizeLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.sizeLabel.Name = "sizeLabel";
             this.sizeLabel.Size = new System.Drawing.Size(33, 13);
@@ -505,11 +531,6 @@ namespace StatusEditor
             this.tagsDataGridView.RowTemplate.Height = 24;
             this.tagsDataGridView.Size = new System.Drawing.Size(671, 102);
             this.tagsDataGridView.TabIndex = 8;
-            // 
-            // contextMenuStrip1
-            // 
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
             // toolStripMenuItem1
             // 
@@ -765,6 +786,7 @@ namespace StatusEditor
         private TextBox dataTextBox;
         private Button duplicateButton;
         private Button addSubChunkButton;
+        private Button deleteSubChunkButton;
         private Button upButton;
         private ToolTip toolTip;
         private DataGridView tagsDataGridView;
@@ -775,7 +797,7 @@ namespace StatusEditor
         private ToolStripContainer toolStripContainer1;
         private Label sizeLabel;
         private Button downButton;
-        private ContextMenuStrip contextMenuStrip1;
+        private ContextMenuStrip deleteSubChunkMenuStrip;
         private ToolStripMenuItem toolStripMenuItem1;
         private ToolStripComboBox toolStripComboBox1;
         private ToolStripSeparator toolStripSeparator1;

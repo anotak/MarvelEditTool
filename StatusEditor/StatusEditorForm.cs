@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 namespace StatusEditor
 {
@@ -415,6 +416,7 @@ namespace StatusEditor
             upButton.Visible = !isShtFile;
             downButton.Visible = !isShtFile;
             addSubChunkButton.Visible = !isShtFile;
+            deleteSubChunkButton.Visible = !isShtFile;
             saveToolStripMenuItem.Enabled = true;
             saveAsToolStripMenuItem.Enabled = true;
             importButton.Enabled = false;
@@ -423,6 +425,7 @@ namespace StatusEditor
             downButton.Enabled = false;
             exportButton.Enabled = false;
             addSubChunkButton.Enabled = false;
+            deleteSubChunkButton.Enabled = false;
             animBox.Enabled = true;
             extendButton.Enabled = extendButton.Visible;
             sizeLabel.Text = count + " entries loaded";
@@ -716,10 +719,45 @@ namespace StatusEditor
             if (cantAddSubChunk())
                 return;
 
-            MultiStructEntry entry = (MultiStructEntry)tablefile.table[animBox.SelectedIndex];
-            SaveOldData(animBox.SelectedIndex);
-            entry.AddSubChunk();
+            if(tablefile.table[animBox.SelectedIndex] is CollisionEntry)
+            {
+                CollisionEntry entry = (CollisionEntry)tablefile.table[animBox.SelectedIndex];
+                SaveOldData(animBox.SelectedIndex);
+                entry.AddSubChunk();
+            } else
+            {
+                MultiStructEntry entry = (MultiStructEntry)tablefile.table[animBox.SelectedIndex];
+                SaveOldData(animBox.SelectedIndex);
+                entry.AddSubChunk();
+            }
             animBox_SelectedIndexChanged(null, null);
+        }
+
+        private void deleteSubChunkButton_Click(object sender, EventArgs e)
+        {
+            Point screenPoint = deleteSubChunkButton.PointToScreen(new Point(deleteSubChunkButton.Left, deleteSubChunkButton.Bottom));
+            if (screenPoint.Y + deleteSubChunkMenuStrip.Size.Height > Screen.PrimaryScreen.WorkingArea.Height) {
+                deleteSubChunkMenuStrip.Show(deleteSubChunkButton, new Point(0, -deleteSubChunkMenuStrip.Size.Height));
+            } else {
+                deleteSubChunkMenuStrip.Show(deleteSubChunkButton, new Point(0, deleteSubChunkButton.Height));
+            }
+        }
+
+        private void MenuItem_Click(object sender, EventArgs e)
+        {
+            // Retrieve the menu item that was clicked
+            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+            // Retrieve the index from the Tag property
+            int index = (int)menuItem.Tag;
+            // Retrieve the selected entry from the table
+            MultiStructEntry entry = (MultiStructEntry)tablefile.table[animBox.SelectedIndex];
+
+            // Remove the subchunk at the captured index
+            entry.RemoveSubChunk(index);
+            // Decrease the entry size
+            entry.size -= 32;
+            // Update view while maintaining changed data - added string to prevent save conflict with SaveOldData() method
+            animBox_SelectedIndexChanged("removeSubChunk", null);
         }
 
         private void downButton_Click(object sender, EventArgs e)
@@ -840,7 +878,7 @@ namespace StatusEditor
                 }
             }
         }
-
+        
         private int SaveOldData(StructEntryBase entry, Type entryType, int offset)
         {
             //if (!(tablefile.table[index] is StatusEntry))
@@ -889,21 +927,42 @@ namespace StatusEditor
             return numFields;
         }
 
+        // Triger event when selecting items in the main view
+        // Here are created the drop down options for subchunks
         private void animBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            deleteSubChunkMenuStrip.Items.Clear();
             if (bDisableUpdate)
             {
                 return;
             }
             if (structView.Enabled)
             {
-                SaveOldData(previousSelectedIndex);
+                if (sender==null)
+                    SaveOldData(previousSelectedIndex); //TODO: check again why is this here?!
+
+                // Get the subEntries collection
+                var subEntries = ((MultiStructEntry)(tablefile.table[animBox.SelectedIndex])).subEntries;
+
+                // Iterate through the subEntries using a for loop
+                for (int index = 0; index < subEntries.Count; index++)
+                {
+                    // Skip the header and add the current subchunk to the menu strip with the correct index
+                    if (index > 0)
+                    {
+                        ToolStripMenuItem menuItem = new ToolStripMenuItem("subchunk " + index);
+                        menuItem.Tag = index;
+                        menuItem.Click += MenuItem_Click;
+                        deleteSubChunkMenuStrip.Items.Add(menuItem);
+                    }
+                }
             }
             previousSelectedIndex = animBox.SelectedIndex;
             RefreshAnimBox();
         }
 
-        //this creates the drop down option list for enums and other integers
+        // Trigger event when selecting items in the detailed view
+        // Here are created the drop down option list for enums and other integers
         private void structView_SelectedIndexChanged(object sender, EventArgs e)
         {
             String tag = "";
@@ -912,58 +971,7 @@ namespace StatusEditor
             ((System.Windows.Forms.DataGridViewCellEventArgs)e).RowIndex <= structView.Rows.Count)
                 tag = (string)structView?.Rows[((System.Windows.Forms.DataGridViewCellEventArgs)e).RowIndex]?.Cells[1]?.Value ?? "";
 
-            if (tag.Equals("AttackLevel"))
-                AddTags(typeof(AttackLevel), false);
-            else if (tag.Equals("GuardType"))
-                AddTags(typeof(GuardType), false);
-            else if (tag.Equals("atkflags3"))
-                AddTags(typeof(AtkFlagsC), true);
-            else if (tag.Equals("atkflags2"))
-                AddTags(typeof(AtkFlagsB), true);
-            else if (tag.Equals("atkflags"))
-                AddTags(typeof(AtkFlagsA), true);
-            else if (tag.Equals("statusFlags"))
-                AddTags(typeof(StatusFlags), true);
-            else if (tag.Contains("OppHitAnim"))
-                AddTags(typeof(OppHitAnim), false);
-            else if (tag.Contains("OnHitEffectOnEnemy") || tag.Contains("OnBlockEffectOnEnemy"))
-                AddTags(typeof(HitEffectOnEnemy), false);
-            else if (tag.Contains("state"))
-                AddTags(typeof(BaseActState), false);
-            else if (tag.Contains("positionState"))
-                AddTags(typeof(PositionState), false);
-            else if (tag.Contains("comboState"))
-                AddTags(typeof(ComboState), false);
-            else if (tag.Contains("inputCode"))
-                AddTags(typeof(InputCode), true);
-            else if (tag.Contains("subChunkType"))
-                AddTags(typeof(SubChunkType), true);
-            else if (tag.Contains("boneReferenceId"))
-                AddTags(typeof(BoneReferenceId), true);
-            else if (tag.Contains("ShtFlagsA"))
-                AddTags(typeof(ShtFlagsA), true);
-            else if (tag.Contains("ShtFlagsB"))
-                AddTags(typeof(ShtFlagsB), true);
-            else if (tag.Contains("ShtFlagsC"))
-                AddTags(typeof(ShtFlagsC), true);
-            else if (tag.Contains("disabled"))
-                AddTags(typeof(CmdDisabled), false);
-            else if (tag.Contains("disable"))
-                AddTags(typeof(SpatkDisabled), false);
-            else if (tag.Contains("flags"))
-                AddTags(typeof(cmdFlags), true);
-            else if (tag.Contains("trapTransition"))
-                AddTags(typeof(TrapTransition), true);
-            else if (tag.Contains("hitSFXGroup"))
-                AddTags(typeof(HitSFXGroup), false);
-            else if (tag.Contains("hitSFXSubGroup"))
-                AddTags(typeof(HitSFXSubGroup), false);
-            else if (tag.Contains("hitSFXEntry"))
-                AddTags(typeof(HitSFXEntry), false);
-            else
-            {
-                tagsDataGridView.DataSource = null;
-            }
+            processTag(tag);
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -1062,6 +1070,7 @@ namespace StatusEditor
 
                 exportButton.Enabled = true;
                 addSubChunkButton.Enabled = false;
+                deleteSubChunkButton.Enabled = false;
                 duplicateButton.Enabled = duplicateButton.Visible;
                 upButton.Enabled = false; //up button test toggle is here
                 downButton.Enabled = false;
@@ -1100,6 +1109,7 @@ namespace StatusEditor
                 else if (tablefile.table[animBox.SelectedIndex] is MultiStructEntry)
                 {
                     addSubChunkButton.Enabled = true;
+                    deleteSubChunkButton.Enabled = true;
                     ClearItems();
                     MultiStructEntry multi = (MultiStructEntry)tablefile.table[animBox.SelectedIndex];
                     int offset = 0;
@@ -1225,6 +1235,64 @@ namespace StatusEditor
                 structView.Rows[index].cells[3].Value = Enum.Format(structFieldInfo[index].FieldType, value, "X");
             }
             */
+        }
+
+        // Bottom row information is added here when created
+        private void processTag(string tag) 
+        {
+            // TODO: replace if else with switch case
+            if (tag.Equals("AttackLevel"))
+                AddTags(typeof(AttackLevel), false);
+            else if (tag.Equals("GuardType"))
+                AddTags(typeof(GuardType), false);
+            else if (tag.Equals("atkflags3"))
+                AddTags(typeof(AtkFlagsC), true);
+            else if (tag.Equals("atkflags2"))
+                AddTags(typeof(AtkFlagsB), true);
+            else if (tag.Equals("atkflags"))
+                AddTags(typeof(AtkFlagsA), true);
+            else if (tag.Equals("statusFlags"))
+                AddTags(typeof(StatusFlags), true);
+            else if (tag.Contains("OppHitAnim"))
+                AddTags(typeof(OppHitAnim), false);
+            else if (tag.Contains("OnHitEffectOnEnemy") || tag.Contains("OnBlockEffectOnEnemy"))
+                AddTags(typeof(HitEffectOnEnemy), false);
+            else if (tag.Contains("state"))
+                AddTags(typeof(BaseActState), false);
+            else if (tag.Contains("positionState"))
+                AddTags(typeof(PositionState), false);
+            else if (tag.Contains("comboState"))
+                AddTags(typeof(ComboState), false);
+            else if (tag.Contains("inputCode"))
+                AddTags(typeof(InputCode), true);
+            else if (tag.Contains("subChunkType"))
+                AddTags(typeof(SubChunkType), true);
+            else if (tag.Contains("boneReferenceId"))
+                AddTags(typeof(BoneReferenceId), true);
+            else if (tag.Contains("ShtFlagsA"))
+                AddTags(typeof(ShtFlagsA), true);
+            else if (tag.Contains("ShtFlagsB"))
+                AddTags(typeof(ShtFlagsB), true);
+            else if (tag.Contains("ShtFlagsC"))
+                AddTags(typeof(ShtFlagsC), true);
+            else if (tag.Contains("disabled"))
+                AddTags(typeof(CmdDisabled), false);
+            else if (tag.Contains("disable"))
+                AddTags(typeof(SpatkDisabled), false);
+            else if (tag.Contains("flags"))
+                AddTags(typeof(cmdFlags), true);
+            else if (tag.Contains("trapTransition"))
+                AddTags(typeof(TrapTransition), true);
+            else if (tag.Contains("hitSFXGroup"))
+                AddTags(typeof(HitSFXGroup), false);
+            else if (tag.Contains("hitSFXSubGroup"))
+                AddTags(typeof(HitSFXSubGroup), false);
+            else if (tag.Contains("hitSFXEntry"))
+                AddTags(typeof(HitSFXEntry), false);
+            else
+            {
+                tagsDataGridView.DataSource = null;
+            }
         }
 
         #region DATATEXTBOX
