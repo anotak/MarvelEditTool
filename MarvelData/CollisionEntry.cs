@@ -151,6 +151,21 @@ namespace MarvelData
             }
         }
 
+        public override void AddSubChunk()
+        {
+            StructEntry<CollisionStandardChunk> chunk = new StructEntry<CollisionStandardChunk>
+            {
+                data = new CollisionStandardChunk()
+            };
+            size += 0x20;
+            chunk.size = 0x20;
+            chunk.bHasData = true;
+            chunk.name = "unknown";
+            chunk.data.objectReferenceId = -1;
+            chunk.data.unk04 = -1;
+            subEntries.Add(chunk);
+        }
+
         //public void TryToLabelAnmChr(TableFile file)
         //{
         //    if (anmChrIndexMaybe > 0)
