@@ -85,6 +85,7 @@ namespace StatusEditor
             this.hexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hexToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.tutorialFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addSubChunkMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -726,6 +727,11 @@ namespace StatusEditor
             this.tutorialFilesToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.tutorialFilesToolStripMenuItem.Text = "Tutorial Files";
             // 
+            // addSubChunkMenuStrip
+            // 
+            this.addSubChunkMenuStrip.Name = "addSubChunkMenuStrip";
+            this.addSubChunkMenuStrip.Size = new System.Drawing.Size(61, 4);
+            // 
             // StatusEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -826,6 +832,7 @@ namespace StatusEditor
         private ToolStripMenuItem cHSStatusToolStripMenuItem;
         private ToolStripMenuItem sHTShotToolStripMenuItem;
         private ToolStripMenuItem cBABaseActionToolStripMenuItem;
+        private ContextMenuStrip addSubChunkMenuStrip;
     }
 }
 
