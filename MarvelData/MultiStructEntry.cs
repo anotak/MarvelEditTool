@@ -262,7 +262,7 @@ namespace MarvelData
             //else if (subChunkType.Equals("snapBackChar"))
             //{
             //}
-            else if (subChunkType.Equals("stateChange"))
+            else if (subChunkType.Equals("restrictedState"))
             {
                 StructEntry<SpatkRestrictedStateChunk> chunk = new StructEntry<SpatkRestrictedStateChunk>();
                 chunk.data = new SpatkRestrictedStateChunk();
@@ -352,9 +352,6 @@ namespace MarvelData
             {
                 AddSubChunk();
             }
-
-            subEntries.Count();
-
         }
     }
 }

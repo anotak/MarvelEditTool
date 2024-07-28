@@ -85,6 +85,7 @@ namespace StatusEditor
             this.hexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hexToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.tutorialFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addSubChunkMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -357,7 +358,7 @@ namespace StatusEditor
             this.upButton.Name = "upButton";
             this.upButton.Size = new System.Drawing.Size(122, 23);
             this.upButton.TabIndex = 5;
-            this.upButton.Text = "Move Up (Disabled)";
+            this.upButton.Text = "Move Up (disabled)";
             this.upButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.upButton.UseVisualStyleBackColor = true;
             this.upButton.Click += new System.EventHandler(this.upButton_Click);
@@ -464,7 +465,7 @@ namespace StatusEditor
             this.downButton.Name = "downButton";
             this.downButton.Size = new System.Drawing.Size(122, 23);
             this.downButton.TabIndex = 6;
-            this.downButton.Text = "Move Down (Disabled)";
+            this.downButton.Text = "Move Down (disabled)";
             this.downButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.downButton.UseVisualStyleBackColor = true;
             this.downButton.Click += new System.EventHandler(this.downButton_Click);
@@ -726,6 +727,11 @@ namespace StatusEditor
             this.tutorialFilesToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.tutorialFilesToolStripMenuItem.Text = "Tutorial Files";
             // 
+            // addSubChunkMenuStrip
+            // 
+            this.addSubChunkMenuStrip.Name = "addSubChunkMenuStrip";
+            this.addSubChunkMenuStrip.Size = new System.Drawing.Size(61, 4);
+            // 
             // StatusEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -826,6 +832,7 @@ namespace StatusEditor
         private ToolStripMenuItem cHSStatusToolStripMenuItem;
         private ToolStripMenuItem sHTShotToolStripMenuItem;
         private ToolStripMenuItem cBABaseActionToolStripMenuItem;
+        private ContextMenuStrip addSubChunkMenuStrip;
     }
 }
 

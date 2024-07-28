@@ -1643,6 +1643,17 @@ namespace MarvelData {
             public int unk1C;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        public struct SpatkSnapBack // 26
+        {
+            public EnumUnk flags; // 26
+            public int unk08;
+            public int unk0C;
+            public int unk10;
+            public int unk14;
+            public int unk18;
+            public int unk1C;
+        }
 
         [StructLayout(LayoutKind.Sequential)]
         public struct SpatkRestrictedStateChunk // 2F
@@ -1736,9 +1747,48 @@ namespace MarvelData {
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct SpatkEnumUnk // 55
+        public struct SpatkAdvGuardUnk // 49
+        {
+            public SubChunkType subChunkType; //49
+            public int validityFlags;
+            public int unk08;
+            public int unk0C;
+            public int unk10;
+            public int unk14;
+            public int unk18;
+            public int unk1C;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct SpatkHaggarFlagsUnk // 55
         {
             public SubChunkType subChunkType; //55
+            public EnumUnk flags;
+            public int unk08;
+            public int unk0C;
+            public int unk10;
+            public int unk14;
+            public int unk18;
+            public int unk1C;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct SpatkWhiffCancelUnk // 5A
+        {
+            public SubChunkType subChunkType; //5A
+            public EnumUnk flags;
+            public int unk08;
+            public int unk0C;
+            public int unk10;
+            public int unk14;
+            public int unk18;
+            public int unk1C;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct SpatkHasPropActive // 5B
+        {
+            public SubChunkType subChunkType; //5B
             public EnumUnk flags;
             public int unk08;
             public int unk0C;
@@ -1893,83 +1943,89 @@ namespace MarvelData {
             typeof(SpatkTwoButtonAirdashChunk), // 07     [7] 
             typeof(SpatkUnkChunk), // 08                  [8] 
             typeof(SpatkActionChunk), // 09               [9]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [10]
+            typeof(SpatkUnkChunk), // 00                  [11]
+            typeof(SpatkUnkChunk), // 00                  [12]
+            typeof(SpatkUnkChunk), // 00                  [13]
+            typeof(SpatkUnkChunk), // 00                  [14]
+            typeof(SpatkUnkChunk), // 00                  [15]
+            typeof(SpatkUnkChunk), // 00                  [16]
+            typeof(SpatkUnkChunk), // 00                  [17]
+            typeof(SpatkUnkChunk), // 00                  [18]
+            typeof(SpatkUnkChunk), // 00                  [19]
+            typeof(SpatkUnkChunk), // 00                  [20]
+            typeof(SpatkUnkChunk), // 00                  [21]
+            typeof(SpatkUnkChunk), // 00                  [22]
             typeof(SpatkRequiredStateUnk), // 17          [23]
             typeof(SpatkChrisStateChunk), // 00           [24]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkEnumUnk), // 00                   [26]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [25]
+            typeof(SpatkSnapBack), // 00                  [26]
+            typeof(SpatkUnkChunk), // 00                  [27]
+            typeof(SpatkUnkChunk), // 00                  [28]
+            typeof(SpatkUnkChunk), // 00                  [29]
             typeof(SpatkModeRequiredChunk), // 1E         [30]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [31]
+            typeof(SpatkUnkChunk), // 00                  [32]
+            typeof(SpatkUnkChunk), // 00                  [33]
+            typeof(SpatkUnkChunk), // 00                  [34]
             typeof(SpatkTACDHCChunk), // 23               [35]
-            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [36]
             typeof(SpatkSuperJumpAction), // 00           [37]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [38]
+            typeof(SpatkUnkChunk), // 00                  [39]
+            typeof(SpatkUnkChunk), // 00                  [40]
             typeof(SpatkUnkChunk), // 00                  [41]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), //                     [0]
-            typeof(SpatkRestrictedStateChunk), // 2F     [47]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkProhibitedChunk), // 31          [49]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkAirdashChunk), // 34             [52]
-            typeof(SpatkAirSpecialLimiterChunk), // 35   [53]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkGuardTACChunk), // 38            [56]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkHyperChunk), // 3A               [58]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkAllowedChainChunk), // 3F        [63]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
+            typeof(SpatkUnkChunk), // 00                  [42]
+            typeof(SpatkUnkChunk), // 00                  [43]
+            typeof(SpatkUnkChunk), // 00                  [44]
+            typeof(SpatkUnkChunk), // 00                  [45]
+            typeof(SpatkUnkChunk), //                     [46]
+            typeof(SpatkRestrictedStateChunk), // 2F      [47]
+            typeof(SpatkUnkChunk), // 00                  [48]
+            typeof(SpatkProhibitedChunk), // 31           [49]
+            typeof(SpatkUnkChunk), // 00                  [50]
+            typeof(SpatkUnkChunk), // 00                  [51]
+            typeof(SpatkAirdashChunk), // 34              [52]
+            typeof(SpatkAirSpecialLimiterChunk), // 35    [53]
+            typeof(SpatkUnkChunk), // 00                  [54]
+            typeof(SpatkUnkChunk), // 00                  [55]
+            typeof(SpatkGuardTACChunk), // 38             [56]
+            typeof(SpatkUnkChunk), // 00                  [57]
+            typeof(SpatkHyperChunk), // 3A                [58]
+            typeof(SpatkUnkChunk), // 00                  [59]
+            typeof(SpatkUnkChunk), // 00                  [60]
+            typeof(SpatkUnkChunk), // 00                  [61]
+            typeof(SpatkUnkChunk), // 00                  [62]
+            typeof(SpatkAllowedChainChunk), // 3F         [63]
+            typeof(SpatkUnkChunk), // 00                  [64]
+            typeof(SpatkUnkChunk), // 00                  [65]
+            typeof(SpatkUnkChunk), // 00                  [66]
+            typeof(SpatkUnkChunk), // 00                  [67]
+            typeof(SpatkUnkChunk), // 00                  [68]
+            typeof(SpatkUnkChunk), // 00                  [69]
+            typeof(SpatkUnkChunk), // 46                  [70]
 
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkUnkChunk), // 00                  [0]
-            typeof(SpatkEnumUnk), // 00                  [85]
+            typeof(SpatkUnkChunk), // 00                  [71]
+            typeof(SpatkUnkChunk), // 00                  [72]
+            typeof(SpatkAdvGuardUnk), // 00               [73]
+            typeof(SpatkUnkChunk), // 00                  [74]
+            typeof(SpatkUnkChunk), // 00                  [75]
+            typeof(SpatkUnkChunk), // 00                  [76]
+            typeof(SpatkUnkChunk), // 00                  [77]
+            typeof(SpatkUnkChunk), // 00                  [78]
+            typeof(SpatkUnkChunk), // 00                  [79]
+            typeof(SpatkUnkChunk), // 50                  [80]
+            typeof(SpatkUnkChunk), // 00                  [81]
+            typeof(SpatkUnkChunk), // 00                  [82]
+            typeof(SpatkUnkChunk), // 00                  [83]
+            typeof(SpatkUnkChunk), // 00                  [84]
+            typeof(SpatkHaggarFlagsUnk),  // 55           [85]
+            typeof(SpatkUnkChunk), // 00                  [86]
+            typeof(SpatkUnkChunk), // 00                  [87]
+            typeof(SpatkUnkChunk), // 00                  [88]
+            typeof(SpatkUnkChunk), // 00                  [89]
+            typeof(SpatkWhiffCancelUnk), // 5A            [90]
+            typeof(SpatkHasPropActive), // 00             [91]
 
         }; // if it's past the end of this list, it'll default to SpatkUnkChunk
         }
