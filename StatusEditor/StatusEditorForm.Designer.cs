@@ -358,7 +358,7 @@ namespace StatusEditor
             this.upButton.Name = "upButton";
             this.upButton.Size = new System.Drawing.Size(122, 23);
             this.upButton.TabIndex = 5;
-            this.upButton.Text = "Move Up (Disabled)";
+            this.upButton.Text = "Move Up (disabled)";
             this.upButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.upButton.UseVisualStyleBackColor = true;
             this.upButton.Click += new System.EventHandler(this.upButton_Click);
@@ -465,7 +465,7 @@ namespace StatusEditor
             this.downButton.Name = "downButton";
             this.downButton.Size = new System.Drawing.Size(122, 23);
             this.downButton.TabIndex = 6;
-            this.downButton.Text = "Move Down (Disabled)";
+            this.downButton.Text = "Move Down (disabled)";
             this.downButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.downButton.UseVisualStyleBackColor = true;
             this.downButton.Click += new System.EventHandler(this.downButton_Click);
