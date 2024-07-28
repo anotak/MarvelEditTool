@@ -400,7 +400,7 @@ namespace StatusEditor
             entry.AddSubChunk(subChunkType.ToString());
             animBox_SelectedIndexChanged(null, null);
 
-            // increase tag [size] by 1
+            // increase header tag reference [size] by 1
             if (structView.Rows[1].Cells[1].Value.ToString().Equals("size"))
             {
                 structView.Rows[1].Cells[2].Value = Int32.Parse((string)structView.Rows[1].Cells[2].Value) + 1;
@@ -720,16 +720,34 @@ namespace StatusEditor
             if (cantAddSubChunk())
                 return;
 
-            if(tablefile.table[animBox.SelectedIndex] is CollisionEntry)
+            if (tablefile.table[animBox.SelectedIndex] is CollisionEntry)
             {
                 CollisionEntry entry = (CollisionEntry)tablefile.table[animBox.SelectedIndex];
                 SaveOldData(animBox.SelectedIndex);
                 entry.AddSubChunk();
-            } else
+            }
+            else
             {
-                MultiStructEntry entry = (MultiStructEntry)tablefile.table[animBox.SelectedIndex];
-                SaveOldData(animBox.SelectedIndex);
-                entry.AddSubChunk();
+
+                Point screenPoint = addSubChunkButton.PointToScreen(new Point(addSubChunkButton.Left, addSubChunkButton.Bottom));
+
+                // IEnumerable<TypeViewModel> enumValues = getEnumValuesList(typeof(SubChunkType));
+                // List<TypeViewModel>list = enumValues.ToList();
+                // list.ForEach(i => addSubChunkMenuStrip.Items.Add(i.name, null, dropDownItemSelectEvent));
+
+                addSubChunkMenuStrip.Items.Clear();
+                addSubChunkMenuStrip.Items.Add("default", null, dropDownItemSelectEvent);
+                MVC3DataStructures.SubChunkTypeList.Sort();
+                MVC3DataStructures.SubChunkTypeList.ForEach(i => addSubChunkMenuStrip.Items.Add(i, null, dropDownItemSelectEvent));
+
+                if (screenPoint.Y + addSubChunkMenuStrip.Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
+                {
+                    addSubChunkMenuStrip.Show(addSubChunkButton, new Point(0, -addSubChunkMenuStrip.Size.Height));
+                }
+                else
+                {
+                    addSubChunkMenuStrip.Show(addSubChunkButton, new Point(0, addSubChunkButton.Height));
+                }
             }
             animBox_SelectedIndexChanged(null, null);
         }
@@ -1000,7 +1018,6 @@ namespace StatusEditor
         // Here are created the drop down options for subchunks
         private void animBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            deleteSubChunkMenuStrip.Items.Clear();
             if (bDisableUpdate)
             {
                 return;
@@ -1010,21 +1027,7 @@ namespace StatusEditor
                 if (sender==null)
                     SaveOldData(previousSelectedIndex); //TODO: check again why is this here?!
 
-                // Get the subEntries collection
-                var subEntries = ((MultiStructEntry)(tablefile.table[animBox.SelectedIndex])).subEntries;
-
-                // Iterate through the subEntries using a for loop
-                for (int index = 0; index < subEntries.Count; index++)
-                {
-                    // Skip the header and add the current subchunk to the menu strip with the correct index
-                    if (index > 0)
-                    {
-                        ToolStripMenuItem menuItem = new ToolStripMenuItem("subchunk " + index);
-                        menuItem.Tag = index;
-                        menuItem.Click += MenuItem_Click;
-                        deleteSubChunkMenuStrip.Items.Add(menuItem);
-                    }
-                }
+                RefreshDeleteSubchunkButton();
             }
             previousSelectedIndex = animBox.SelectedIndex;
             RefreshAnimBox();
@@ -1536,7 +1539,6 @@ namespace StatusEditor
             dataTextBoxFormat = value;
         }
 
-
         private long GetTableByteSize()
         {
             long totalSize = 0;
@@ -1547,6 +1549,30 @@ namespace StatusEditor
             }
 
             return totalSize;
+        }
+
+        // Generates options for dropdown of button by selected entry
+        private void RefreshDeleteSubchunkButton()
+        {
+            deleteSubChunkMenuStrip.Items.Clear();
+            if (tablefile.table[animBox.SelectedIndex] is MultiStructEntry)
+            {
+                // Get the subEntries collection
+                var subEntries = ((MultiStructEntry)(tablefile.table[animBox.SelectedIndex])).subEntries;
+
+                // Iterate through the subEntries using a for loop
+                for (int index = 0; index < subEntries.Count; index++)
+                {
+                    // Skip the header and add the current subchunk to the menu strip with the correct index
+                    if (index > 0)
+                    {
+                        ToolStripMenuItem menuItem = new ToolStripMenuItem("subchunk " + index);
+                        menuItem.Tag = index;
+                        menuItem.Click += MenuItem_Click;
+                        deleteSubChunkMenuStrip.Items.Add(menuItem);
+                    }
+                }
+            } //TODO: add else disable button?
         }
     } // class
 
