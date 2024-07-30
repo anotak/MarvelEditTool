@@ -203,6 +203,7 @@
             this.importButton.AutoSize = true;
             this.importButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.importButton.Enabled = false;
+            this.insertButton.Enabled = false;
             this.importButton.Location = new System.Drawing.Point(3, 31);
             this.importButton.Name = "importButton";
             this.importButton.Size = new System.Drawing.Size(409, 27);

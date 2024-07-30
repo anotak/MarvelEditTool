@@ -31,6 +31,14 @@ namespace StatusEditor
         private bool isSameFile;
         private System.Windows.Forms.DataGridViewEditingControlShowingEventArgs dgvE;
         private System.Windows.Forms.DataGridView dgvSender;
+        private bool isShtFile;
+
+        public bool IsShtFile
+        { get 
+            {
+                return tablefile.fileExtension.Contains("SHT");
+            } 
+        }
 
         public StatusEditorForm()
         {
@@ -41,7 +49,7 @@ namespace StatusEditor
             FilePath = String.Empty;
             ImportPath = String.Empty;
             bDisableUpdate = true;
-            textBox1.Visible = false;
+            shotNameTextBox.Visible = false;
             previousSelectedIndex = 0;
             tagsDataGridView.Rows.Clear();
             structView.Rows.Clear();
@@ -129,7 +137,7 @@ namespace StatusEditor
 
         private void AddTags(Type type, Boolean isHex)
         {
-            IEnumerable<TypeViewModel> typeList = getEnumValuesList(type, isHex);
+            IEnumerable<TypeViewModel> typeList = GetEnumValuesList(type, isHex);
             TypeViewModel[] tempList = typeList.ToArray();
             tagsDataGridView.DataSource = null;
             if (isHex) {
@@ -146,7 +154,7 @@ namespace StatusEditor
             tagsDataGridView.RowHeadersVisible = false;
         }
 
-        private static IEnumerable<TypeViewModel> getEnumValuesList(Type type, bool isHex)
+        private static IEnumerable<TypeViewModel> GetEnumValuesList(Type type, bool isHex)
         {
             return Enum.GetValues(type)
                .Cast<Object>()
@@ -157,7 +165,7 @@ namespace StatusEditor
                });
         }
 
-        private static IEnumerable<TypeViewModel> getEnumValuesList(Type type)
+        private static IEnumerable<TypeViewModel> GetEnumValuesList(Type type)
         {
             return Enum.GetValues(type)
                .Cast<Object>()
@@ -189,7 +197,7 @@ namespace StatusEditor
             {
                 if (saveAsToolStripMenuItem.Enabled)
                 {
-                    saveButton_Click(null, null);
+                    SaveButton_Click(null, null);
                 }
                 return true;
             }
@@ -197,47 +205,47 @@ namespace StatusEditor
             {
                 if (openToolStripMenuItem.Enabled)
                 {
-                    openButton_Click(null, null);
+                    OpenButton_Click(null, null);
                 }
                 return true;
             }
             else if (keyData == (Keys.Control | Keys.T))
             {
-                if (extendButton.Enabled)
+                if (entryExtendStripMenuItem.Enabled)
                 {
-                    extendButton_Click(null, null);
+                    ExtendListToolStripMenuItem_Click(null, null);
                 }
                 return true;
             }
             else if (keyData == (Keys.Control | Keys.E))
             {
-                if (exportButton.Enabled)
+                if (entryExportButton.Enabled)
                 {
-                    exportButton_Click(null, null);
+                    ExportButton_Click(null, null);
                 }
                 return true;
             }
             else if (keyData == (Keys.Control | Keys.B))
             {
-                if (addSubChunkButton.Enabled)
+                if (subChunkAddButton.Enabled)
                 {
-                    addSubChunkButton_Click(null, null);
+                    AddSubChunkButton_Click(null, null);
                 }
                 return true;
             }
             else if (keyData == (Keys.Control | Keys.R))
             {
-                if (importButton.Enabled)
+                if (entryImportButton.Enabled)
                 {
-                    importButton_Click(null, null);
+                    ImportButton_Click(null, null);
                 }
                 return true;
             }
             else if (keyData == (Keys.Control | Keys.D))
             {
-                if (duplicateButton.Enabled)
+                if (entryDuplicateStripMenuItem.Enabled)
                 {
-                    duplicateButton_Click(null, null);
+                    DuplicateEntryToolStripMenuItem_Click(null, null);
                 }
                 return true;
             }
@@ -287,7 +295,7 @@ namespace StatusEditor
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        private void openButton_Click(object sender, EventArgs e)
+        private void OpenButton_Click(object sender, EventArgs e)
         {
             if (bError)
             {
@@ -317,7 +325,7 @@ namespace StatusEditor
                     }
                 //openFile.DefaultExt = "bcm";
                 // The Filter property requires a search string after the pipe ( | )
-                setFilter(openFile, (string)((ToolStripMenuItem)sender).Text);
+                SetFilter(openFile, (string)((ToolStripMenuItem)sender).Text);
                 openFile.ShowDialog();
                 if (openFile.FileNames.Length > 0)
                 {
@@ -347,7 +355,7 @@ namespace StatusEditor
             }
         }
 
-        private static void setFilter(OpenFileDialog openFile, string chosenFileType)
+        private static void SetFilter(OpenFileDialog openFile, string chosenFileType)
         {
             if (chosenFileType.Contains("ATI"))
             {
@@ -388,12 +396,12 @@ namespace StatusEditor
                     "All files (*.*)|*.*";
         }
 
-        private void closeButton_Click(object sender, EventArgs ev)
+        private void CloseButton_Click(object sender, EventArgs ev)
         {
             Application.Exit();
         }
 
-        void dropDownItemSelectEvent(object subChunkType, EventArgs e)
+        void DropDownItemSelectEvent(object subChunkType, EventArgs e)
         {
             MultiStructEntry entry = (MultiStructEntry)tablefile.table[animBox.SelectedIndex];
             SaveOldData(animBox.SelectedIndex);
@@ -410,26 +418,28 @@ namespace StatusEditor
         private void ResetLayout(OpenFileDialog openFile, int count)
         {
             SuspendLayout();
-            bool isShtFile = tablefile.fileExtension.Contains("SHT");
-            textBox1.Visible = isShtFile;
-            extendButton.Visible = !isShtFile;
-            duplicateButton.Visible = !isShtFile;
-            upButton.Visible = !isShtFile;
-            downButton.Visible = !isShtFile;
-            addSubChunkButton.Visible = !isShtFile;
-            deleteSubChunkButton.Visible = !isShtFile;
+            shotNameTextBox.Visible = IsShtFile;
+            entryInsertButton.Visible = !IsShtFile;
+            entryUpButton.Visible = !IsShtFile;
+            entryDownButton.Visible = !IsShtFile;
+            subChunkAddButton.Visible = !IsShtFile;
+            subChunkDeleteButton.Visible = !IsShtFile;
+            entryDeleteButton.Visible = !IsShtFile;
             saveToolStripMenuItem.Enabled = true;
             saveAsToolStripMenuItem.Enabled = true;
-            importButton.Enabled = false;
-            duplicateButton.Enabled = false;
-            upButton.Enabled = false;
-            downButton.Enabled = false;
-            exportButton.Enabled = false;
-            addSubChunkButton.Enabled = false;
-            deleteSubChunkButton.Enabled = false;
+            entryImportButton.Enabled = false;
+            entryInsertButton.Enabled = false;
+            entryDeleteButton.Enabled = false;
+            entryDuplicateStripMenuItem.Enabled = false;
+            entryUpButton.Enabled = false;
+            entryDownButton.Enabled = false;
+            entryExportButton.Enabled = false;
+            subChunkAddButton.Enabled = false;
+            subChunkDeleteButton.Enabled = false;
             animBox.Enabled = true;
-            extendButton.Enabled = extendButton.Visible;
-            sizeLabel.Text = count + " entries loaded";
+            correctIndexToolStripMenuItem.Enabled = false;
+            entryExtendStripMenuItem.Enabled = entryInsertButton.Visible;
+            entrySizeLabel.Text = count + " entries loaded";
             FilePath = openFile.FileNames[0];
             RefreshData();
             Text += " :: " + openFile.FileNames[0];
@@ -439,9 +449,9 @@ namespace StatusEditor
             ResumeLayout();
         }
 
-        private void saveButton_Click(object sender, EventArgs ev)
+        private void SaveButton_Click(object sender, EventArgs ev)
         {
-            if (bError || tablefile.fileExtension.Contains("SHT") ? !ValidateName() : false)
+            if (bError || tablefile.fileExtension.Contains("SHT") ? !IsNameValid() : false)
             {
                 return;
             }
@@ -493,7 +503,7 @@ namespace StatusEditor
             }
         }
 
-        private void importButton_Click(object sender, EventArgs ev)
+        private void ImportButton_Click(object sender, EventArgs ev)
         {
             if (animBox.SelectedIndex < 0
                 ||
@@ -579,7 +589,8 @@ namespace StatusEditor
                     tablefile.table[animBox.SelectedIndex].Import(openFile.FileNames[0]);
                     RefreshData();
                     RefreshEditBox();
-                    sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
+                    entrySizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
+                    entriesTotalLabel.Text = "entries: " + tablefile.TotalEntries;
                     ImportPath = openFile.FileNames[0];
                 }
                 else
@@ -589,7 +600,7 @@ namespace StatusEditor
             }
         }
 
-        private void exportButton_Click(object sender, EventArgs ev)
+        private void ExportButton_Click(object sender, EventArgs ev)
         {
             if (animBox.SelectedIndex < 0
                 ||
@@ -677,7 +688,8 @@ namespace StatusEditor
             }
         }
 
-        private void duplicateButton_Click(object sender, EventArgs e)
+        // TODO: remove me
+        private void DuplicateButton_Click(object sender, EventArgs e)
         {
             switch (MessageBox.Show(this, "Do you want to duplicate this entry?" + Environment.NewLine + "This action cannot be undone!", "Duplicate", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
             {
@@ -697,7 +709,8 @@ namespace StatusEditor
             }
         }
 
-        private void extendButton_Click(object sender, EventArgs e)
+        // TODO: remove me
+        private void ExtendButton_Click(object sender, EventArgs e)
         {
             switch (MessageBox.Show(this, "Do you want to extend list?" + Environment.NewLine + "This action cannot be undone!", "Extend List", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
             {
@@ -715,7 +728,7 @@ namespace StatusEditor
             }
         }
 
-        private void addSubChunkButton_Click(object sender, EventArgs e)
+        private void AddSubChunkButton_Click(object sender, EventArgs e)
         {
             if (cantAddSubChunk())
                 return;
@@ -729,40 +742,32 @@ namespace StatusEditor
             else
             {
 
-                Point screenPoint = addSubChunkButton.PointToScreen(new Point(addSubChunkButton.Left, addSubChunkButton.Bottom));
-
-                // IEnumerable<TypeViewModel> enumValues = getEnumValuesList(typeof(SubChunkType));
-                // List<TypeViewModel>list = enumValues.ToList();
-                // list.ForEach(i => addSubChunkMenuStrip.Items.Add(i.name, null, dropDownItemSelectEvent));
+                Point screenPoint = subChunkAddButton.PointToScreen(new Point(subChunkAddButton.Left, subChunkAddButton.Bottom));
 
                 addSubChunkMenuStrip.Items.Clear();
-                addSubChunkMenuStrip.Items.Add("default", null, dropDownItemSelectEvent);
+                addSubChunkMenuStrip.Items.Add("default", null, DropDownItemSelectEvent);
                 MVC3DataStructures.SubChunkTypeList.Sort();
-                MVC3DataStructures.SubChunkTypeList.ForEach(i => addSubChunkMenuStrip.Items.Add(i, null, dropDownItemSelectEvent));
+                MVC3DataStructures.SubChunkTypeList.ForEach(i => addSubChunkMenuStrip.Items.Add(i, null, DropDownItemSelectEvent));
 
-                if (screenPoint.Y + addSubChunkMenuStrip.Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
-                {
-                    addSubChunkMenuStrip.Show(addSubChunkButton, new Point(0, -addSubChunkMenuStrip.Size.Height));
-                }
-                else
-                {
-                    addSubChunkMenuStrip.Show(addSubChunkButton, new Point(0, addSubChunkButton.Height));
+                if (screenPoint.Y + addSubChunkMenuStrip.Size.Height > Screen.PrimaryScreen.WorkingArea.Height) {
+                    addSubChunkMenuStrip.Show(subChunkAddButton, new Point(0, -addSubChunkMenuStrip.Size.Height));
+                } else {
+                    addSubChunkMenuStrip.Show(subChunkAddButton, new Point(0, subChunkAddButton.Height));
                 }
             }
-            animBox_SelectedIndexChanged(null, null);
         }
 
-        private void deleteSubChunkButton_Click(object sender, EventArgs e)
+        private void SubChunkDeleteButton_Click(object sender, EventArgs e)
         {
-            Point screenPoint = deleteSubChunkButton.PointToScreen(new Point(deleteSubChunkButton.Left, deleteSubChunkButton.Bottom));
-            if (screenPoint.Y + deleteSubChunkMenuStrip.Size.Height > Screen.PrimaryScreen.WorkingArea.Height) {
-                deleteSubChunkMenuStrip.Show(deleteSubChunkButton, new Point(0, -deleteSubChunkMenuStrip.Size.Height));
+            Point screenPoint = subChunkDeleteButton.PointToScreen(new Point(subChunkDeleteButton.Left, subChunkDeleteButton.Bottom));
+            if (screenPoint.Y + subChunkDeleteMenuStrip.Size.Height > Screen.PrimaryScreen.WorkingArea.Height) {
+                subChunkDeleteMenuStrip.Show(subChunkDeleteButton, new Point(0, -subChunkDeleteMenuStrip.Size.Height));
             } else {
-                deleteSubChunkMenuStrip.Show(deleteSubChunkButton, new Point(0, deleteSubChunkButton.Height));
+                subChunkDeleteMenuStrip.Show(subChunkDeleteButton, new Point(0, subChunkDeleteButton.Height));
             }
         }
 
-        private void MenuItem_Click(object sender, EventArgs e)
+        private void SubChunkDeleteMenuItem_Click(object sender, EventArgs e)
         {
             // Retrieve the menu item that was clicked
             ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
@@ -779,13 +784,36 @@ namespace StatusEditor
             animBox_SelectedIndexChanged("removeSubChunk", null);
         }
 
+        // Iterates over table entries and sets indexes sequentially, correcting any out of place.
+        // Throws error when called and there are empty entries in table
+        public void CorrectIndexes()
+        {
+            for (int i = 0; i < tablefile.table.Count; i++)
+            {
+                MultiStructEntry multientry = (MultiStructEntry)tablefile.table[i];
+                ((StructEntry<SpatkHeaderChunk>)multientry.subEntries[0]).data.index = i;
+                tablefile.table[i].index = (uint)i;
+            }
+        }
+
+        // Iterates over table entries and removes any without data.
+        public void RemoveEmptySets()
+        {
+            for (int i = 0; i < tablefile.table.Count; i++)
+            {
+                MultiStructEntry multientry = (MultiStructEntry)tablefile.table[i];
+                if (multientry.name.Contains("EMPTY DATA") && !multientry.bHasData)
+                    tablefile.table.RemoveAt(i);
+            }
+        }
+
         public void DeleteEntry()
         {
             var tempEntry = tablefile.table[animBox.SelectedIndex];
             int removedEntrySize = tempEntry.size;
 
             tablefile.table.Remove(tempEntry);
-
+            tablefile.TotalEntries -= 1;
 
             // Update originalPointer for all following entries
             for (int i = animBox.SelectedIndex; i < tablefile.table.Count; i++)
@@ -793,17 +821,14 @@ namespace StatusEditor
                 MultiStructEntry multientry = (MultiStructEntry)tablefile.table[i];
                 //animBox.SelectedIndex = i;
                 tablefile.table[i].originalPointer -= (uint)removedEntrySize;
-
+                tablefile.table[i].index -= 1;
                 ((StructEntry<SpatkHeaderChunk>)multientry.subEntries[0]).data.index -= 1;
             }
         }
 
+        // Moves entry N spaces. A positive number means moving down, a negative means up.
         public void MoveEntry(int direction)
         {
-            // Checking selected item
-            if (animBox.SelectedItem == null || animBox.SelectedIndex < 0)
-                return; // No selected item - nothing to do
-
             // Calculate new index using move direction
             int newIndex = animBox.SelectedIndex + direction;
             int index = animBox.SelectedIndex;
@@ -840,38 +865,30 @@ namespace StatusEditor
             animBox.SelectedIndex = newIndex;
         }
 
+        private void upButton_Click(object sender, EventArgs e)
+        {
+            // Checking selected item
+            if (animBox.SelectedItem == null || animBox.SelectedIndex <= 0 || animBox.SelectedIndex + 1 > tablefile.TotalEntries)
+                return; // Out of bounds or first entry - nothing to do
+
+            MoveEntry(-1);
+            RemoveEmptySets();
+            CorrectIndexes();
+            RefreshData();
+            animBox_SelectedIndexChanged("moveEntryUp", null);
+        }
+
         private void downButton_Click(object sender, EventArgs e)
         {
-            
-            Point screenPoint = downButton.PointToScreen(new Point(downButton.Left, downButton.Bottom));
+            // Checking selected item
+            if (animBox.SelectedItem == null || animBox.SelectedIndex < 0 || animBox.SelectedIndex + 1 >= tablefile.TotalEntries)
+                return; // Out of bounds or last entry - nothing to do
 
             MoveEntry(1);
-
+            RemoveEmptySets();
+            CorrectIndexes();
             RefreshData();
-            animBox_SelectedIndexChanged(null, null);
-            
-            /*
-            if (cantAddSubChunk())
-                return;
-
-
-
-            //IEnumerable<TypeViewModel> enumValues = getEnumValuesList(typeof(SubChunkType));
-            //List<TypeViewModel>list = enumValues.ToList();
-            //list.ForEach(i => contextMenuStrip1.Items.Add(i.name, null, dropDownItemSelectEvent));
-
-            contextMenuStrip1.Items.Clear();
-            MVC3DataStructures.SubChunkTypeList.Sort();
-            MVC3DataStructures.SubChunkTypeList.ForEach(i => contextMenuStrip1.Items.Add(i, null, dropDownItemSelectEvent));
-
-            if (screenPoint.Y + contextMenuStrip1.Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
-            {
-                contextMenuStrip1.Show(downButton, new Point(0, -contextMenuStrip1.Size.Height));
-            }
-            else
-            {
-                contextMenuStrip1.Show(downButton, new Point(0, downButton.Height));
-            }*/
+            animBox_SelectedIndexChanged("moveEntryDown", null);
         }
 
         // checks if a subchunk can be added
@@ -1015,7 +1032,7 @@ namespace StatusEditor
         }
 
         // Triger event when selecting items in the main view
-        // Here are created the drop down options for subchunks
+        // Here are also created the drop down options for subchunks deletion
         private void animBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (bDisableUpdate)
@@ -1052,7 +1069,7 @@ namespace StatusEditor
             {
                 return;
             }
-            tablefile.table[animBox.SelectedIndex].name = textBox1.Text;
+            tablefile.table[animBox.SelectedIndex].name = shotNameTextBox.Text;
             RefreshData();
         }
 
@@ -1118,7 +1135,8 @@ namespace StatusEditor
             SuspendLayout();
             animBox.BeginUpdate();
             bDisableUpdate = true;
-            importButton.Enabled = true;
+            entryImportButton.Enabled = true;
+            entryInsertButton.Enabled = true;
 
             RefreshEditBox();
             bDisableUpdate = false;
@@ -1130,29 +1148,30 @@ namespace StatusEditor
         {
             SuspendLayout();
             if (
-                animBox.SelectedIndex >= 0
-                &&
-                animBox.SelectedIndex < tablefile.table.Count
-                &&
+                animBox.SelectedIndex >= 0 &&
+                animBox.SelectedIndex < tablefile.TotalEntries &&
                 tablefile.table[animBox.SelectedIndex].bHasData
                 )
             {
                 structView.Columns[0].DefaultCellStyle.ForeColor = Color.Black;
                 structView.Columns[1].DefaultCellStyle.ForeColor = Color.Black;
 
-                exportButton.Enabled = true;
-                addSubChunkButton.Enabled = false;
-                deleteSubChunkButton.Enabled = false;
-                duplicateButton.Enabled = duplicateButton.Visible;
-                upButton.Enabled = false; //up button test toggle is here
-                downButton.Enabled = false;
-                textBox1.Text = tablefile.table[animBox.SelectedIndex].name;
-                textBox1.Enabled = true;
+                correctIndexToolStripMenuItem.Enabled = true;
+                entryExportButton.Enabled = true;
+                entryDeleteButton.Enabled = true;
+                entryDuplicateStripMenuItem.Enabled = entryInsertButton.Visible;
+                entryUpButton.Enabled = (animBox.SelectedIndex > 0);
+                entryDownButton.Enabled = (animBox.SelectedIndex + 1  < tablefile.TotalEntries);
+                subChunkAddButton.Enabled = tablefile.table[animBox.SelectedIndex] is MultiStructEntry;
+                subChunkDeleteButton.Enabled = tablefile.table[animBox.SelectedIndex] is MultiStructEntry;
+                shotNameTextBox.Text = tablefile.table[animBox.SelectedIndex].name;
+                shotNameTextBox.Enabled = true;
                 SetTextConcurrent(tablefile.table[animBox.SelectedIndex].GetData());
                 dataTextBox.Text = BitConverter.ToString(tablefile.table[animBox.SelectedIndex].GetData()).Replace("-", "");
                 dataTextBox.Text = splitAndBreakEveryNChars(dataTextBox.Text, GetDataTextBoxFormat());
                 dataTextBox.WordWrap = true;
-                sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
+                entrySizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
+                entriesTotalLabel.Text = "entries: " + tablefile.TotalEntries;
 
                 Type entryType = tablefile.table[animBox.SelectedIndex].GetType();
 
@@ -1170,9 +1189,7 @@ namespace StatusEditor
 
                     //StructEntry<StatusChunk> entry = (StructEntry<StatusChunk>)tablefile.table[animBox.SelectedIndex];
 
-
                     StructEntryBase entry = (StructEntryBase)tablefile.table[animBox.SelectedIndex];
-
 
                     ClearItems();
                     UpdateStructEntry(entryType, entry, 0);
@@ -1180,8 +1197,6 @@ namespace StatusEditor
                 }
                 else if (tablefile.table[animBox.SelectedIndex] is MultiStructEntry)
                 {
-                    addSubChunkButton.Enabled = true;
-                    deleteSubChunkButton.Enabled = true;
                     ClearItems();
                     MultiStructEntry multi = (MultiStructEntry)tablefile.table[animBox.SelectedIndex];
                     int offset = 0;
@@ -1206,13 +1221,14 @@ namespace StatusEditor
                 structView.Enabled = false;
                 structView.Columns[0].DefaultCellStyle.ForeColor = Color.White;
                 structView.Columns[1].DefaultCellStyle.ForeColor = Color.White;
-                exportButton.Enabled = false;
-                duplicateButton.Enabled = false;
-                upButton.Enabled = false;
-                textBox1.Text = "";
-                textBox1.Enabled = false;
+                entryExportButton.Enabled = false;
+                entryDeleteButton.Enabled = false;
+                entryDuplicateStripMenuItem.Enabled = false;
+                entryUpButton.Enabled = false;
+                shotNameTextBox.Text = "";
+                shotNameTextBox.Enabled = false;
                 dataTextBox.Text = "";
-                sizeLabel.Text = "size: N/A";
+                entrySizeLabel.Text = "size: N/A";
             }
             tagsDataGridView.Enabled = tagsDataGridView.Visible;
 
@@ -1286,7 +1302,7 @@ namespace StatusEditor
         {
             bDataGridError = true;
             structView.Rows[structView.SelectedCells[0].RowIndex].DefaultCellStyle.ForeColor = Color.Red;
-            sizeLabel.Text = "invalid data for " + structView.SelectedCells[0].ValueType.Name;
+            entrySizeLabel.Text = "invalid data for " + structView.SelectedCells[0].ValueType.Name;
         }
 
         private void structView_CellEndEdit(object sender, DataGridViewCellEventArgs ev)
@@ -1296,7 +1312,7 @@ namespace StatusEditor
 
             structView.Rows[structView.SelectedCells[0].RowIndex].DefaultCellStyle.ForeColor = Color.Black;
             structView.Rows[structView.SelectedCells[0].RowIndex].Cells[3].Value = "";
-            sizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
+            entrySizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
 
             int index = ev.RowIndex;
             // FIXME
@@ -1483,48 +1499,26 @@ namespace StatusEditor
             }
         }
         // end datatextbox stuff
-        #endregion  
-        // disabled until i find a good way to fix the move up button
-        private void upButton_Click(object sender, EventArgs e)
+        #endregion 
+
+        private void ShotNameTextBox_Validation(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (animBox.SelectedIndex <= 0
-                   ||
-                   animBox.SelectedIndex >= tablefile.table.Count
-                   ||
-                   !tablefile.table[animBox.SelectedIndex].bHasData)
-               {
-                   return;
-               }
-            //
-            //int newindex = tablefile.Move(animBox.SelectedIndex, 1);
-            int newindex = animBox.SelectedIndex;
-            tablefile.Move(newindex,1);
-            //(animBox.DataSource(newindex), animBox.Items(oldindex)) = (animBox.Items(oldindex), animBox.Items(newindex));
-            RefreshData();
-               if (newindex < animBox.Items.Count && newindex >= 0)
-               {
-                  animBox.SelectedIndex = newindex;
-               }
+            IsNameValid();
         }
 
-        private void textBox1_Validating(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            ValidateName();
-        }
-
-        private bool ValidateName()
+        private bool IsNameValid()
         {
             bool bStatus = true;
-            if (textBox1.Text.Contains(" "))
+            if (shotNameTextBox.Text.Contains(" "))
             {
                 string errorText = "text cannot contain empty spaces";
                 MessageBox.Show(this, errorText, "SHT Text Format Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                textBox1.BackColor = Color.PaleVioletRed;
-                textBox1.Focus();
+                shotNameTextBox.BackColor = Color.PaleVioletRed;
+                shotNameTextBox.Focus();
                 bStatus = false;
             } else
             {
-                textBox1.BackColor = Color.White;
+                shotNameTextBox.BackColor = Color.White;
             }
             return bStatus;
         }
@@ -1554,7 +1548,7 @@ namespace StatusEditor
         // Generates options for dropdown of button by selected entry
         private void RefreshDeleteSubchunkButton()
         {
-            deleteSubChunkMenuStrip.Items.Clear();
+            subChunkDeleteMenuStrip.Items.Clear();
             if (tablefile.table[animBox.SelectedIndex] is MultiStructEntry)
             {
                 // Get the subEntries collection
@@ -1568,11 +1562,96 @@ namespace StatusEditor
                     {
                         ToolStripMenuItem menuItem = new ToolStripMenuItem("subchunk " + index);
                         menuItem.Tag = index;
-                        menuItem.Click += MenuItem_Click;
-                        deleteSubChunkMenuStrip.Items.Add(menuItem);
+                        menuItem.Click += SubChunkDeleteMenuItem_Click;
+                        subChunkDeleteMenuStrip.Items.Add(menuItem);
                     }
                 }
-            } //TODO: add else disable button?
+            }
+        }
+
+        private void DeleteButton_Click(object sender, EventArgs e)
+        {
+
+            switch (MessageBox.Show(this, "Delete current entry?"  + Environment.NewLine 
+            + "This action cannot be undone!", "Delete Entry", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            {
+                case DialogResult.No:
+                    break;
+                default:
+                    DeleteEntry();
+                    RefreshData();
+                    animBox_SelectedIndexChanged("deleteEntry", null);
+                    break;
+            }
+        }
+
+        private void EntryInsert_Click(object sender, EventArgs e)
+        {
+            Point screenPoint = entryInsertButton.PointToScreen(new Point(entryInsertButton.Left, entryInsertButton.Bottom));
+            if (screenPoint.Y + insertEntryMenuStrip.Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
+            {
+                insertEntryMenuStrip.Show(entryInsertButton, new Point(0, -insertEntryMenuStrip.Size.Height));
+            }
+            else
+            {
+                insertEntryMenuStrip.Show(entryInsertButton, new Point(0, entryInsertButton.Height));
+            }
+        }
+
+        private void DuplicateEntryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            switch (MessageBox.Show(this, "Do you want to create a duplicate of this entry at the bottom?",
+            "Duplicate", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            {
+                case DialogResult.No:
+                    break;
+                default:
+                    if (cantAddSubChunk())
+                        return;
+
+                    tablefile.Duplicate(animBox.SelectedIndex);
+                    RefreshDataAlt();
+                    if (animBox.TopIndex < animBox.Items.Count - 2)
+                    {
+                        animBox.TopIndex++;
+                    }
+                    break;
+            }
+        }
+
+        private void ExtendListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            switch (MessageBox.Show(this, "Do you want to extend the list by adding an empty entry at the bottom?",
+            "Extend List", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            {
+                case DialogResult.No:
+                    break;
+                default:
+                    tablefile.Extend();
+                    RefreshData();
+
+                    if (animBox.TopIndex < animBox.Items.Count - 2)
+                    {
+                        animBox.TopIndex++;
+                    }
+                    break;
+            }
+        }
+
+        private void CorrectIndexToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            switch (MessageBox.Show(this, "All entries with empty data will also be removed."  + Environment.NewLine 
+            + "Do you want to proceed?", "Correct Index", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            {
+                case DialogResult.No:
+                    break;
+                default:
+                    RemoveEmptySets();
+                    CorrectIndexes();
+                    RefreshData();
+                    animBox_SelectedIndexChanged("correctIndex", null);
+                    break;
+            }
         }
     } // class
 
