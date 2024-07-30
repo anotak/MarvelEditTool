@@ -16,8 +16,10 @@ namespace MarvelData
     {
         public List<TableEntry> table;
         public byte[] header;
+        public List<StructEntryBase> subEntries;
         public byte[] headerB;
         public byte[] footer;
+        private uint totalEntries;
         public Type fileType;
         public TableFile atiFile;
         public int defaultChunkSize;
@@ -28,8 +30,17 @@ namespace MarvelData
         private byte[] shotName2Bytes;
         private String shotName2String;
         private byte[] headerC;
-        //public List<StructEntryBase> subEntries;
-        public List<StructEntryBase> subEntries;
+
+        public uint TotalEntries
+        { get
+            {
+                return (uint)table.Count(entry => entry.bHasData);
+            }
+            set
+            {
+                totalEntries = value;
+            }
+        }
 
         public static Type[] structTypes = { typeof(StructEntry<StatusChunk>), typeof(StructEntry<ATKInfoChunk>), typeof(StructEntry<BaseActChunk>),
             typeof(CmdSpAtkEntry), typeof(CmdComboEntry), typeof(AnmChrEntry), typeof(CollisionEntry), typeof(StructEntry<ShotChunk>),
@@ -74,7 +85,7 @@ namespace MarvelData
                 }
                 uint entries;
                 tablefile.header = reader.ReadBytes(8);
-                entries = reader.ReadUInt32();
+                entries = tablefile.totalEntries = reader.ReadUInt32();
                 tablefile.headerB = reader.ReadBytes(4);
 
                 if (length < 16 + (entries * 8))
@@ -125,9 +136,8 @@ namespace MarvelData
                     // data is added/read from file here and put on table entry
                     current.originalPointer = reader.ReadUInt32();
 
-                    AELogger.Log("add current: " +
-                        current.index.ToString("X")
-                        + "h at " + current.originalPointer.ToString("X") + "h with name " + current.name);
+                    AELogger.Log("add current: " + current.index.ToString("X") + "h at " 
+                    + current.originalPointer.ToString("X") + "h with name " + current.name);
                     realCount++;
                     tablefile.table.Add(current);
                 }
@@ -536,12 +546,11 @@ namespace MarvelData
 
             if (table[index].bHasData)
             {
-                TableEntry dupe = table[index].Duplicate();
-                dupe.index = (uint)newindex;
-                dupe.UpdateSize();
-                //dupe.GuessName();
-                //dupe.name += " duplicate";
-                table.Add(dupe);
+                TableEntry duplicated_entry = table[index].Duplicate();
+                duplicated_entry.index = (uint)newindex;
+                duplicated_entry.UpdateSize();
+                totalEntries++;
+                table.Add(duplicated_entry);
             }
             else
             {
@@ -596,7 +605,8 @@ namespace MarvelData
             b.Write(header);
             if (this.fileExtension != "SHT")
             {
-                b.Write((uint)realCount);
+                // b.Write((uint)realCount); // TODO: see if this flies
+                b.Write(TotalEntries);
             }
             b.Write(headerB);
             if (this.fileExtension == "SHT")
@@ -985,8 +995,7 @@ namespace MarvelData
 
         public void MatchAtiNames(string filePath)
         {
-
-            // find names by merging atkinfo file
+            // find names by combining with atkinfo file
             string atiPath = Path.Combine(Path.GetDirectoryName(filePath), "atkinfo.227A8048");
 
             if (!File.Exists(atiPath))
@@ -1051,6 +1060,7 @@ namespace MarvelData
             VerifySizes(sizeof(ATKInfoChunk), 1);
             VerifySizes(sizeof(BaseActChunk), 2);
         }
+
         public static void VerifySizes(int a, int b)
         {
             AELogger.Log("testing sizes a, b");
