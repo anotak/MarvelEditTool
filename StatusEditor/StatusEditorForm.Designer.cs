@@ -39,23 +39,24 @@ namespace StatusEditor
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.animBox = new System.Windows.Forms.ListBox();
             this.structView = new System.Windows.Forms.DataGridView();
-            this.SubChunkColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.subChunkColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.varColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.valueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.hexColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.importButton = new System.Windows.Forms.Button();
-            this.upButton = new System.Windows.Forms.Button();
-            this.addSubChunkButton = new System.Windows.Forms.Button();
-            this.deleteSubChunkButton = new System.Windows.Forms.Button();
-            this.deleteSubChunkMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.exportButton = new System.Windows.Forms.Button();
-            this.extendButton = new System.Windows.Forms.Button();
-            this.duplicateButton = new System.Windows.Forms.Button();
-            this.downButton = new System.Windows.Forms.Button();
-            this.sizeLabel = new System.Windows.Forms.Label();
+            this.shotNameTextBox = new System.Windows.Forms.TextBox();
+            this.entryImportButton = new System.Windows.Forms.Button();
+            this.entryUpButton = new System.Windows.Forms.Button();
+            this.subChunkAddButton = new System.Windows.Forms.Button();
+            this.subChunkDeleteButton = new System.Windows.Forms.Button();
+            this.subChunkDeleteMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.entryExportButton = new System.Windows.Forms.Button();
+            this.entryDownButton = new System.Windows.Forms.Button();
+            this.entryDeleteButton = new System.Windows.Forms.Button();
+            this.entryInsertButton = new System.Windows.Forms.Button();
+            this.entriesTotalLabel = new System.Windows.Forms.Label();
+            this.entrySizeLabel = new System.Windows.Forms.Label();
             this.dataTextBox = new System.Windows.Forms.TextBox();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.tagsDataGridView = new System.Windows.Forms.DataGridView();
@@ -80,12 +81,16 @@ namespace StatusEditor
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.correctIndexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.formatDisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unsetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hexToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.tutorialFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addSubChunkMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.insertEntryMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.entryDuplicateStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.entryExtendStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -108,6 +113,7 @@ namespace StatusEditor
             this.toolStripContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tagsDataGridView)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            this.insertEntryMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // filenameLabel
@@ -215,7 +221,7 @@ namespace StatusEditor
             this.structView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.structView.ColumnHeadersVisible = false;
             this.structView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.SubChunkColumn,
+            this.subChunkColumn,
             this.varColumn,
             this.valueColumn,
             this.hexColumn});
@@ -231,13 +237,13 @@ namespace StatusEditor
             this.structView.TabIndex = 1;
             this.structView.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.structView_SelectedIndexChanged);
             // 
-            // SubChunkColumn
+            // subChunkColumn
             // 
-            this.SubChunkColumn.FillWeight = 4F;
-            this.SubChunkColumn.HeaderText = "subchunk";
-            this.SubChunkColumn.Name = "SubChunkColumn";
-            this.SubChunkColumn.ReadOnly = true;
-            this.SubChunkColumn.Visible = false;
+            this.subChunkColumn.FillWeight = 4F;
+            this.subChunkColumn.HeaderText = "subchunk";
+            this.subChunkColumn.Name = "SubChunkColumn";
+            this.subChunkColumn.ReadOnly = true;
+            this.subChunkColumn.Visible = false;
             // 
             // varColumn
             // 
@@ -285,21 +291,24 @@ namespace StatusEditor
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.textBox1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.importButton, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.upButton, 0, 5);
-            this.tableLayoutPanel1.Controls.Add(this.addSubChunkButton, 0, 7);
-            this.tableLayoutPanel1.Controls.Add(this.deleteSubChunkButton, 1, 7);
-            this.tableLayoutPanel1.Controls.Add(this.exportButton, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.extendButton, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.duplicateButton, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.downButton, 1, 5);
-            this.tableLayoutPanel1.Controls.Add(this.sizeLabel, 0, 9);
+            this.tableLayoutPanel1.Controls.Add(this.shotNameTextBox, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.entryImportButton, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.entryUpButton, 0, 5);
+            this.tableLayoutPanel1.Controls.Add(this.subChunkAddButton, 0, 7);
+            this.tableLayoutPanel1.Controls.Add(this.subChunkDeleteButton, 1, 7);
+            this.tableLayoutPanel1.Controls.Add(this.entryExportButton, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.entryDownButton, 1, 5);
+            this.tableLayoutPanel1.Controls.Add(this.entryDeleteButton, 1, 3);
+            this.tableLayoutPanel1.Controls.Add(this.entryInsertButton, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.entriesTotalLabel, 0, 9);
+            this.tableLayoutPanel1.Controls.Add(this.entrySizeLabel, 0, 10);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 10;
+            this.tableLayoutPanel1.RowCount = 12;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -313,172 +322,180 @@ namespace StatusEditor
             this.tableLayoutPanel1.Size = new System.Drawing.Size(252, 243);
             this.tableLayoutPanel1.TabIndex = 4;
             // 
-            // textBox1
+            // shotNameTextBox
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.shotNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.SetColumnSpan(this.textBox1, 2);
-            this.textBox1.Enabled = false;
-            this.textBox1.Location = new System.Drawing.Point(2, 2);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox1.MaxLength = 68;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(248, 20);
-            this.textBox1.TabIndex = 0;
-            this.textBox1.Visible = false;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-            this.textBox1.Validating += new System.ComponentModel.CancelEventHandler(this.textBox1_Validating);
+            this.tableLayoutPanel1.SetColumnSpan(this.shotNameTextBox, 2);
+            this.shotNameTextBox.Enabled = false;
+            this.shotNameTextBox.Location = new System.Drawing.Point(2, 2);
+            this.shotNameTextBox.Margin = new System.Windows.Forms.Padding(2);
+            this.shotNameTextBox.MaxLength = 68;
+            this.shotNameTextBox.Name = "shotNameTextBox";
+            this.shotNameTextBox.Size = new System.Drawing.Size(248, 20);
+            this.shotNameTextBox.TabIndex = 0;
+            this.shotNameTextBox.Visible = false;
+            this.shotNameTextBox.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.shotNameTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.ShotNameTextBox_Validation);
             // 
-            // importButton
+            // entryImportButton
             // 
-            this.importButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.entryImportButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.importButton.AutoSize = true;
-            this.importButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.importButton.Enabled = false;
-            this.importButton.Location = new System.Drawing.Point(2, 26);
-            this.importButton.Margin = new System.Windows.Forms.Padding(2);
-            this.importButton.Name = "importButton";
-            this.importButton.Size = new System.Drawing.Size(122, 23);
-            this.importButton.TabIndex = 1;
-            this.importButton.Text = "&Import";
-            this.importButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.toolTip.SetToolTip(this.importButton, "Ctrl + R");
-            this.importButton.UseVisualStyleBackColor = true;
-            this.importButton.Click += new System.EventHandler(this.importButton_Click);
+            this.entryImportButton.AutoSize = true;
+            this.entryImportButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.entryImportButton.Enabled = false;
+            this.entryImportButton.Location = new System.Drawing.Point(2, 26);
+            this.entryImportButton.Margin = new System.Windows.Forms.Padding(2);
+            this.entryImportButton.Name = "entryImportButton";
+            this.entryImportButton.Size = new System.Drawing.Size(122, 23);
+            this.entryImportButton.TabIndex = 1;
+            this.entryImportButton.Text = "&Import";
+            this.entryImportButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.toolTip.SetToolTip(this.entryImportButton, "Ctrl + R");
+            this.entryImportButton.UseVisualStyleBackColor = true;
+            this.entryImportButton.Click += new System.EventHandler(this.ImportButton_Click);
             // 
-            // upButton
+            // entryUpButton
             // 
-            this.upButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.entryUpButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.upButton.AutoSize = true;
-            this.upButton.Enabled = false;
-            this.upButton.Location = new System.Drawing.Point(2, 80);
-            this.upButton.Margin = new System.Windows.Forms.Padding(2);
-            this.upButton.Name = "upButton";
-            this.upButton.Size = new System.Drawing.Size(122, 23);
-            this.upButton.TabIndex = 5;
-            this.upButton.Text = "Move Up (disabled)";
-            this.upButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.upButton.UseVisualStyleBackColor = true;
-            this.upButton.Click += new System.EventHandler(this.upButton_Click);
+            this.entryUpButton.AutoSize = true;
+            this.entryUpButton.Enabled = false;
+            this.entryUpButton.Location = new System.Drawing.Point(2, 82);
+            this.entryUpButton.Margin = new System.Windows.Forms.Padding(2);
+            this.entryUpButton.Name = "entryUpButton";
+            this.entryUpButton.Size = new System.Drawing.Size(122, 23);
+            this.entryUpButton.TabIndex = 5;
+            this.entryUpButton.Text = "Move Up";
+            this.entryUpButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.entryUpButton.UseVisualStyleBackColor = true;
+            this.entryUpButton.Click += new System.EventHandler(this.upButton_Click);
             // 
-            // addSubChunkButton
+            // subChunkAddButton
             // 
-            this.addSubChunkButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.subChunkAddButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.addSubChunkButton.AutoSize = true;
-            this.addSubChunkButton.Enabled = false;
-            this.addSubChunkButton.Location = new System.Drawing.Point(2, 107);
-            this.addSubChunkButton.Margin = new System.Windows.Forms.Padding(2);
-            this.addSubChunkButton.Name = "addSubChunkButton";
-            this.addSubChunkButton.Size = new System.Drawing.Size(122, 23);
-            this.addSubChunkButton.TabIndex = 7;
-            this.addSubChunkButton.Text = "Add SubChunk";
-            this.addSubChunkButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.addSubChunkButton.UseVisualStyleBackColor = true;
-            this.addSubChunkButton.Click += new System.EventHandler(this.addSubChunkButton_Click);
+            this.subChunkAddButton.AutoSize = true;
+            this.subChunkAddButton.Enabled = false;
+            this.subChunkAddButton.Location = new System.Drawing.Point(2, 109);
+            this.subChunkAddButton.Margin = new System.Windows.Forms.Padding(2);
+            this.subChunkAddButton.Name = "subChunkAddButton";
+            this.subChunkAddButton.Size = new System.Drawing.Size(122, 23);
+            this.subChunkAddButton.TabIndex = 7;
+            this.subChunkAddButton.Text = "Add SubChunk";
+            this.subChunkAddButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.subChunkAddButton.UseVisualStyleBackColor = true;
+            this.subChunkAddButton.Click += new System.EventHandler(this.AddSubChunkButton_Click);
             // 
-            // deleteSubChunkButton
+            // subChunkDeleteButton
             // 
-            this.deleteSubChunkButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.subChunkDeleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.deleteSubChunkButton.AutoSize = true;
-            this.deleteSubChunkButton.ContextMenuStrip = this.deleteSubChunkMenuStrip;
-            this.deleteSubChunkButton.Enabled = false;
-            this.deleteSubChunkButton.Location = new System.Drawing.Point(128, 107);
-            this.deleteSubChunkButton.Margin = new System.Windows.Forms.Padding(2);
-            this.deleteSubChunkButton.Name = "deleteSubChunkButton";
-            this.deleteSubChunkButton.Size = new System.Drawing.Size(122, 23);
-            this.deleteSubChunkButton.TabIndex = 9;
-            this.deleteSubChunkButton.Text = "Delete SubChunk";
-            this.deleteSubChunkButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.deleteSubChunkButton.UseVisualStyleBackColor = true;
-            this.deleteSubChunkButton.Click += new System.EventHandler(this.deleteSubChunkButton_Click);
+            this.subChunkDeleteButton.AutoSize = true;
+            this.subChunkDeleteButton.ContextMenuStrip = this.subChunkDeleteMenuStrip;
+            this.subChunkDeleteButton.Enabled = false;
+            this.subChunkDeleteButton.Location = new System.Drawing.Point(128, 109);
+            this.subChunkDeleteButton.Margin = new System.Windows.Forms.Padding(2);
+            this.subChunkDeleteButton.Name = "subChunkDeleteButton";
+            this.subChunkDeleteButton.Size = new System.Drawing.Size(122, 23);
+            this.subChunkDeleteButton.TabIndex = 9;
+            this.subChunkDeleteButton.Text = "Delete SubChunk";
+            this.subChunkDeleteButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.subChunkDeleteButton.UseVisualStyleBackColor = true;
+            this.subChunkDeleteButton.Click += new System.EventHandler(this.SubChunkDeleteButton_Click);
             // 
-            // deleteSubChunkMenuStrip
+            // subChunkDeleteMenuStrip
             // 
-            this.deleteSubChunkMenuStrip.Name = "contextMenuStrip1";
-            this.deleteSubChunkMenuStrip.Size = new System.Drawing.Size(61, 4);
+            this.subChunkDeleteMenuStrip.Name = "contextMenuStrip1";
+            this.subChunkDeleteMenuStrip.Size = new System.Drawing.Size(61, 4);
             // 
-            // exportButton
+            // entryExportButton
             // 
-            this.exportButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.entryExportButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.exportButton.AutoSize = true;
-            this.exportButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.exportButton.Enabled = false;
-            this.exportButton.Location = new System.Drawing.Point(128, 26);
-            this.exportButton.Margin = new System.Windows.Forms.Padding(2);
-            this.exportButton.Name = "exportButton";
-            this.exportButton.Size = new System.Drawing.Size(122, 23);
-            this.exportButton.TabIndex = 2;
-            this.exportButton.Text = "&Export";
-            this.exportButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.toolTip.SetToolTip(this.exportButton, "Ctrl + E");
-            this.exportButton.UseVisualStyleBackColor = true;
-            this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
+            this.entryExportButton.AutoSize = true;
+            this.entryExportButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.entryExportButton.Enabled = false;
+            this.entryExportButton.Location = new System.Drawing.Point(128, 26);
+            this.entryExportButton.Margin = new System.Windows.Forms.Padding(2);
+            this.entryExportButton.Name = "entryExportButton";
+            this.entryExportButton.Size = new System.Drawing.Size(122, 23);
+            this.entryExportButton.TabIndex = 2;
+            this.entryExportButton.Text = "&Export";
+            this.entryExportButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.toolTip.SetToolTip(this.entryExportButton, "Ctrl + E");
+            this.entryExportButton.UseVisualStyleBackColor = true;
+            this.entryExportButton.Click += new System.EventHandler(this.ExportButton_Click);
             // 
-            // extendButton
+            // entryDownButton
             // 
-            this.extendButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.entryDownButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.extendButton.AutoSize = true;
-            this.extendButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.extendButton.Enabled = false;
-            this.extendButton.Location = new System.Drawing.Point(128, 53);
-            this.extendButton.Margin = new System.Windows.Forms.Padding(2);
-            this.extendButton.Name = "extendButton";
-            this.extendButton.Size = new System.Drawing.Size(122, 23);
-            this.extendButton.TabIndex = 3;
-            this.extendButton.Text = "&Ex&tend List";
-            this.extendButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.toolTip.SetToolTip(this.extendButton, "Ctrl + T");
-            this.extendButton.UseVisualStyleBackColor = true;
-            this.extendButton.Click += new System.EventHandler(this.extendButton_Click);
+            this.entryDownButton.AutoSize = true;
+            this.entryDownButton.Enabled = false;
+            this.entryDownButton.Location = new System.Drawing.Point(128, 82);
+            this.entryDownButton.Margin = new System.Windows.Forms.Padding(2);
+            this.entryDownButton.Name = "entryDownButton";
+            this.entryDownButton.Size = new System.Drawing.Size(122, 23);
+            this.entryDownButton.TabIndex = 6;
+            this.entryDownButton.Text = "Move Down";
+            this.entryDownButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.entryDownButton.UseVisualStyleBackColor = true;
+            this.entryDownButton.Click += new System.EventHandler(this.downButton_Click);
             // 
-            // duplicateButton
+            // entryDeleteButton
             // 
-            this.duplicateButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.entryDeleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.duplicateButton.AutoSize = true;
-            this.duplicateButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.duplicateButton.Enabled = false;
-            this.duplicateButton.Location = new System.Drawing.Point(2, 53);
-            this.duplicateButton.Margin = new System.Windows.Forms.Padding(2);
-            this.duplicateButton.Name = "duplicateButton";
-            this.duplicateButton.Size = new System.Drawing.Size(122, 23);
-            this.duplicateButton.TabIndex = 4;
-            this.duplicateButton.Text = "Duplicate";
-            this.duplicateButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.duplicateButton.UseVisualStyleBackColor = true;
-            this.duplicateButton.Click += new System.EventHandler(this.duplicateButton_Click);
+            this.entryDeleteButton.AutoSize = true;
+            this.entryDeleteButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.entryDeleteButton.Enabled = false;
+            this.entryDeleteButton.Location = new System.Drawing.Point(129, 54);
+            this.entryDeleteButton.Name = "entryDeleteButton";
+            this.entryDeleteButton.Size = new System.Drawing.Size(120, 23);
+            this.entryDeleteButton.TabIndex = 11;
+            this.entryDeleteButton.Text = "Delete";
+            this.entryDeleteButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.entryDeleteButton.UseVisualStyleBackColor = true;
+            this.entryDeleteButton.Click += new System.EventHandler(this.DeleteButton_Click);
             // 
-            // downButton
+            // entryInsertButton
             // 
-            this.downButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.entryInsertButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.downButton.AutoSize = true;
-            this.downButton.Enabled = false;
-            this.downButton.Location = new System.Drawing.Point(128, 80);
-            this.downButton.Margin = new System.Windows.Forms.Padding(2);
-            this.downButton.Name = "downButton";
-            this.downButton.Size = new System.Drawing.Size(122, 23);
-            this.downButton.TabIndex = 6;
-            this.downButton.Text = "Move Down (disabled)";
-            this.downButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.downButton.UseVisualStyleBackColor = true;
-            this.downButton.Click += new System.EventHandler(this.downButton_Click);
+            this.entryInsertButton.AutoSize = true;
+            this.entryInsertButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.entryInsertButton.Enabled = false;
+            this.entryInsertButton.Location = new System.Drawing.Point(3, 54);
+            this.entryInsertButton.Name = "entryInsertButton";
+            this.entryInsertButton.Size = new System.Drawing.Size(120, 23);
+            this.entryInsertButton.TabIndex = 12;
+            this.entryInsertButton.Text = "Insert";
+            this.entryInsertButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.entryInsertButton.UseVisualStyleBackColor = true;
+            this.entryInsertButton.Click += new System.EventHandler(this.EntryInsert_Click);
             // 
-            // sizeLabel
+            // entriesTotalLabel
             // 
-            this.sizeLabel.AutoSize = true;
-            this.sizeLabel.Location = new System.Drawing.Point(2, 132);
-            this.sizeLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.sizeLabel.Name = "sizeLabel";
-            this.sizeLabel.Size = new System.Drawing.Size(33, 13);
-            this.sizeLabel.TabIndex = 8;
-            this.sizeLabel.Text = "ready";
+            this.entriesTotalLabel.AutoSize = true;
+            this.entriesTotalLabel.Location = new System.Drawing.Point(3, 134);
+            this.entriesTotalLabel.Name = "entriesTotalLabel";
+            this.entriesTotalLabel.Padding = new System.Windows.Forms.Padding(0, 5, 0, 5);
+            this.entriesTotalLabel.Size = new System.Drawing.Size(38, 23);
+            this.entriesTotalLabel.TabIndex = 10;
+            this.entriesTotalLabel.Text = "entries";
+            // 
+            // entrySizeLabel
+            // 
+            this.entrySizeLabel.AutoSize = true;
+            this.entrySizeLabel.Location = new System.Drawing.Point(2, 157);
+            this.entrySizeLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.entrySizeLabel.Name = "entrySizeLabel";
+            this.entrySizeLabel.Padding = new System.Windows.Forms.Padding(0, 5, 0, 5);
+            this.entrySizeLabel.Size = new System.Drawing.Size(33, 23);
+            this.entrySizeLabel.TabIndex = 8;
+            this.entrySizeLabel.Text = "ready";
             // 
             // dataTextBox
             // 
@@ -590,7 +607,7 @@ namespace StatusEditor
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.openToolStripMenuItem.Text = "Open File";
-            this.openToolStripMenuItem.Click += new System.EventHandler(this.openButton_Click);
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenButton_Click);
             // 
             // openFileTypeToolStripMenuItem
             // 
@@ -611,49 +628,49 @@ namespace StatusEditor
             this.openATIToolStripMenuItem.Name = "openATIToolStripMenuItem";
             this.openATIToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
             this.openATIToolStripMenuItem.Text = "ATI - Attack Info";
-            this.openATIToolStripMenuItem.Click += new System.EventHandler(this.openButton_Click);
+            this.openATIToolStripMenuItem.Click += new System.EventHandler(this.OpenButton_Click);
             // 
             // cBABaseActionToolStripMenuItem
             // 
             this.cBABaseActionToolStripMenuItem.Name = "cBABaseActionToolStripMenuItem";
             this.cBABaseActionToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
             this.cBABaseActionToolStripMenuItem.Text = "CBA - Command Base Actions";
-            this.cBABaseActionToolStripMenuItem.Click += new System.EventHandler(this.openButton_Click);
+            this.cBABaseActionToolStripMenuItem.Click += new System.EventHandler(this.OpenButton_Click);
             // 
             // oToolStripMenuItem
             // 
             this.oToolStripMenuItem.Name = "oToolStripMenuItem";
             this.oToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
             this.oToolStripMenuItem.Text = "CCM - Command Combo Actions";
-            this.oToolStripMenuItem.Click += new System.EventHandler(this.openButton_Click);
+            this.oToolStripMenuItem.Click += new System.EventHandler(this.OpenButton_Click);
             // 
             // cHSStatusToolStripMenuItem
             // 
             this.cHSStatusToolStripMenuItem.Name = "cHSStatusToolStripMenuItem";
             this.cHSStatusToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
             this.cHSStatusToolStripMenuItem.Text = "CHS - Character Status";
-            this.cHSStatusToolStripMenuItem.Click += new System.EventHandler(this.openButton_Click);
+            this.cHSStatusToolStripMenuItem.Click += new System.EventHandler(this.OpenButton_Click);
             // 
             // cLICollisionToolStripMenuItem
             // 
             this.cLICollisionToolStripMenuItem.Name = "cLICollisionToolStripMenuItem";
             this.cLICollisionToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
             this.cLICollisionToolStripMenuItem.Text = "CLI - Collision";
-            this.cLICollisionToolStripMenuItem.Click += new System.EventHandler(this.openButton_Click);
+            this.cLICollisionToolStripMenuItem.Click += new System.EventHandler(this.OpenButton_Click);
             // 
             // cSPCommandSpecialAttackToolStripMenuItem
             // 
             this.cSPCommandSpecialAttackToolStripMenuItem.Name = "cSPCommandSpecialAttackToolStripMenuItem";
             this.cSPCommandSpecialAttackToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
             this.cSPCommandSpecialAttackToolStripMenuItem.Text = "CSP - Command Special Actions";
-            this.cSPCommandSpecialAttackToolStripMenuItem.Click += new System.EventHandler(this.openButton_Click);
+            this.cSPCommandSpecialAttackToolStripMenuItem.Click += new System.EventHandler(this.OpenButton_Click);
             // 
             // sHTShotToolStripMenuItem
             // 
             this.sHTShotToolStripMenuItem.Name = "sHTShotToolStripMenuItem";
             this.sHTShotToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
             this.sHTShotToolStripMenuItem.Text = "SHT - Shot";
-            this.sHTShotToolStripMenuItem.Click += new System.EventHandler(this.openButton_Click);
+            this.sHTShotToolStripMenuItem.Click += new System.EventHandler(this.OpenButton_Click);
             // 
             // saveToolStripMenuItem
             // 
@@ -661,7 +678,7 @@ namespace StatusEditor
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.saveToolStripMenuItem.Text = "Save";
-            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveButton_Click);
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveButton_Click);
             // 
             // saveAsToolStripMenuItem
             // 
@@ -669,23 +686,32 @@ namespace StatusEditor
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
             this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.saveAsToolStripMenuItem.Text = "Save As";
-            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveButton_Click);
+            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveButton_Click);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
             this.closeToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.closeToolStripMenuItem.Text = "Close";
-            this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeButton_Click);
+            this.closeToolStripMenuItem.Click += new System.EventHandler(this.CloseButton_Click);
             // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.correctIndexToolStripMenuItem,
             this.formatDisplayToolStripMenuItem,
             this.tutorialFilesToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 22);
             this.optionsToolStripMenuItem.Text = "Options";
+            // 
+            // correctIndexToolStripMenuItem
+            // 
+            this.correctIndexToolStripMenuItem.Enabled = false;
+            this.correctIndexToolStripMenuItem.Name = "correctIndexToolStripMenuItem";
+            this.correctIndexToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.correctIndexToolStripMenuItem.Text = "Correct Index";
+            this.correctIndexToolStripMenuItem.Click += new System.EventHandler(this.CorrectIndexToolStripMenuItem_Click);
             // 
             // formatDisplayToolStripMenuItem
             // 
@@ -732,6 +758,28 @@ namespace StatusEditor
             this.addSubChunkMenuStrip.Name = "addSubChunkMenuStrip";
             this.addSubChunkMenuStrip.Size = new System.Drawing.Size(61, 4);
             // 
+            // insertEntryMenuStrip
+            // 
+            this.insertEntryMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.entryDuplicateStripMenuItem,
+            this.entryExtendStripMenuItem});
+            this.insertEntryMenuStrip.Name = "insertEntryMenuStrip";
+            this.insertEntryMenuStrip.Size = new System.Drawing.Size(155, 48);
+            // 
+            // entryDuplicateStripMenuItem
+            // 
+            this.entryDuplicateStripMenuItem.Name = "entryDuplicateStripMenuItem";
+            this.entryDuplicateStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.entryDuplicateStripMenuItem.Text = "Duplicate Entry";
+            this.entryDuplicateStripMenuItem.Click += new System.EventHandler(this.DuplicateEntryToolStripMenuItem_Click);
+            // 
+            // entryExtendStripMenuItem
+            // 
+            this.entryExtendStripMenuItem.Name = "entryExtendStripMenuItem";
+            this.entryExtendStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.entryExtendStripMenuItem.Text = "Extend List";
+            this.entryExtendStripMenuItem.Click += new System.EventHandler(this.ExtendListToolStripMenuItem_Click);
+            // 
             // StatusEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -772,6 +820,7 @@ namespace StatusEditor
             ((System.ComponentModel.ISupportInitialize)(this.tagsDataGridView)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.insertEntryMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -783,27 +832,25 @@ namespace StatusEditor
         private SplitContainer splitContainer2;
         private ListBox animBox;
         private TableLayoutPanel tableLayoutPanel1;
-        private Button extendButton;
-        private Button importButton;
-        private Button exportButton;
+        private Button entryImportButton;
+        private Button entryExportButton;
         private SplitContainer splitContainer3;
         private SplitContainer splitContainer4;
         private DataGridView structView;
         private TextBox dataTextBox;
-        private Button duplicateButton;
-        private Button addSubChunkButton;
-        private Button deleteSubChunkButton;
-        private Button upButton;
+        private Button subChunkAddButton;
+        private Button subChunkDeleteButton;
+        private Button entryUpButton;
         private ToolTip toolTip;
         private DataGridView tagsDataGridView;
-        private DataGridViewTextBoxColumn SubChunkColumn;
+        private DataGridViewTextBoxColumn subChunkColumn;
         private DataGridViewTextBoxColumn varColumn;
         private DataGridViewTextBoxColumn valueColumn;
         private DataGridViewTextBoxColumn hexColumn;
         private ToolStripContainer toolStripContainer1;
-        private Label sizeLabel;
-        private Button downButton;
-        private ContextMenuStrip deleteSubChunkMenuStrip;
+        private Label entrySizeLabel;
+        private Button entryDownButton;
+        private ContextMenuStrip subChunkDeleteMenuStrip;
         private ToolStripMenuItem toolStripMenuItem1;
         private ToolStripComboBox toolStripComboBox1;
         private ToolStripSeparator toolStripSeparator1;
@@ -823,7 +870,7 @@ namespace StatusEditor
         private ToolStripMenuItem tutorialFilesToolStripMenuItem;
         private Label lblCurrentFile;
         private Label filenameLabel;
-        private TextBox textBox1;
+        private TextBox shotNameTextBox;
         private ToolStripMenuItem openFileTypeToolStripMenuItem;
         private ToolStripMenuItem openATIToolStripMenuItem;
         private ToolStripMenuItem cLICollisionToolStripMenuItem;
@@ -833,6 +880,13 @@ namespace StatusEditor
         private ToolStripMenuItem sHTShotToolStripMenuItem;
         private ToolStripMenuItem cBABaseActionToolStripMenuItem;
         private ContextMenuStrip addSubChunkMenuStrip;
+        private Label entriesTotalLabel;
+        private Button entryDeleteButton;
+        private Button entryInsertButton;
+        private ContextMenuStrip insertEntryMenuStrip;
+        private ToolStripMenuItem entryDuplicateStripMenuItem;
+        private ToolStripMenuItem entryExtendStripMenuItem;
+        private ToolStripMenuItem correctIndexToolStripMenuItem;
     }
 }
 
