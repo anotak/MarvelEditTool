@@ -7,6 +7,17 @@ namespace MarvelData
 {
     public class CmdComboEntry : MultiStructEntry
     {
+        private StructEntry<CmdComboHeaderChunk> header;
+        
+        public override StructEntry<CmdComboHeaderChunk> getCmdComboHeader() 
+        {
+            return header;
+        }
+
+        public void setCmdComboHeader(StructEntry<CmdComboHeaderChunk> header)
+        {
+            this.header = header;
+        }
         public override void SetData(byte[] newdata)
         {
             bHasData = true;
@@ -24,10 +35,10 @@ namespace MarvelData
             {
                 throw new Exception("HEADER TOO SMALL");
             }
-            StructEntry<CmdComboHeaderChunk> header = new StructEntry<CmdComboHeaderChunk>();
-            header.size = 0x44;
-            header.SetData(newdata, 0);
-            subEntries.Add(header);
+            setCmdComboHeader(new StructEntry<CmdComboHeaderChunk>());
+            getCmdComboHeader().size = 0x44;
+            getCmdComboHeader().SetData(newdata,0);
+            subEntries.Add(getCmdComboHeader());
 
             for (int i = 0x44; i + 0x19 < size; i += 0x20)
             {
