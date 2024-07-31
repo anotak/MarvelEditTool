@@ -8,82 +8,85 @@ using System.Xml.Linq;
 
 namespace MarvelData {
 
-        
-    
-[StructLayout(LayoutKind.Sequential)]
+
+
+[StructLayout(LayoutKind.Explicit)]
     public struct ShotChunk
     {
-            public int unk64;
-            public int unk68;
-            public int unk6C;
-            public int projectileSpawn;
-            public ShtFlagsA ShtFlagsA;
-            public ShtFlagsB ShtFlagsB;
-            public ShtFlagsC ShtFlagsC;
-            public int unk80;
-            public float projectileDuration;
-            public float unk88;
-            public int unk8c;
-            public float projectileSpeed;
-            public float projectileAccel;
-            public float unk98;
-            public float beamDuration;
-            public float projectileYSpeed;
-            public float projectileYAccel;
-            public float unkA8;
-            public float unkAC;
-            public float trackingStrength;
-            public float trackingUnk;
-            public float trackingRotation;
-            public float trackingStartFrame;
-            public int unkC0;
-            public int unkC4;
-            public float trackingEndFrame;
-            public int unkCC;
-            public float despawnProjectileFrame;
-            public int returnBone;
-            public int unkD8;
-            public int unkDC;
-            public int unkE0;
-            public int unkE4;
-            public float unkE8;
-            public float SpawnVerticalPosition;
-            public float SpawnHorizontalPosition;
-            public int unkF4;
-            public float unkF8;
-            public int unkFC;
-            public float unk100;
-            public float SpawnPositionAngle;
-            public float ProjectileAngle;
-            public float unk10C;
-            public float unk110;
-            public float RandomSpawnAngle;
-            public float RandomSpawnAngle2;
-            public int unk11C;
-            public int unk120;
-            public int unk124;
-            public float unk128;
-            public float unk12C;
-            public TrapTransition trapTransition; //bitwise flags
-            public TrapTransition trapTransition2;
-            public TrapTransition trapTransition3;
-            public int projectile2Reference1;
-            public int projectile2Reference2;
-            public int projectile2Reference3;
-            public int projectile2Reference4;
-            public int projectile2Reference5;
-            public int projectile2Reference6;
-            public int projectile2Reference7;
-            public int projectile2Reference8;
-            public int projectile2Reference9;
-            public int projectile2Reference10;
-            public int projectile2Reference11;
-            public int projectile2Reference12;
-            public int projectile2Reference13;
-            public int projectile2Reference14;
-            public int projectile2Reference15;
-            public int projectile2Reference16;
-            public int projectile3Reference1;
+        [FieldOffset(0)] public int unk64;
+        [FieldOffset(4)] public int unk68;
+        [FieldOffset(8)] public int unk6C;
+        [FieldOffset(12)] public int projectileSpawn;
+        [FieldOffset(16)] public ShtFlagsA ShtFlagsA;
+        [FieldOffset(20)] public ShtFlagsB ShtFlagsB;
+        [FieldOffset(24)] public ShtFlagsC ShtFlagsC;
+        [FieldOffset(28)] public int unk80;
+        [FieldOffset(32)] public float projectileDuration;
+        [FieldOffset(36)] public float unk88;
+        [FieldOffset(40)] public int unk8c;
+        [FieldOffset(44)] public float projectileSpeed;
+        [FieldOffset(48)] public float projectileAccel;
+        [FieldOffset(52)] public float unk98;
+        [FieldOffset(56)] public float beamDuration;
+        [FieldOffset(60)] public float projectileYSpeed;
+        [FieldOffset(64)] public float projectileYAccel;
+        [FieldOffset(68)] public float unkA8;
+        [FieldOffset(72)] public float unkAC;
+        [FieldOffset(76)] public float trackingStrength;
+        [FieldOffset(80)] public float trackingUnk;
+        [FieldOffset(84)] public float trackingRotation;
+        [FieldOffset(88)] public float trackingStartFrame;
+        [FieldOffset(92)] public int unkC0;
+        [FieldOffset(96)] public int unkC4;
+        [FieldOffset(100)] public float trackingEndFrame;
+        [FieldOffset(104)] public int unkCC;
+        [FieldOffset(108)] public float despawnProjectileFrame;
+        [FieldOffset(112)] public int returnBone;
+        [FieldOffset(116)] public int unkD8;
+        [FieldOffset(120)] public int unkDC;
+        [FieldOffset(124)] public int unkE0;
+        [FieldOffset(128)] public int unkE4;
+        [FieldOffset(132)] public float unkE8;
+        [FieldOffset(136)] public float SpawnVerticalPosition;
+        [FieldOffset(140)] public float SpawnHorizontalPosition;
+        [FieldOffset(144)] public int unkF4;
+        [FieldOffset(148)] public float unkF8;
+        [FieldOffset(152)] public int unkFC;
+        [FieldOffset(156)] public float unk100;
+        [FieldOffset(160)] public float SpawnPositionAngle;
+        [FieldOffset(164)] public float ProjectileAngle;
+        [FieldOffset(168)] public float unk10C;
+        [FieldOffset(172)] public float unk110;
+        [FieldOffset(176)] public float RandomSpawnAngle;
+        [FieldOffset(180)] public float RandomSpawnAngle2;
+        [FieldOffset(184)] public int unk11C;
+        [FieldOffset(188)] public int unk120;
+        [FieldOffset(192)] public int unk124;
+        [FieldOffset(196)] public float unk128;
+        [FieldOffset(200)] public float unk12C;
+        [FieldOffset(204)] public TrapTransition trapTransition; //bitwise flags
+        [FieldOffset(208)] public TrapTransition trapTransition2;
+        [FieldOffset(212)] public TrapTransition trapTransition3;
+        [FieldOffset(216)] public long projectile2Reference;
+        [FieldOffset(280)] public long projectile3Reference;
+        [FieldOffset(344)] public long projectile4Reference;
+        /*public int projectile2Reference1;
+        public int projectile2Reference2;
+        public int projectile2Reference3;
+        public int projectile2Reference4;
+        public int projectile2Reference5;
+        public int projectile2Reference6;
+        public int projectile2Reference7;
+        public int projectile2Reference8;
+        public int projectile2Reference9;
+        public int projectile2Reference10;
+        public int projectile2Reference11;
+        public int projectile2Reference12;
+        public int projectile2Reference13;
+        public int projectile2Reference14;
+        public int projectile2Reference15;
+        public int projectile2Reference16;
+        public int projectile3Reference1;
             public int projectile3Reference2;
             public int projectile3Reference3;
             public int projectile3Reference4;
@@ -114,14 +117,15 @@ namespace MarvelData {
             public int projectile4Reference13;
             public int projectile4Reference14;
             public int projectile4Reference15;
-            public int projectile4Reference16;
-            public int unk1FC;
-            public int unk200;
-            public int unk204;
-            public int unk208;
-            public int unk20C;
-            public int unk210;
-            public int projectileAnmString1;
+            public int projectile4Reference16;*/
+        [FieldOffset(408)] public int unk1FC;
+        [FieldOffset(412)] public int unk200;
+        [FieldOffset(416)] public int unk204;
+        [FieldOffset(420)] public int unk208;
+        [FieldOffset(424)] public int unk20C;
+        [FieldOffset(428)] public int unk210;
+        [FieldOffset(432)] public long projectileAnmString;
+        /*public int projectileAnmString1;
             public int projectileAnmString2;
             public int projectileAnmString3;
             public int projectileAnmString4;
@@ -136,50 +140,50 @@ namespace MarvelData {
             public int projectileAnmString13;
             public int projectileAnmString14;
             public int projectileAnmString15;
-            public int projectileAnmString16;
-            public int unk254;
-            public int unk258;
-            public int unk25C;
-            public int unk260;
-            public int unk264;
-            public int unk268;
-            public int unk26C;
-            public int unk270;
-            public int soundIDType;
-            public int unk278;
-            public int soundID;
-            public int soundBankIndexUnk;
-            public int unk284;
-            public int unk288;
-            public int soundPlay;
-            public int unk290;
-            public int unk294;
-            public float unk298;
-            public float unk29C;
-            public float unk2A0;
-            public int unk2A4;
-            public float unk2A8;
-            public float unk2AC;
-            public float unk2B0;
-            public int unk2B4;
-            public int effectPlayed;
-            public int unk2BC;
-            public int unk2C0;
-            public int unk2C4;
-            public float RotationXSpeed;
-            public float unk2CC;
-            public float unk2D0;
-            public float unk2D4;
-            public int unk2D8;
-            public int unk2DC;
-            public int friendlyFire;
-            public int unk2E4;
-            public int unk2E8;
-            public int unk2EC;
-            public int canBeNullified;
-            public int unk2F4;
-            public int unk2F8;
-            public int unk2FC;
+            public int projectileAnmString16;*/
+        [FieldOffset(496)] public int unk254;
+        [FieldOffset(500)] public int unk258;
+        [FieldOffset(504)] public int unk25C;
+        [FieldOffset(508)] public int unk260;
+        [FieldOffset(512)] public int unk264;
+        [FieldOffset(516)] public int unk268;
+        [FieldOffset(520)] public int unk26C;
+        [FieldOffset(524)] public int unk270;
+        [FieldOffset(528)] public int soundIDType;
+        [FieldOffset(532)] public int unk278;
+        [FieldOffset(536)] public int soundID;
+        [FieldOffset(540)] public int soundBankIndexUnk;
+        [FieldOffset(544)] public int unk284;
+        [FieldOffset(548)] public int unk288;
+        [FieldOffset(552)] public int soundPlay;
+        [FieldOffset(556)] public int unk290;
+        [FieldOffset(560)] public int unk294;
+        [FieldOffset(564)] public float unk298;
+        [FieldOffset(568)] public float unk29C;
+        [FieldOffset(572)] public float unk2A0;
+        [FieldOffset(576)] public int unk2A4;
+        [FieldOffset(580)] public float unk2A8;
+        [FieldOffset(584)] public float unk2AC;
+        [FieldOffset(588)] public float unk2B0;
+        [FieldOffset(592)] public int unk2B4;
+        [FieldOffset(596)] public int effectPlayed;
+        [FieldOffset(600)] public int unk2BC;
+        [FieldOffset(604)] public int unk2C0;
+        [FieldOffset(608)] public int unk2C4;
+        [FieldOffset(612)] public float RotationXSpeed;
+        [FieldOffset(616)] public float unk2CC;
+        [FieldOffset(620)] public float unk2D0;
+        [FieldOffset(624)] public float unk2D4;
+        [FieldOffset(628)] public int unk2D8;
+        [FieldOffset(632)] public int unk2DC;
+        [FieldOffset(636)] public int friendlyFire;
+        [FieldOffset(640)] public int unk2E4;
+        [FieldOffset(644)] public int unk2E8;
+        [FieldOffset(648)] public int unk2EC;
+        [FieldOffset(652)] public int canBeNullified;
+        [FieldOffset(656)] public int unk2F4;
+        [FieldOffset(660)] public int unk2F8;
+        [FieldOffset(664)] public int unk2FC;
             //public int unk3C8;
             //public int unk3CC;
         }
@@ -296,8 +300,21 @@ namespace MarvelData {
             Unk0x80000000 = 0x80000000
         }
 
+    [StructLayout(LayoutKind.Sequential)]
+        public struct ShotXSChunk
+        {
+        public float numberOfHits;
+        public float NumberOfHitsUnk;
+        public float durability;
+        public float durabilityUnk;
+        public int durabilityType;
+        public int unk354;
+        public int unk358;
+        public int unk35C;
+        public int unk360;
+        }
 
-        [StructLayout(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Sequential)]
         public struct ShotSChunk
         {
             public float numberOfHits;
@@ -399,7 +416,8 @@ namespace MarvelData {
             public int unk424;
         }
 
-        [StructLayout(LayoutKind.Sequential)]
+
+    [StructLayout(LayoutKind.Sequential)]
         public struct StatusChunk
         {
             public int index;
@@ -1163,8 +1181,18 @@ namespace MarvelData {
             public float HitHurtBoxRadius;
             public CLIProperties specialProperties;
         }
-
-    public enum BoneReferenceId : uint
+        public struct ProfileChunk //profile WIP here
+        {
+        public int introID;
+        public int introProbability;
+        public int soundID;
+        public int unk0A;
+        public int CharacterA;
+        public int CharacterB;
+        public int CharacterC;
+        public int CharacterD;
+        }
+        public enum BoneReferenceId : uint
     {
         Detached = 4294967295,
         Origin1 = 01,
