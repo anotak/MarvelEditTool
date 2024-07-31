@@ -790,9 +790,29 @@ namespace StatusEditor
         {
             for (int i = 0; i < tablefile.table.Count; i++)
             {
-                MultiStructEntry multientry = (MultiStructEntry)tablefile.table[i];
-                ((StructEntry<SpatkHeaderChunk>)multientry.subEntries[0]).data.index = i;
-                tablefile.table[i].index = (uint)i;
+                if (structViewType.Name.Contains("ATKInfo"))
+                {
+                    MarvelData.StructEntry<ATKInfoChunk> atiEntry = (MarvelData.StructEntry<ATKInfoChunk>)tablefile.table[i];
+                    atiEntry.data.index = i;
+                    atiEntry.index = (uint)i;
+                }
+                else if (structViewType.Name.Contains("BaseAct"))
+                {
+                    MarvelData.StructEntry<BaseActChunk> baseActEntry = (MarvelData.StructEntry<BaseActChunk>)tablefile.table[i];
+                    baseActEntry.data.index = i;
+                    baseActEntry.index = (uint)i;
+                }
+                else
+                {
+                    MultiStructEntry multientry = (MultiStructEntry)tablefile.table[i];
+                    if (tablefile.table[i] is CollisionEntry)
+                        ((StructEntry<CollisionHeaderChunk>)multientry.subEntries[0]).data.index = i;
+                    else if (tablefile.table[i] is CmdSpAtkEntry)
+                        ((StructEntry<SpatkHeaderChunk>)multientry.subEntries[0]).data.index = i;
+                    else if (tablefile.table[i] is CmdComboEntry)
+                        ((StructEntry<CmdComboHeaderChunk>)multientry.subEntries[0]).data.index = i;
+                    tablefile.table[i].index = (uint)i;
+                }
             }
         }
 
@@ -801,9 +821,22 @@ namespace StatusEditor
         {
             for (int i = 0; i < tablefile.table.Count; i++)
             {
-                MultiStructEntry multientry = (MultiStructEntry)tablefile.table[i];
-                if (multientry.name.Contains("EMPTY DATA") && !multientry.bHasData)
-                    tablefile.table.RemoveAt(i);
+                if (tablefile.table[i] is CmdSpAtkEntry || tablefile.table[i] is CollisionEntry || tablefile.table[i] is CmdComboEntry)
+                {
+                    MultiStructEntry multientry = (MultiStructEntry)tablefile.table[i];
+                    if (!multientry.bHasData)
+                        tablefile.table.RemoveAt(i);
+                } else if (structViewType.Name.Contains("ATKInfo"))
+                {
+                    MarvelData.StructEntry<ATKInfoChunk> atiEntry = (MarvelData.StructEntry<ATKInfoChunk>)tablefile.table[i];
+                    if (!atiEntry.bHasData)
+                        tablefile.table.RemoveAt(i);
+                } else if (structViewType.Name.Contains("BaseAct"))
+                {
+                    MarvelData.StructEntry<BaseActChunk> baseActEntry = (MarvelData.StructEntry<BaseActChunk>)tablefile.table[i];
+                    if (!baseActEntry.bHasData)
+                        tablefile.table.RemoveAt(i);
+                }
             }
         }
 
@@ -1156,12 +1189,12 @@ namespace StatusEditor
                 structView.Columns[0].DefaultCellStyle.ForeColor = Color.Black;
                 structView.Columns[1].DefaultCellStyle.ForeColor = Color.Black;
 
-                correctIndexToolStripMenuItem.Enabled = true;
+                correctIndexToolStripMenuItem.Enabled =  !structViewType.Name.Contains("ATKInfo"); // TODO: create a propper get type method
                 entryExportButton.Enabled = true;
-                entryDeleteButton.Enabled = true;
+                entryDeleteButton.Enabled = !structViewType.Name.Contains("ATKInfo") && !structViewType.Name.Contains("BaseAct"); // TODO: create a propper get type method
                 entryDuplicateStripMenuItem.Enabled = entryInsertButton.Visible;
-                entryUpButton.Enabled = (animBox.SelectedIndex > 0);
-                entryDownButton.Enabled = (animBox.SelectedIndex + 1  < tablefile.TotalEntries);
+                entryUpButton.Enabled = (animBox.SelectedIndex > 0) && !structViewType.Name.Contains("ATKInfo"); // TODO: create a propper get type method
+                entryDownButton.Enabled = (animBox.SelectedIndex + 1  < tablefile.TotalEntries) && !structViewType.Name.Contains("ATKInfo"); // TODO: create a propper get type method
                 subChunkAddButton.Enabled = tablefile.table[animBox.SelectedIndex] is MultiStructEntry;
                 subChunkDeleteButton.Enabled = tablefile.table[animBox.SelectedIndex] is MultiStructEntry;
                 shotNameTextBox.Text = tablefile.table[animBox.SelectedIndex].name;
