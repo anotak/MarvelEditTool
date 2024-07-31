@@ -1189,12 +1189,12 @@ namespace StatusEditor
                 structView.Columns[0].DefaultCellStyle.ForeColor = Color.Black;
                 structView.Columns[1].DefaultCellStyle.ForeColor = Color.Black;
 
-                correctIndexToolStripMenuItem.Enabled = true;
+                correctIndexToolStripMenuItem.Enabled =  !structViewType.Name.Contains("ATKInfo"); // TODO: create a propper get type method
                 entryExportButton.Enabled = true;
                 entryDeleteButton.Enabled = true;
                 entryDuplicateStripMenuItem.Enabled = entryInsertButton.Visible;
-                entryUpButton.Enabled = (animBox.SelectedIndex > 0);
-                entryDownButton.Enabled = (animBox.SelectedIndex + 1  < tablefile.TotalEntries);
+                entryUpButton.Enabled = (animBox.SelectedIndex > 0) && !structViewType.Name.Contains("ATKInfo"); // TODO: create a propper get type method
+                entryDownButton.Enabled = (animBox.SelectedIndex + 1  < tablefile.TotalEntries) && !structViewType.Name.Contains("ATKInfo"); // TODO: create a propper get type method
                 subChunkAddButton.Enabled = tablefile.table[animBox.SelectedIndex] is MultiStructEntry;
                 subChunkDeleteButton.Enabled = tablefile.table[animBox.SelectedIndex] is MultiStructEntry;
                 shotNameTextBox.Text = tablefile.table[animBox.SelectedIndex].name;
