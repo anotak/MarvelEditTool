@@ -840,22 +840,19 @@ namespace StatusEditor
             }
         }
 
+        // For delete to properly work, RemoveEmptySets and CorrectIndexes have to be called afterwards;
         public void DeleteEntry()
         {
             var tempEntry = tablefile.table[animBox.SelectedIndex];
             int removedEntrySize = tempEntry.size;
 
             tablefile.table.Remove(tempEntry);
-            tablefile.TotalEntries -= 1;
 
             // Update originalPointer for all following entries
             for (int i = animBox.SelectedIndex; i < tablefile.table.Count; i++)
             {
                 MultiStructEntry multientry = (MultiStructEntry)tablefile.table[i];
-                //animBox.SelectedIndex = i;
                 tablefile.table[i].originalPointer -= (uint)removedEntrySize;
-                tablefile.table[i].index -= 1;
-                ((StructEntry<SpatkHeaderChunk>)multientry.subEntries[0]).data.index -= 1;
             }
         }
 
@@ -1612,6 +1609,8 @@ namespace StatusEditor
                     break;
                 default:
                     DeleteEntry();
+                    RemoveEmptySets();
+                    CorrectIndexes();
                     RefreshData();
                     animBox_SelectedIndexChanged("deleteEntry", null);
                     break;
