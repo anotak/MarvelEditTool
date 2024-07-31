@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
+using System.Reflection;
+using System.Diagnostics.Eventing.Reader;
 
 namespace MarvelData
 {
@@ -44,7 +46,7 @@ namespace MarvelData
 
         public static Type[] structTypes = { typeof(StructEntry<StatusChunk>), typeof(StructEntry<ATKInfoChunk>), typeof(StructEntry<BaseActChunk>),
             typeof(CmdSpAtkEntry), typeof(CmdComboEntry), typeof(AnmChrEntry), typeof(CollisionEntry), typeof(StructEntry<ShotChunk>),
-            typeof(StructEntry<ShotSChunk>), typeof(StructEntry<ShotLChunk>) };
+            typeof(StructEntry<ShotSChunk>), typeof(StructEntry<ShotLChunk>), typeof(StructEntry<ShotXSChunk>),};
         public static int[] structSizes = { 0x350, 0x18C, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00 };
         public static string[] structExtensions = { "CHS", "ATI", "CBA", "CSP", "CCM", "CAC", "CLI", "SHT" };
 
@@ -417,8 +419,14 @@ namespace MarvelData
                     // count size of file before body2
                     int postBodyFileSize = preBodyFileSize + tablefile.table[0].size + tablefile.shotName2Bytes.Length;
                     int remainingBodySize = (int)(length - postBodyFileSize);
+                    long ShtRefSize = BitConverter.ToInt32(tablefile.headerB, 4) - 768;
+                    int S = 0;
+                    if (ShtRefSize == 0) { S = 10; }
+                    else if (ShtRefSize == 96) { S = 8; }
+                    else if (ShtRefSize == 192) { S = 9; }
+                    else { S = 0; }
                     byte[] readBody2Bytes = new byte[0];
-                    current = (TableEntry)Activator.CreateInstance(remainingBodySize == 136 ? structTypes[8] : structTypes[9]);
+                    current = (TableEntry)Activator.CreateInstance(structTypes[S]);
                     while (i >= 331 && i < length) // 0x300
                     {
                         uint realPosition = (uint)reader.BaseStream.Position;
