@@ -790,9 +790,29 @@ namespace StatusEditor
         {
             for (int i = 0; i < tablefile.table.Count; i++)
             {
-                MultiStructEntry multientry = (MultiStructEntry)tablefile.table[i];
-                ((StructEntry<SpatkHeaderChunk>)multientry.subEntries[0]).data.index = i;
-                tablefile.table[i].index = (uint)i;
+                if (structViewType.Name.Contains("ATKInfo"))
+                {
+                    MarvelData.StructEntry<ATKInfoChunk> atiEntry = (MarvelData.StructEntry<ATKInfoChunk>)tablefile.table[i];
+                    atiEntry.data.index = i;
+                    atiEntry.index = (uint)i;
+                }
+                else if (structViewType.Name.Contains("BaseAct"))
+                {
+                    MarvelData.StructEntry<BaseActChunk> baseActEntry = (MarvelData.StructEntry<BaseActChunk>)tablefile.table[i];
+                    baseActEntry.data.index = i;
+                    baseActEntry.index = (uint)i;
+                }
+                else
+                {
+                    MultiStructEntry multientry = (MultiStructEntry)tablefile.table[i];
+                    if (tablefile.table[i] is CollisionEntry)
+                        ((StructEntry<CollisionHeaderChunk>)multientry.subEntries[0]).data.index = i;
+                    else if (tablefile.table[i] is CmdSpAtkEntry)
+                        ((StructEntry<SpatkHeaderChunk>)multientry.subEntries[0]).data.index = i;
+                    else if (tablefile.table[i] is CmdComboEntry)
+                        ((StructEntry<CmdComboHeaderChunk>)multientry.subEntries[0]).data.index = i;
+                    tablefile.table[i].index = (uint)i;
+                }
             }
         }
 
@@ -801,9 +821,22 @@ namespace StatusEditor
         {
             for (int i = 0; i < tablefile.table.Count; i++)
             {
-                MultiStructEntry multientry = (MultiStructEntry)tablefile.table[i];
-                if (multientry.name.Contains("EMPTY DATA") && !multientry.bHasData)
-                    tablefile.table.RemoveAt(i);
+                if (tablefile.table[i] is CmdSpAtkEntry || tablefile.table[i] is CollisionEntry || tablefile.table[i] is CmdComboEntry)
+                {
+                    MultiStructEntry multientry = (MultiStructEntry)tablefile.table[i];
+                    if (!multientry.bHasData)
+                        tablefile.table.RemoveAt(i);
+                } else if (structViewType.Name.Contains("ATKInfo"))
+                {
+                    MarvelData.StructEntry<ATKInfoChunk> atiEntry = (MarvelData.StructEntry<ATKInfoChunk>)tablefile.table[i];
+                    if (!atiEntry.bHasData)
+                        tablefile.table.RemoveAt(i);
+                } else if (structViewType.Name.Contains("BaseAct"))
+                {
+                    MarvelData.StructEntry<BaseActChunk> baseActEntry = (MarvelData.StructEntry<BaseActChunk>)tablefile.table[i];
+                    if (!baseActEntry.bHasData)
+                        tablefile.table.RemoveAt(i);
+                }
             }
         }
 
