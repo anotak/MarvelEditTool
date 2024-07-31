@@ -645,5 +645,10 @@ namespace MarvelData
         {
             throw new NotImplementedException();
         }
+        
+        public virtual StructEntry<CmdComboHeaderChunk> getCmdComboHeader()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
