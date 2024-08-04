@@ -385,14 +385,18 @@ namespace StatusEditor
             {
                 openFile.Filter = "Shot Files (*.sht;*.10BE43D4)|*.sht;*.10BE43D4";
             }
+            else if (chosenFileType.Contains("CPI"))
+            {
+                openFile.Filter = "Intro or Outro ID File (*.cpi;*.1DF3E03E)|*.cpi;*.1DF3E03E";
+            }
             else
                 openFile.Filter = "Supported Data (" +
-                    "*.ccm;*.28DD8317;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504;*.csp;*.52A8DBF6;*.cli;*.5B486CCE;*.sht;*.10BE43D4)|" +
-                    "*.ccm;*.28DD8317;*.csp;*.52A8DBF6;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504;*.cli;*.5B486CCE;*.sht;*.10BE43D4|" +
+                    "*.ccm;*.28DD8317;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504;*.csp;*.52A8DBF6;*.cli;*.5B486CCE;*.sht;*.10BE43D4;*.cpi;*.1DF3E03E)|" +
+                    "*.ccm;*.28DD8317;*.csp;*.52A8DBF6;*.ati;*.227A8048;*.chs;*.3C41466B;*.cba;*.3C6EA504;*.cli;*.5B486CCE;*.sht;*.10BE43D4;*.cpi;*.1DF3E03E|" +
                     "AtkInfo Files (*.ati;*.227A8048)|*.ati;*.227A8048|BaseAct Files (*.cba;*.3C6EA504)|*.cba;*.3C6EA504|" +
                     "Cmdcombo Files (*.ccm;*.28DD8317)|*.ccm;*.28DD8317|Cmdspatk Files (*.csp;*.52A8DBF6)|*.csp;*.52A8DBF6|" +
                     "Status Files (*.chs;*.3C41466B)|*.chs;*.3C41466B|Collision Files (*.cli;*.5B486CCE)|.cli;*.5B486CCE|" +
-                    "Shot Files (*.sht;*.10BE43D4)|*.sht;*.10BE43D4|" +
+                    "Shot Files (*.sht;*.10BE43D4)|*.sht;*.10BE43D4|Intro or Outro ID File (*.cpi;*.1DF3E03E)|*.cpi;*.1DF3E03E|" +
                     "All files (*.*)|*.*";
         }
 

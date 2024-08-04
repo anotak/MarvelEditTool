@@ -11,6 +11,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using System.Reflection;
 using System.Diagnostics.Eventing.Reader;
+using System.Security.AccessControl;
 
 namespace MarvelData
 {
@@ -46,9 +47,9 @@ namespace MarvelData
 
         public static Type[] structTypes = { typeof(StructEntry<StatusChunk>), typeof(StructEntry<ATKInfoChunk>), typeof(StructEntry<BaseActChunk>),
             typeof(CmdSpAtkEntry), typeof(CmdComboEntry), typeof(AnmChrEntry), typeof(CollisionEntry), typeof(StructEntry<ShotChunk>),
-            typeof(StructEntry<ShotSChunk>), typeof(StructEntry<ShotLChunk>), typeof(StructEntry<ShotXSChunk>),};
-        public static int[] structSizes = { 0x350, 0x18C, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00 };
-        public static string[] structExtensions = { "CHS", "ATI", "CBA", "CSP", "CCM", "CAC", "CLI", "SHT" };
+            typeof(StructEntry<ShotSChunk>), typeof(StructEntry<ShotLChunk>), typeof(StructEntry<ShotXSChunk>), typeof(StructEntry<ProfileSelfChunk>), typeof(StructEntry<ProfileChunk>)};
+        public static int[] structSizes = { 0x350, 0x18C, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        public static string[] structExtensions = { "CHS", "ATI", "CBA", "CSP", "CCM", "CAC", "CLI", "SHT", "CPI" };
 
         public static TableFile LoadFile(string filename, bool bAutoIdentify = false, Type entryType = null, int structsize = -1, Boolean isAnmChrEdit = false)
         {
@@ -72,6 +73,10 @@ namespace MarvelData
             if (filenamelower.Contains("10be43d4") || filenamelower.Contains("sht"))
             {
                 return ReadShotFile(filename, out entryType, ref structsize, tablefile);
+            }
+            else if (filenamelower.Contains("1df3e03e") || filenamelower.Contains("cpi"))
+            {
+                return ReadProfile(filename, out entryType, ref structsize, tablefile);
             }
 
             // Goes onto normal reading for all other formats
@@ -464,9 +469,190 @@ namespace MarvelData
                 return tablefile;
             }
         }
+        private static TableFile ReadProfile(string filename, out Type entryType, ref int structsize, TableFile tablefile)
+        {
+            using (BinaryReader reader = new BinaryReader(File.OpenRead(filename)))
+            {
+                uint position = (uint)reader.BaseStream.Position;
+                long length = reader.BaseStream.Length; // length of file in bytes
+                Console.WriteLine("length is " + length);
+                entryType = structTypes[11];
+                tablefile.fileType = entryType;
+                tablefile.defaultChunkSize = 0;
+                tablefile.fileExtension = "CPI";
+                    int i = 0;
+                    while (i <= 3)
+                    {
+                        //byte readByte = reader.ReadByte();
+                        byte[] readNameBytes = BitConverter.GetBytes(reader.ReadUInt32());
+                        int[] intReadBytes = new int[4];
+                        for (int l = 0; l < readNameBytes.Length; l++)
+                        {
+                            intReadBytes[l] = (readNameBytes[l] + 0x00);
+                        }
+                        tablefile.header = readNameBytes;
+                        i = 4;
+                    }
+                    //wholeString.Clear();
+                    //AutoIdentifyFileType(ref entryType, ref structsize, tablefile);
 
-        // sets entry type and structure size of tableFile
-        private static void AutoIdentifyFileType(ref Type entryType, ref int structsize, TableFile tablefile)
+                    while (i > 3 && i <= 7)
+                        {
+                        byte readHeaderByte = reader.ReadByte();
+                        tablefile.header = (tablefile.header == null) ?
+                                new byte[] { readHeaderByte } : Tools.AddByteToArray(tablefile.header, readHeaderByte);
+                            i++;
+                    }
+                        while (i >= 8 && i <= 11)
+                        {
+                        byte readHeaderByte = reader.ReadByte();
+                        tablefile.headerB = (tablefile.headerB == null) ?
+                                new byte[] { readHeaderByte } : Tools.AddByteToArray(tablefile.headerB, readHeaderByte);
+                            i++;
+                    }
+                        while (i >= 12 && i <= 15)
+                        {
+                        byte readHeaderByte = reader.ReadByte();
+                        tablefile.headerC = (tablefile.headerC == null) ?
+                               new byte[] { readHeaderByte } : Tools.AddByteToArray(tablefile.headerC, readHeaderByte);
+                            i++;
+                        }
+                    int preBodyFileSize = tablefile.header.Length + tablefile.headerB.Length + tablefile.headerC.Length;
+                    int entryCount = BitConverter.ToInt32(tablefile.headerB, 0) + BitConverter.ToInt32(tablefile.headerC, 0);
+
+                    if (((entryCount*4)-4+preBodyFileSize)*2 != length) {
+                        
+                            throw new Exception("PROFILE HEADER DOES NOT MATCH, " + length + " EXPECTED " + preBodyFileSize+(entryCount*8) + "RECIEVED" );
+                    }
+                    TableEntry current = (TableEntry)Activator.CreateInstance(entryType);
+                    byte[] readSelfBytes = new byte[0];
+                    byte[] readBodyBytes = new byte[0];
+
+                    if (i >= 16 && i <= 23)
+                    {
+
+                        readSelfBytes = reader.ReadBytes(8);
+                        current.index = 0;
+                        current.size = 8;
+                        current.bHasData = true;
+                        current.SetData(readSelfBytes);
+                        tablefile.table.Add(current);
+                        /*
+                        uint realPosition = (uint)reader.BaseStream.Position;
+                        try
+                        {
+                            current.originalPointer = reader.ReadUInt32();
+                            if (i > 100)
+                                readBodyBytes = Tools.AddBytesToArray(readBodyBytes, BitConverter.GetBytes(current.originalPointer));
+                            else
+                                readBodyBytes = BitConverter.GetBytes(current.originalPointer);
+
+                            i++;
+                        }
+                        catch (EndOfStreamException endOfStreamException)
+                        {
+                            //Console.WriteLine("reader position ended at: " + realPosition);
+                            // break the loop when the file has ended;
+                            i = (int)length;
+                            break;
+                        */
+                        i = 24;
+                    }
+                    TableEntry filler = (TableEntry)Activator.CreateInstance(structTypes[12]);
+
+                    int s = 1;
+                    
+                    while (s <= entryCount)
+                    {
+                        //readBodyBytes = reader.ReadBytes(8);
+                        //Tools.AddBytesToArray(readBodyBytes, BitConverter.GetBytes(i));
+
+                        //Console.WriteLine("at index " + i + ": " + wholeString.ToString().TrimEnd() + " and reader is at position: " + ((uint)reader.BaseStream.Position));
+                        //wholeString.Clear();
+                        tablefile.table.Add(filler);
+                        tablefile.table[s].index = (uint)s;
+                        tablefile.table[s].size = 8;
+                        tablefile.table[s].SetData(reader.ReadBytes((int)8));
+                        tablefile.table[s].bHasData = true;
+                        //current.SetData(readBodyBytes);
+                        s++;
+                    }
+
+                    /*
+                    
+                    
+                     
+                    
+                     
+                     
+                    //tablefile.table[(int)current.index].SetData(readBodyBytes);
+
+                    // !!!!!!!!!!!!!!!!  PART II  !!!!!!!!!!!!!!!!!!!
+                    //wholeString.Clear();
+                    while (i >= 267 && i < 331)
+                    {
+                        byte readShtName2Byte = reader.ReadByte();
+                        tablefile.shotName2Bytes = (tablefile.shotName2Bytes == null) ?
+                            new byte[] { readShtName2Byte } : Tools.AddByteToArray(tablefile.shotName2Bytes, readShtName2Byte);
+                        i++;
+                    }
+
+                    if (i == 331) // 0x340
+                    {
+                        
+                        tablefile.shotName2Bytes.ToList().ForEach(i =>
+                        {
+                            if (i != 0)
+                                tablefile.shotName2String += ((char)(i + 0x00));
+                        });
+                    }
+
+
+                    int postBodyFileSize = preBodyFileSize + tablefile.table[0].size + tablefile.shotName2Bytes.Length;
+                    int remainingBodySize = (int)(length - postBodyFileSize);
+                    long ShtRefSize = BitConverter.ToInt32(tablefile.headerB, 4) - 768;
+                    int S = 0;
+                    byte[] readBody2Bytes = new byte[0];
+                    current = (TableEntry)Activator.CreateInstance(structTypes[S]);
+                    while (i >= 331 && i < length) // 0x300
+                    {
+                        uint realPosition = (uint)reader.BaseStream.Position;
+                        try
+                        {
+                            // real data from file is added / read from file here and put on table entry(the hex values)
+                            current.originalPointer = reader.ReadUInt32();
+                            if (i > 283)
+                                readBody2Bytes = Tools.AddBytesToArray(readBody2Bytes, BitConverter.GetBytes(current.originalPointer));
+                            else
+                                readBody2Bytes = BitConverter.GetBytes(current.originalPointer);
+                            //readBody2Bytes.ToList().ForEach(i => wholeString.Append(i.ToString("x2")));
+                            //Console.WriteLine("at index " + i + ": " + current.originalPointer.ToString("x2") + " and reader position started at: " + ((uint)reader.BaseStream.Position - 4));
+                            i++;
+                        }
+                        catch (EndOfStreamException endOfStreamException)
+                        {
+                            //Console.WriteLine("reader position ended at: " + realPosition);
+                            // break the loop when the file has ended;
+                            i = (int)length;
+                            break;
+                        }
+                    }                   */
+                    //Console.WriteLine("at index " + i + ": " + wholeString.ToString().TrimEnd() + " and reader is at position: " + ((uint)reader.BaseStream.Position));
+                    //wholeString.Clear();
+                    // current  entry added to animBox
+                    current.index = 1;
+                    //current.size = (int)reader.BaseStream.Position - postBodyFileSize; //868;
+                    //current.bHasData = true;
+                    //current.SetData(readBodyBytes);
+                    //current.name = tablefile.shotName2String; // sets name on animBox entry
+                    //tablefile.table.Add(current);
+                }
+                    return tablefile;
+             }
+
+
+                // sets entry type and structure size of tableFile
+                private static void AutoIdentifyFileType(ref Type entryType, ref int structsize, TableFile tablefile)
         {
             string typeString = ASCIIEncoding.Default.GetString(tablefile.header, 0, 3);
             for (int i = 0; i < structExtensions.Length; i++)
