@@ -805,7 +805,8 @@ namespace MarvelData
             b.Write(headerB);
             if (this.fileExtension == "SHT")
             {
-                shotNameBytes = new byte[Encoding.ASCII.GetBytes(shotNameString).Length]; //length of shotNameBytes was byte[64]
+                shotNameBytes = new byte[64]; //length of shotNameBytes
+                //shotNameBytes = new byte[Encoding.ASCII.GetBytes(shotNameString).Length]; //length of shotNameBytes was byte[64]
                 Encoding.ASCII.GetBytes(shotNameString).CopyTo(shotNameBytes, 0);
                 b.Write(shotNameBytes);
                 b.Write(headerC);
@@ -841,7 +842,8 @@ namespace MarvelData
             {
                 if (i == 1 && this.fileExtension == "SHT")
                 {
-                    shotName2Bytes = new byte[Encoding.ASCII.GetBytes(shotName2String).Length]; //length of shotName2Bytes was byte[64]
+                    shotName2Bytes = new byte[64]; //length of shotNameBytes
+                    //shotName2Bytes = new byte[Encoding.ASCII.GetBytes(shotName2String).Length]; //length of shotName2Bytes was byte[64]
                     Encoding.ASCII.GetBytes(shotName2String).CopyTo(shotName2Bytes, 0);
 
                     b.Write(shotName2Bytes);
