@@ -546,41 +546,37 @@ namespace StatusEditor
                 }
                 openFile.Title = "Import" + tablefile.table[animBox.SelectedIndex].GetFancyName();
                 // The Filter property requires a search string after the pipe ( | )
-                if (tablefile.fileExtension == "CAC")
+                if (tablefile.fileExtension == "CSP")
                 {
-                    openFile.Filter = "|UMVC3 Character Script File (*.mvc3anm;*.mvc3data)|*.mvc3anm;*.mvc3data|UMVC3 Loose Data (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
-                }
-                else if (tablefile.fileExtension == "CSP")
-                {
-                    openFile.Filter = "MVC3 Special Input Command File (*.mvc3csp;*.mvc3data)|*.mvc3csp;*.mvc3data|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
+                    openFile.Filter = "UMVC3 Loose Input Command Data (*.mvc3csp)|*.mvc3csp|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
                 }
                 else if (tablefile.fileExtension == "CBA")
                 {
-                    openFile.Filter = "MVC3 Basic Input Action File (*.mvc3cba;*.mvc3data)|*.mvc3cba;*.mvc3data|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                    openFile.Filter = "UMVC3 Loose Basic Action Data (*.mvc3cba)|*.mvc3cba|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
                 }
                 else if (tablefile.fileExtension == "CCM")
                 {
-                    openFile.Filter = "MVC3 Extra Cancel Input File (*.mvc3ccm;*.mvc3data)|*.mvc3ccm;*.mvc3data|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                    openFile.Filter = "UMVC3 Loose Unique Cancel Data (*.mvc3ccm)|*.mvc3ccm|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
                 }
                 else if (tablefile.fileExtension == "ATI")
                 {
-                    openFile.Filter = "MVC3 Attack Data File (*.mvc3data;*.mvc3ati)|*.mvc3ati;*.mvc3data|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                    openFile.Filter = "UMVC3 Loose Attack Data (*.mvc3ati)|*.mvc3ati|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
                 }
                 else if (tablefile.fileExtension == "CLI")
                 {
-                    openFile.Filter = "MVC3 Collision File (*.mvc3cli;*.mvc3data)|*.mvc3cli;*.mvc3data|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                    openFile.Filter = "UMVC3 Loose Collision Data (*.mvc3cli)|*.mvc3cli|UMVC3 Loose Data (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
                 }
                 else if (tablefile.fileExtension == "CHS")
                 {
-                    openFile.Filter = "MVC3 Character Status File (*.mvc3chs;*.mvc3data)|*.mvc3chs;*.mvc3data|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
-                }
-                else if (tablefile.fileExtension == "CPI")
-                {
-                    openFile.Filter = "MVC3 Character Status File (*.mvc3chs;*.mvc3data)|*.mvc3chs;*.mvc3data|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                    openFile.Filter = "UMVC3 Loose Status Data (*.mvc3chs)|*.mvc3chs|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
                 }
                 else if (tablefile.fileExtension == "SHT")
                 {
-                    openFile.Filter = "UMVC3 Projectile File (*.mvc3sht;*.mvc3data)|*.mvc3sht;*.mvc3data|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                    openFile.Filter = "UMVC3 Loose Projectile Data (*.mvc3sht)|*.mvc3sht|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                }
+                else if (tablefile.fileExtension == "CPI")
+                {
+                    openFile.Filter = "UMVC3 Loose Profile Data (*.mvc3cpi)|*.mvc3cpi|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
                 }
                 else
                 {
@@ -618,31 +614,35 @@ namespace StatusEditor
                 saveFileDialog1.Title = "Export " + tablefile.table[animBox.SelectedIndex].GetFancyName();
                 if (tablefile.fileExtension == "CSP")
                 {
-                    saveFileDialog1.Filter = "MVC3 Special Input Command File (*.mvc3csp)|*.mvc3csp|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
+                    saveFileDialog1.Filter = "UMVC3 Loose Input Command Data (*.mvc3csp)|*.mvc3csp|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
                 }
                 else if (tablefile.fileExtension == "CBA")
                 {
-                    saveFileDialog1.Filter = "MVC3 Basic Input Action File (*.mvc3cba)|*.mvc3cba|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                    saveFileDialog1.Filter = "UMVC3 Loose Basic Action Data (*.mvc3cba)|*.mvc3cba|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
                 }
                 else if (tablefile.fileExtension == "CCM")
                 {
-                    saveFileDialog1.Filter = "MVC3 Extra Cancel Input File (*.mvc3ccm)|*.mvc3ccm|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                    saveFileDialog1.Filter = "UMVC3 Loose Unique Cancel Data (*.mvc3ccm)|*.mvc3ccm|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
                 }
                 else if (tablefile.fileExtension == "ATI")
                 {
-                    saveFileDialog1.Filter = "MVC3 Attack Data File (*.mvc3ati|*.mvc3ati|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                    saveFileDialog1.Filter = "UMVC3 Loose Attack Data (*.mvc3ati)|*.mvc3ati|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
                 }
                 else if (tablefile.fileExtension == "CLI")
                 {
-                    saveFileDialog1.Filter = "MVC3 Collision File (*.mvc3cli)|*.mvc3cli|UMVC3 Loose Data (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
+                    saveFileDialog1.Filter = "UMVC3 Loose Collision Data (*.mvc3cli)|*.mvc3cli|UMVC3 Loose Data (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
                 }
                 else if (tablefile.fileExtension == "CHS")
                 {
-                    saveFileDialog1.Filter = "MVC3 Character Status File (*.mvc3chs)|*.mvc3chs|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                    saveFileDialog1.Filter = "UMVC3 Loose Status Data (*.mvc3chs)|*.mvc3chs|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
                 }
                 else if (tablefile.fileExtension == "SHT")
                 {
-                    saveFileDialog1.Filter = "UMVC3 Projectile File (*.mvc3sht)|*.mvc3sht|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                    saveFileDialog1.Filter = "UMVC3 Loose Projectile Data (*.mvc3sht)|*.mvc3sht|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
+                }
+                else if (tablefile.fileExtension == "CPI")
+                {
+                    saveFileDialog1.Filter = "UMVC3 Loose Profile Data (*.mvc3cpi)|*.mvc3cpi|UMVC3 Loose Data(*.mvc3data)|*.mvc3data|All files(*.*)|*.*";
                 }
                 else
                 {
@@ -1411,6 +1411,12 @@ namespace StatusEditor
                 AddTags(typeof(HitSFXSubGroup), false);
             else if (tag.Contains("hitSFXEntry"))
                 AddTags(typeof(HitSFXEntry), false);
+            //else if (tag.Contains("SelfID") || tag.Contains("CharacterA") || tag.Contains("CharacterB") || tag.Contains("CharacterC") || tag.Contains("CharacterD") )
+            //    AddTags(typeof(CPIChar), false);
+            else if (tag.Contains("IdentityFlags"))
+                AddTags(typeof(ProfileFlags), true);
+            else if (tag.Contains("IdentityFlags2"))
+                AddTags(typeof(ProfileFlagsB), true);
             else
             {
                 tagsDataGridView.DataSource = null;

@@ -37,6 +37,7 @@ namespace MarvelData
         }
 
         public static void Log(string message, Boolean time = true, Boolean print = false)
+        
         {
 #if DEBUG
             if (!bPrepared)
