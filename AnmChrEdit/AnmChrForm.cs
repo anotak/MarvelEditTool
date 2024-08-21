@@ -405,7 +405,7 @@ namespace AnmChrEdit
 
             using (OpenFileDialog openFile = new OpenFileDialog())
             {
-                openFile.DefaultExt = "mvc3data";
+                openFile.DefaultExt = "mvc3anm";
                 if (ImportPath != String.Empty)
                 {
                     try
@@ -433,7 +433,7 @@ namespace AnmChrEdit
                 }
                 openFile.Title = "Import " + tablefile.table[animBox.SelectedIndex].GetFancyName();
                 // The Filter property requires a search string after the pipe ( | )
-                openFile.Filter = "mvc3 table data files (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
+                openFile.Filter = "UMVC3 Anmchr Entry (*.mvc3anm)|*.mvc3anm|UMVC3 Loose Data (*.mvc3data)|*.mvc3data|All files (*.*)|*.*";
 
                 openFile.ShowDialog();
                 if (openFile.FileNames.Length > 0)
