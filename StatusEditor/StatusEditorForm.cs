@@ -75,15 +75,18 @@ namespace StatusEditor
             if (bError) return;
 
             // Confirm user wants to close
-            switch (MessageBox.Show(this, "Are you sure you want to close?" + Environment.NewLine +
-                    "All unsaved data will be lost!", "Closing", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            if (tablefile != null)
             {
-                case DialogResult.No:
-                    e.Cancel = true;
-                    break;
-                default:
-                    AELogger.WriteLog();
-                    break;
+                switch (MessageBox.Show(this, "Are you sure you want to close?" + Environment.NewLine +
+                        "All unsaved data will be lost!", "Closing", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                {
+                    case DialogResult.No:
+                        e.Cancel = true;
+                        break;
+                    default:
+                        AELogger.WriteLog();
+                        break;
+                }
             }
         }
 
@@ -306,7 +309,8 @@ namespace StatusEditor
 
             using (OpenFileDialog openFile = new OpenFileDialog())
             {
-                if (tablefile != null)
+                if (tablefile != null && isFileModified)
+                {
                     // Confirm user wants to open a new instance
                     switch (MessageBox.Show(this, "Are you sure you want to open a new instance?" + Environment.NewLine +
                         "All unsaved data will be lost!", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
@@ -325,6 +329,7 @@ namespace StatusEditor
                             AELogger.WriteLog();
                             break;
                     }
+                }
                 //openFile.DefaultExt = "bcm";
                 // The Filter property requires a search string after the pipe ( | )
                 SetFilter(openFile, (string)((ToolStripMenuItem)sender)?.Text);
@@ -1391,6 +1396,8 @@ namespace StatusEditor
 
         private void structView_DataError(object sender, DataGridViewDataErrorEventArgs ev)
         {
+            SetFileModified();
+
             bDataGridError = true;
             structView.Rows[structView.SelectedCells[0].RowIndex].DefaultCellStyle.ForeColor = Color.Red;
             entrySizeLabel.Text = "invalid data for " + structView.SelectedCells[0].ValueType.Name;
