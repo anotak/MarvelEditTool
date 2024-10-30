@@ -33,6 +33,8 @@ namespace StatusEditor
         private System.Windows.Forms.DataGridViewEditingControlShowingEventArgs dgvE;
         private System.Windows.Forms.DataGridView dgvSender;
 
+        private int rememberedScrollPosition;
+
         public bool IsShtFile
         { get 
             {
@@ -55,6 +57,8 @@ namespace StatusEditor
             tagsDataGridView.Rows.Clear();
             structView.Rows.Clear();
             AddItems(typeof(StatusChunk));
+
+            rememberedScrollPosition = 0;
 
             structView.DataError += structView_DataError;
             structView.CellEndEdit += structView_CellEndEdit;
@@ -1141,7 +1145,11 @@ namespace StatusEditor
                 RefreshDeleteSubchunkButton();
             }
             previousSelectedIndex = animBox.SelectedIndex;
+            rememberedScrollPosition = structView.FirstDisplayedScrollingRowIndex;
             RefreshAnimBox();
+
+            int row_min = Math.Max(0, structView.RowCount - 4);
+            structView.FirstDisplayedScrollingRowIndex = Math.Min(row_min, rememberedScrollPosition);
         }
 
         // Trigger event when selecting items in the detailed view
