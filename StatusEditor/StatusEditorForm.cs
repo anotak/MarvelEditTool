@@ -464,15 +464,45 @@ namespace StatusEditor
 
         private void SaveButton_Click(object sender, EventArgs ev)
         {
-            if (bError || tablefile.fileExtension.Contains("SHT") ? !IsNameValid() : false)
+            if (bError)
+            {
+                return;
+            }
+
+            if (!IsNameValid())
+            {
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(FilePath) && File.Exists(FilePath))
+            {
+                if (structView.Enabled)
+                {
+                    SaveOldData(animBox.SelectedIndex);
+                }
+
+                tablefile.WriteFile(FilePath);
+            }
+            else
+            {
+                SaveAsButton_Click(sender, ev);
+            }
+        }
+
+        private void SaveAsButton_Click(object sender, EventArgs ev)
+        {
+            if (bError)
+            {
+                return;
+            }
+
+            if (!IsNameValid())
             {
                 return;
             }
 
             using (SaveFileDialog saveFileDialog1 = new SaveFileDialog())
             {
-                //saveFileDialog1.Filter = "BCM files (*.bcm)|*.bcm|All files (*.*)|*.*";
-                //saveFileDialog1.FilterIndex = 2;
                 if (FilePath != String.Empty)
                 {
                     try
@@ -1557,7 +1587,13 @@ namespace StatusEditor
 
         private bool IsNameValid()
         {
+            if (!tablefile.fileExtension.Contains("SHT"))
+            {
+                return true;
+            }
+
             bool bStatus = true;
+
             if (shotNameTextBox.Text.Contains(" "))
             {
                 string errorText = "text cannot contain empty spaces";
@@ -1565,7 +1601,8 @@ namespace StatusEditor
                 shotNameTextBox.BackColor = Color.PaleVioletRed;
                 shotNameTextBox.Focus();
                 bStatus = false;
-            } else
+            }
+            else
             {
                 shotNameTextBox.BackColor = Color.White;
             }

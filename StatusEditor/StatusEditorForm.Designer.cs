@@ -686,7 +686,7 @@ namespace StatusEditor
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
             this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.saveAsToolStripMenuItem.Text = "Save As";
-            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveButton_Click);
+            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveAsButton_Click);
             // 
             // closeToolStripMenuItem
             // 
