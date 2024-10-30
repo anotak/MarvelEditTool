@@ -32,7 +32,6 @@ namespace StatusEditor
         private bool isSameFile;
         private System.Windows.Forms.DataGridViewEditingControlShowingEventArgs dgvE;
         private System.Windows.Forms.DataGridView dgvSender;
-        private bool isShtFile;
 
         public bool IsShtFile
         { get 
@@ -1348,7 +1347,6 @@ namespace StatusEditor
             object entrydataobject = entry.GetDataObject();
             FieldInfo[] fieldList = GetFieldInfo(entryType.GetGenericArguments()[0]);
             int numFields = fieldList.Length;
-            string temp = null;
             for (int i = 0; i < numFields; i++)
             {
                 
