@@ -33,7 +33,11 @@ namespace StatusEditor
         private System.Windows.Forms.DataGridViewEditingControlShowingEventArgs dgvE;
         private System.Windows.Forms.DataGridView dgvSender;
 
+        // position in struct view is remembered when clicking between things
         private int rememberedScrollPosition;
+        // position in animlist is remembered when opening new file
+        private int rememberedAnimBoxIndex;
+        private Type rememberedStructViewType;
 
         public bool IsShtFile
         { get 
@@ -59,6 +63,7 @@ namespace StatusEditor
             AddItems(typeof(StatusChunk));
 
             rememberedScrollPosition = 0;
+            rememberedAnimBoxIndex = 0;
 
             structView.DataError += structView_DataError;
             structView.CellEndEdit += structView_CellEndEdit;
@@ -339,13 +344,15 @@ namespace StatusEditor
                 openFile.ShowDialog();
                 if (openFile.FileNames.Length > 0)
                 {
+                    rememberedAnimBoxIndex = animBox.SelectedIndex;
+                    rememberedStructViewType = structViewType;
+
                     isOpeningNewFile = true;
                     filenameLabel.Text = String.Empty;
                     FilePath = String.Empty;
                     ImportPath = String.Empty;
                     tablefile = null;
                     SetDataTexBoxFormat(0);
-                    //TableFile newTable = TableFile.LoadFile(openFile.FileNames[0], typeof(StatusEntry));
                     TableFile newTable = TableFile.LoadFile(openFile.FileNames[0], true, null, 848, false);
                     int count = newTable.table.Count;
                     if (newTable == null && count != 0)
@@ -354,8 +361,22 @@ namespace StatusEditor
                         return;
                     }
                     tablefile = newTable;
+
                     ResetLayout(openFile, count);
                     animBox_SelectedIndexChanged(null, null);
+
+                    if (structViewType == rememberedStructViewType)
+                    {
+                        if (rememberedAnimBoxIndex < animBox.Items.Count)
+                        {
+                            animBox.SelectedIndex = rememberedAnimBoxIndex;
+                        }
+                    }
+                    else
+                    {
+                        rememberedScrollPosition = 0;
+                        structView.FirstDisplayedScrollingRowIndex = 0;
+                    }
                 }
                 else
                 {
