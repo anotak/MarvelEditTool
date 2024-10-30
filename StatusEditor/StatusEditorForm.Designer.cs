@@ -792,7 +792,7 @@ namespace StatusEditor
             this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "StatusEditorForm";
-            this.Text = "SE - Standard Editor";
+            this.Text = "SE";
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);

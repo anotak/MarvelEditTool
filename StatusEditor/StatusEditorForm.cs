@@ -26,6 +26,7 @@ namespace StatusEditor
         public int previousSelectedIndex;
         public Type structViewType;
         public Type structViewEntryType;
+        private bool isFileModified;
 
         private int dataTextBoxFormat;
         private bool isSameFile;
@@ -45,6 +46,7 @@ namespace StatusEditor
             InitializeComponent();
             isSameFile = true;
             Text += ", build " + GetCompileDate();
+            ClearFileModified();
             AELogger.Log(Text);
             FilePath = String.Empty;
             ImportPath = String.Empty;
@@ -313,7 +315,7 @@ namespace StatusEditor
                             AELogger.Log("procedure canceled!");
                             return;
                         default:
-                            Text = "StatusEditor, build " + GetCompileDate();
+                            Text = "SE, build " + GetCompileDate();
                             /*isOpeningNewFile = true;
                             filenameLabel.Text = String.Empty;
                             FilePath = String.Empty;
@@ -482,6 +484,7 @@ namespace StatusEditor
                 }
 
                 tablefile.WriteFile(FilePath);
+                ClearFileModified();
             }
             else
             {
@@ -541,6 +544,7 @@ namespace StatusEditor
 
                         FilePath = saveFileDialog1.FileNames[0];
                         tablefile.WriteFile(saveFileDialog1.FileNames[0]);
+                        ClearFileModified();
                     }
                 }
             }
@@ -626,6 +630,7 @@ namespace StatusEditor
                 if (openFile.FileNames.Length > 0)
                 {
                     tablefile.table[animBox.SelectedIndex].Import(openFile.FileNames[0]);
+                    SetFileModified();
                     RefreshData();
                     RefreshEditBox();
                     entrySizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
@@ -743,6 +748,7 @@ namespace StatusEditor
                         return;
 
                     tablefile.Duplicate(animBox.SelectedIndex);
+                    SetFileModified();
                     RefreshDataAlt();
                     if (animBox.TopIndex < animBox.Items.Count - 2)
                     {
@@ -761,6 +767,7 @@ namespace StatusEditor
                     break;
                 default:
                     tablefile.Extend();
+                    SetFileModified();
                     RefreshData();
 
                     if (animBox.TopIndex < animBox.Items.Count - 2)
@@ -775,6 +782,8 @@ namespace StatusEditor
         {
             if (cantAddSubChunk())
                 return;
+
+            SetFileModified();
 
             if (tablefile.table[animBox.SelectedIndex] is CollisionEntry)
             {
@@ -802,6 +811,8 @@ namespace StatusEditor
 
         private void SubChunkDeleteButton_Click(object sender, EventArgs e)
         {
+            SetFileModified();
+
             Point screenPoint = subChunkDeleteButton.PointToScreen(new Point(subChunkDeleteButton.Left, subChunkDeleteButton.Bottom));
             if (screenPoint.Y + subChunkDeleteMenuStrip.Size.Height > Screen.PrimaryScreen.WorkingArea.Height) {
                 subChunkDeleteMenuStrip.Show(subChunkDeleteButton, new Point(0, -subChunkDeleteMenuStrip.Size.Height));
@@ -812,6 +823,8 @@ namespace StatusEditor
 
         private void SubChunkDeleteMenuItem_Click(object sender, EventArgs e)
         {
+            SetFileModified();
+
             // Retrieve the menu item that was clicked
             ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
             // Retrieve the index from the Tag property
@@ -889,6 +902,8 @@ namespace StatusEditor
             var tempEntry = tablefile.table[animBox.SelectedIndex];
             int removedEntrySize = tempEntry.size;
 
+            SetFileModified();
+
             tablefile.table.Remove(tempEntry);
 
             // Update originalPointer for all following entries
@@ -905,6 +920,8 @@ namespace StatusEditor
             // Calculate new index using move direction
             int newIndex = animBox.SelectedIndex + direction;
             int index = animBox.SelectedIndex;
+
+            SetFileModified();
 
             // Checking bounds of the range
             if (newIndex < 0 || newIndex >= animBox.Items.Count)
@@ -1143,6 +1160,7 @@ namespace StatusEditor
                 return;
             }
             tablefile.table[animBox.SelectedIndex].name = shotNameTextBox.Text;
+            SetFileModified();
             RefreshData();
         }
 
@@ -1380,6 +1398,8 @@ namespace StatusEditor
 
         private void structView_CellEndEdit(object sender, DataGridViewCellEventArgs ev)
         {
+            SetFileModified();
+
             SaveOldData(animBox.SelectedIndex);
             SetTextConcurrent(tablefile.table[animBox.SelectedIndex].GetData());
 
@@ -1460,6 +1480,23 @@ namespace StatusEditor
             {
                 tagsDataGridView.DataSource = null;
             }
+        }
+
+        private void SetFileModified()
+        {
+            isFileModified = true;
+
+            if (!Text.EndsWith("*"))
+            {
+                Text += "*";
+            }
+        }
+
+        private void ClearFileModified()
+        {
+            isFileModified = false;
+
+            Text.TrimEnd('*');
         }
 
         #region DATATEXTBOX
