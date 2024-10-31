@@ -1179,9 +1179,13 @@ namespace StatusEditor
         {
             String tag = "";
 
-            if (((System.Windows.Forms.DataGridViewCellEventArgs)e).RowIndex >= 0 &&
-            ((System.Windows.Forms.DataGridViewCellEventArgs)e).RowIndex <= structView.Rows.Count)
-                tag = (string)structView?.Rows[((System.Windows.Forms.DataGridViewCellEventArgs)e).RowIndex]?.Cells[1]?.Value ?? "";
+            DataGridViewCellEventArgs args = ((DataGridViewCellEventArgs)e);
+            int index = args.RowIndex;
+
+            if (index >= 0 && index <= structView.Rows.Count)
+            {
+                tag = (string)structView?.Rows[index]?.Cells[1]?.Value ?? "";
+            }
 
             processTag(tag);
         }
