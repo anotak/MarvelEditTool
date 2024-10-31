@@ -9,7 +9,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 namespace StatusEditor
 {
@@ -30,8 +29,8 @@ namespace StatusEditor
 
         private int dataTextBoxFormat;
         private bool isSameFile;
-        private System.Windows.Forms.DataGridViewEditingControlShowingEventArgs dgvE;
-        private System.Windows.Forms.DataGridView dgvSender;
+        private DataGridViewEditingControlShowingEventArgs dgvE;
+        private DataGridView dgvSender;
 
         // position in struct view is remembered when clicking between things
         private int rememberedScrollPosition;
