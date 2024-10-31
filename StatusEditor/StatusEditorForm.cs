@@ -1114,35 +1114,29 @@ namespace StatusEditor
             int numRows = structView.Rows.Count;
             for (int i = 0; i < numFields && i + offset < numRows; i++)
             {
+                int offsetted_index = i + offset;
 
-                //structView.Rows[i].cells[2].Value = structFieldInfo[i].GetValue(entry.data).ToString();
-
-                // this part isnt needed anymore bc of magic with dataviewgrid
-                /*
-                if (structFieldInfo[i].FieldType.IsEnum)
-                {// check if enum
-                    structFieldInfo[i].SetValue(entrydata, Enum.Parse(structFieldInfo[i].FieldType, (string)structView.Rows[i].cells[2].Value));
-                }
-                else
-                */
+                try
                 {
-                    try
-                    {
-                        Convert.ChangeType(structView.Rows[i + offset].Cells[2].Value, fieldList[i].FieldType);
-                        //AELogger.Log(structFieldInfo[i].ToString() + " IS " + structView.Rows[i].cells[2].Value + " VS " + Convert.ChangeType(structView.Rows[i].cells[2].Value, structFieldInfo[i].FieldType));
-                        //AELogger.Log(structFieldInfo[i].GetValue(entrydata).ToString());
-                        fieldList[i].SetValue(entrydata, Convert.ChangeType(structView.Rows[i + offset].Cells[2].Value, fieldList[i].FieldType));
-                        //AELogger.Log(structFieldInfo[i].GetValue(entrydata).ToString());
-                    }
-                    catch (Exception e)
-                    {
-                        AELogger.Log("failed type: val " + fieldList[i].ToString() + " - value " + structView.Rows[i + offset].Cells[2].Value);
+                    object value = structView.Rows[offsetted_index].Cells[2].Value;
+                    DoHex(fieldList[i].FieldType, offsetted_index, value);
+                    Convert.ChangeType(value, fieldList[i].FieldType);
+
+                    //AELogger.Log(structFieldInfo[i].ToString() + " IS " + structView.Rows[i].cells[2].Value + " VS " + Convert.ChangeType(structView.Rows[i].cells[2].Value, structFieldInfo[i].FieldType));
+                    //AELogger.Log(structFieldInfo[i].GetValue(entrydata).ToString());
+
+                    fieldList[i].SetValue(entrydata, Convert.ChangeType(value, fieldList[i].FieldType));
+
+                    //AELogger.Log(structFieldInfo[i].GetValue(entrydata).ToString());
+                }
+                catch (Exception e)
+                {
+                    AELogger.Log("failed type: val " + fieldList[i].ToString() + " - value " + structView.Rows[offsetted_index].Cells[2].Value);
 
 
-                        AELogger.Log("Exception: " + e.Message);
+                    AELogger.Log("Exception: " + e.Message);
 
-                        AELogger.Log("Exception: " + e.StackTrace);
-                    }
+                    AELogger.Log("Exception: " + e.StackTrace);
                 }
             }
 
@@ -1441,19 +1435,10 @@ namespace StatusEditor
             SaveOldData(animBox.SelectedIndex);
             SetTextConcurrent(tablefile.table[animBox.SelectedIndex].GetData());
 
-            structView.Rows[structView.SelectedCells[0].RowIndex].DefaultCellStyle.ForeColor = Color.Black;
-            structView.Rows[structView.SelectedCells[0].RowIndex].Cells[3].Value = "";
-            entrySizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
+            int rowIndex = structView.SelectedCells[0].RowIndex;
 
-            int index = ev.RowIndex;
-            // FIXME
-            /*
-            object value = structFieldInfo[index].GetValue(((StructEntryBase)tablefile.table[animBox.SelectedIndex]).GetDataObject());
-            if (structFieldInfo[index].FieldType.IsEnum)
-            {
-                structView.Rows[index].cells[3].Value = Enum.Format(structFieldInfo[index].FieldType, value, "X");
-            }
-            */
+            structView.Rows[rowIndex].DefaultCellStyle.ForeColor = Color.Black;
+            entrySizeLabel.Text = "size: " + tablefile.table[animBox.SelectedIndex].size;
         }
 
         // Bottom row information is added here when created
