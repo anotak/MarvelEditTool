@@ -1066,6 +1066,7 @@ namespace StatusEditor
             bDisableUpdate = false;
         }
 
+        // makes sure anything the user has typed is written back into the structs in memory
         private void SaveOldData(int index)
         {
             if (!isOpeningNewFile)
@@ -1153,8 +1154,11 @@ namespace StatusEditor
             }
             if (structView.Enabled && animBox.SelectedIndex >= 0)
             {
-                if (sender==null)
-                    SaveOldData(previousSelectedIndex); //TODO: check again why is this here?!
+                if (sender == null)
+                {
+                    // this is here because if the user clicks across selected structs while typing
+                    SaveOldData(previousSelectedIndex);
+                }
 
                 RefreshDeleteSubchunkButton();
             }
