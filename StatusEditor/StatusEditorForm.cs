@@ -1443,65 +1443,131 @@ namespace StatusEditor
         // Bottom row information is added here when created
         private void processTag(string tag) 
         {
-            // TODO: replace if else with switch case
-            if (tag.Equals("AttackLevel"))
-                AddTags(typeof(AttackLevel), false);
-            else if (tag.Equals("GuardType"))
-                AddTags(typeof(GuardType), false);
-            else if (tag.Equals("atkflags3"))
-                AddTags(typeof(AtkFlagsC), true);
-            else if (tag.Equals("atkflags2"))
-                AddTags(typeof(AtkFlagsB), true);
-            else if (tag.Equals("atkflags"))
-                AddTags(typeof(AtkFlagsA), true);
-            else if (tag.Equals("statusFlags"))
-                AddTags(typeof(StatusFlags), true);
-            else if (tag.Contains("OppHitAnim"))
-                AddTags(typeof(OppHitAnim), false);
-            else if (tag.Contains("OnHitEffectOnEnemy") || tag.Contains("OnBlockEffectOnEnemy"))
-                AddTags(typeof(HitEffectOnEnemy), false);
-            else if (tag.Contains("state"))
-                AddTags(typeof(BaseActState), false);
-            else if (tag.Contains("positionState"))
-                AddTags(typeof(PositionState), false);
-            else if (tag.Contains("comboState"))
-                AddTags(typeof(ComboState), false);
-            else if (tag.Contains("inputCode"))
-                AddTags(typeof(InputCode), true);
-            else if (tag.Contains("subChunkType"))
-                AddTags(typeof(SubChunkType), true);
-            else if (tag.Contains("boneReferenceId"))
-                AddTags(typeof(BoneReferenceId), true);
-            else if (tag.Contains("ShtFlagsA"))
-                AddTags(typeof(ShtFlagsA), true);
-            else if (tag.Contains("ShtFlagsB"))
-                AddTags(typeof(ShtFlagsB), true);
-            else if (tag.Contains("ShtFlagsC"))
-                AddTags(typeof(ShtFlagsC), true);
-            else if (tag.Contains("disabled"))
-                AddTags(typeof(CmdDisabled), false);
-            else if (tag.Contains("disable"))
-                AddTags(typeof(SpatkDisabled), false);
-            else if (tag.Contains("flags"))
-                AddTags(typeof(cmdFlags), true);
-            else if (tag.Contains("trapTransition"))
-                AddTags(typeof(TrapTransition), true);
-            else if (tag.Contains("hitSFXGroup"))
-                AddTags(typeof(HitSFXGroup), false);
-            else if (tag.Contains("hitSFXSubGroup"))
-                AddTags(typeof(HitSFXSubGroup), false);
-            else if (tag.Contains("hitSFXEntry"))
-                AddTags(typeof(HitSFXEntry), false);
-            //else if (tag.Contains("SelfID") || tag.Contains("CharacterA") || tag.Contains("CharacterB") || tag.Contains("CharacterC") || tag.Contains("CharacterD") )
-            //    AddTags(typeof(CPIChar), false);
-            else if (tag.Contains("IdentityFlags"))
-                AddTags(typeof(ProfileFlags), true);
-            else if (tag.Contains("IdentityFlags2"))
-                AddTags(typeof(ProfileFlagsB), true);
-            else
+            Type tags_type;
+            bool is_hex_flags;
+
+            // returns if no tags needed
+            switch (tag)
             {
-                tagsDataGridView.DataSource = null;
+                case "AttackLevel":
+                    tags_type = typeof(AttackLevel);
+                    is_hex_flags = false;
+                    break;
+                case "GuardType":
+                    tags_type = typeof(GuardType);
+                    is_hex_flags = false;
+                    break;
+                case "atkflags3":
+                    tags_type = typeof(AtkFlagsC);
+                    is_hex_flags = true;
+                    break;
+                case "atkflags2":
+                    tags_type = typeof(AtkFlagsB);
+                    is_hex_flags = true;
+                    break;
+                case "atkflags":
+                    tags_type = typeof(AtkFlagsA);
+                    is_hex_flags = true;
+                    break;
+                case "statusFlags":
+                    tags_type = typeof(StatusFlags);
+                    is_hex_flags = true;
+                    break;
+                case "OppHitAnim":
+                    tags_type = typeof(OppHitAnim);
+                    is_hex_flags = false;
+                    break;
+                case "OnHitEffectOnEnemy":
+                case "OnBlockEffectOnEnemy":
+                    tags_type = typeof(HitEffectOnEnemy);
+                    is_hex_flags = false;
+                    break;
+                case "state":
+                    tags_type = typeof(BaseActState);
+                    is_hex_flags = false;
+                    break;
+                case "positionState":
+                    tags_type = typeof(PositionState);
+                    is_hex_flags = false;
+                    break;
+                case "comboState":
+                    tags_type = typeof(ComboState);
+                    is_hex_flags = false;
+                    break;
+                case "inputCode":
+                    tags_type = typeof(InputCode);
+                    is_hex_flags = true;
+                    break;
+                case "subChunkType":
+                    tags_type = typeof(SubChunkType);
+                    is_hex_flags = true;
+                    break;
+                case "boneReferenceId":
+                    tags_type = typeof(BoneReferenceId);
+                    is_hex_flags = true;
+                    break;
+                case "ShtFlagsA":
+                    tags_type = typeof(ShtFlagsA);
+                    is_hex_flags = true;
+                    break;
+                case "ShtFlagsB":
+                    tags_type = typeof(ShtFlagsB);
+                    is_hex_flags = true;
+                    break;
+                case "ShtFlagsC":
+                    tags_type = typeof(ShtFlagsC);
+                    is_hex_flags = true;
+                    break;
+                case "disabled":
+                    tags_type = typeof(CmdDisabled);
+                    is_hex_flags = false;
+                    break;
+                case "disable":
+                    tags_type = typeof(SpatkDisabled);
+                    is_hex_flags = false;
+                    break;
+                case "flags":
+                    tags_type = typeof(cmdFlags);
+                    is_hex_flags = true;
+                    break;
+                case "trapTransition":
+                    tags_type = typeof(TrapTransition);
+                    is_hex_flags = true;
+                    break;
+                case "hitSFXGroup":
+                    tags_type = typeof(HitSFXGroup);
+                    is_hex_flags = false;
+                    break;
+                case "hitSFXSubGroup":
+                    tags_type = typeof(HitSFXSubGroup);
+                    is_hex_flags = false;
+                    break;
+                case "hitSFXEntry":
+                    tags_type = typeof(HitSFXEntry);
+                    is_hex_flags = false;
+                    break;
+                case "SelfID":
+                case "CharacterA":
+                case "CharacterB":
+                case "CharacterC":
+                case "CharacterD":
+                    tags_type = typeof(CPIChar);
+                    is_hex_flags = false;
+                    break;
+                case "IdentityFlags":
+                    tags_type = typeof(ProfileFlags);
+                    is_hex_flags = true;
+                    break;
+                case "IdentityFlags2":
+                    tags_type = typeof(ProfileFlagsB);
+                    is_hex_flags = true;
+                    break;
+                default:
+                    tagsDataGridView.DataSource = null;
+                    return;
             }
+
+            AddTags(tags_type, is_hex_flags);
         }
 
         private void SetFileModified()
